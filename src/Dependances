@@ -1,0 +1,6 @@
+python-gtk2
+python-gst0.10
+python-cerealizer
+python-mutagen
+python-notify
+python-gobject
