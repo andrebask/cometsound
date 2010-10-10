@@ -43,7 +43,7 @@ class Model:
         self.directory = directory   
         if self.directory == '':  
             try: 
-                FILE = open("/home/" + pwd.getpwuid(os.getuid())[0] + "/.PyPlayer/cache",'rb')
+                FILE = open("/home/" + pwd.getpwuid(os.getuid())[0] + "/.CometSound/cache",'rb')
                 self.audioFileList = cerealizer.load(FILE)
                 FILE.close()
             except:

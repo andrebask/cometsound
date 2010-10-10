@@ -73,7 +73,7 @@ class Controller:
     def __reBuildViewTree(self):
         """Creates a new Model using the current folder"""
         self.model = Model.Model(self.folder, self.view.progressBar)
-        dir = "/home/" + pwd.getpwuid(os.getuid())[0] + "/.PyPlayer/"
+        dir = "/home/" + pwd.getpwuid(os.getuid())[0] + "/.CometSound/"
         if not os.path.exists(dir):
             os.makedirs(dir)
         cachefile = dir + "cache"
