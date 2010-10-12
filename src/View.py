@@ -225,6 +225,7 @@ class View(gtk.Window):
         self.actiongroup.get_action('Play/Stop').set_tooltip('Pause')
     
     def fixFrameboxPos(self, widget, event):
+        """Fixes the position of the HPaned separator when window's size changes"""
         self.maximized = not self.maximized
         size = self.get_size_request()
         if self.maximized:
@@ -404,6 +405,7 @@ class PlaylistFrame(gtk.Frame):
         self.show_all()
     
     def setupDnD(self):
+        """Drag and drop inizialization"""
         self.TARGETS = [('TREE_MODEL_ROW', gtk.TARGET_SAME_WIDGET, 0)]  
         self.treeview.enable_model_drag_source( gtk.gdk.BUTTON1_MASK, self.TARGETS, gtk.gdk.ACTION_DEFAULT|gtk.gdk.ACTION_MOVE)
         self.treeview.enable_model_drag_dest(self.TARGETS,gtk.gdk.ACTION_DEFAULT)     

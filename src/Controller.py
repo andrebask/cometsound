@@ -139,6 +139,7 @@ class Controller:
                 break
     
     def addAll(self, widget, add):
+        """Adds to the playlist all the files of the current folder"""
         rowModel = self.view.filesTree.treeStore
         i=0
         rowexists = True
@@ -160,6 +161,7 @@ class Controller:
         self.updatePlaylist()
         
     def __addRemove(self, toggled, cfname):
+        """Handles the addition and the removal of the files in the playlist"""
         if toggled and cfname != '':
             self.playlist.append(cfname)
         elif cfname != '':
@@ -212,6 +214,7 @@ class Controller:
         return path 
     
     def drag(self, treeview, context, selection, target_id, etime):
+        """Starts DnD removing the selected file from the playlist"""
         treeselection = treeview.get_selection()
         model, iter = treeselection.get_selected()
         path = model.get_path(iter)[0]
@@ -221,6 +224,7 @@ class Controller:
         self.playlist.remove(self.playlist[path])       
 
     def drop(self, treeview, context, x, y, selection, info, etime):
+        """"Starts DnD inserting the selected file in the playlist"""
         drop_info = treeview.get_dest_row_at_pos(x, y)
         if drop_info:
             path, position = drop_info
@@ -323,12 +327,14 @@ class Controller:
                 self.view.playlistFrame.listStore.append([icon, f])        
     
     def clearPlaylist(self, widget, data=None):
+        """Removes all the files from the playlist"""
         #self.addAll(None, False) #slow
         self.view.filesTree.setModel(self.model) #fast
         self.playerThread.clearPlaylist()
         self.updatePlaylist()
     
     def removeSelected(self, widget):
+        """Removes only the selected files from the playlist"""
         rowList = self.view.playlistFrame.treeview.get_selection().get_selected_rows()[1]
         cfnameList = []
         for row in rowList:
@@ -351,6 +357,7 @@ class Controller:
         self.updatePlaylist()
             
     def shufflePlaylist(self, widget, data=None):
+        """Mixes the songs in the playlist"""
         if self.playerThread.trackNum > -1:
             current = self.playlist[self.playerThread.trackNum]
             random.shuffle(self.playlist)
@@ -436,6 +443,7 @@ class PlayerThread(threading.Thread):
         self.playlist = playlist
     
     def clearPlaylist(self):
+        """Removes all the files from the playlist"""
         self.playlist = []
         self.control.playlist = self.playlist
         self.stop()
@@ -516,5 +524,6 @@ class PlayerThread(threading.Thread):
         return True
     
     def terminate(self, timeout=None):
+        """Terminates the thread"""
         self.stopevent.set()
         threading.Thread.join(self)

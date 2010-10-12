@@ -57,6 +57,7 @@ class Model:
         self.audioFileList = self.__searchFiles(self.directory) 
     
     def getOldDir(self):
+        """Extracts the name of the current directory"""
         f = self.audioFileList[0]
         if type(f).__name__ == 'instance':
             dirname = f.getDir()[:-1]
