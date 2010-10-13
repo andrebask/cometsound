@@ -25,7 +25,8 @@ pygtk.require('2.0')
 
 class View(gtk.Window):
     
-    formatDict = {'.mp3': True,'.wma': True,'.ogg': True}
+    version = '0.1'
+    formatDict = {'.mp3': True, '.wma': True, '.ogg': True}
         
     def __init__(self, model, control):
         
@@ -40,7 +41,10 @@ class View(gtk.Window):
         self.connect('destroy', lambda w: self.destroy())
         self.set_size_request(self.get_screen().get_width() / 2, self.get_screen().get_height() / 2) 
         self.set_position(gtk.WIN_POS_CENTER)
-        self.set_icon_from_file("icon.svg")
+        self.icon = gtk.Image()
+        self.icon.set_from_file("icon.svg")
+        pix = self.icon.get_pixbuf().scale_simple(60, 60, gtk.gdk.INTERP_BILINEAR)
+        self.set_icon(pix)
 
         self.vbox = gtk.VBox()
         self.add(self.vbox)       
@@ -68,7 +72,9 @@ class View(gtk.Window):
                                  ('RadioBand', None, 'Fil_ters'),
                                  ('Play/Stop', gtk.STOCK_MEDIA_PLAY, None, None, 'Play Selection', self.control.playStopSelected),
                                  ('Previous', gtk.STOCK_MEDIA_PREVIOUS, None, None, 'Previous', self.control.previousTrack),
-                                 ('Next', gtk.STOCK_MEDIA_NEXT, None, None, 'Next', self.control.nextTrack)
+                                 ('Next', gtk.STOCK_MEDIA_NEXT, None, None, 'Next', self.control.nextTrack),
+                                 ('Help', None, '_Help'),
+                                 ('About', gtk.STOCK_ABOUT, 'About CometSound', None, 'About CometSound', self.showAboutDialog)
                                  ])
 
         # Create ToggleActions
@@ -95,6 +101,9 @@ class View(gtk.Window):
                                             <menuitem action="Wma"/>
                                             <menuitem action="Ogg"/>
                                           </menu>
+                                          <menu action="Help">
+                                            <menuitem action="About"/>
+                                          </menu>
                                         </menubar>
                                         <toolbar name="ToolBar">
                                             <toolitem action="Play/Stop"/>
@@ -114,7 +123,7 @@ class View(gtk.Window):
         # Create a Label to show track info
         self.label = gtk.Label('\n\n')
         self.label.set_justify(gtk.JUSTIFY_LEFT)
-        self.label.set_padding(0,5)
+        self.label.set_padding(0, 5)
         tl = gtk.ToolItem()
         tl.add(self.label)
         tl.set_expand(True)
@@ -229,9 +238,21 @@ class View(gtk.Window):
         self.maximized = not self.maximized
         size = self.get_size_request()
         if self.maximized:
-            self.framebox.set_position(int(size[1]*2.5))
+            self.framebox.set_position(int(size[1] * 2.5))
         else:
-            self.framebox.set_position(int(size[1]*1.2))
+            self.framebox.set_position(int(size[1] * 1.2))
+    
+    def showAboutDialog(self, o):
+        about = gtk.AboutDialog()
+        about.set_name('CometSound')    
+        about.set_version(self.version)
+        about.set_copyright(u'Copyright \u00A9 2010 Andrea Bernardini')
+        about.set_website('https://launchpad.net/cometsound')
+        pix = self.icon.get_pixbuf().scale_simple(60, 60, gtk.gdk.INTERP_BILINEAR)
+        about.set_logo(pix)
+        response = about.run()
+        if response == -6:
+            about.hide()
             
     def quit(self, o):
         self.destroy()
@@ -290,7 +311,7 @@ class FilesFrame(gtk.Frame):
                     self.treeStore.append(parent, f.getTagValues() + [None] + [f.getDir() + f.getTagValues()[0]])
             elif type(f).__name__ == 'list':
                 if not self.__isEmpty(f):
-                    parent2 = self.treeStore.append(parent,[f[0],'', '','','','','','',''])
+                    parent2 = self.treeStore.append(parent, [f[0], '', '', '', '', '', '', '', ''])
                     self.createTree(parent2, f[1:])
     
     def __isEmpty(self, filelist):
@@ -306,7 +327,7 @@ class FilesFrame(gtk.Frame):
     
     def __createColumns(self):
         """Builds and sets the treeview's columns"""
-        i=0
+        i = 0
         for column in self.columns:
             if column == 'Add':
                 cell = gtk.CellRendererToggle()
@@ -352,7 +373,7 @@ class FilesFrame(gtk.Frame):
                     tvcolumn.set_expand(False)
                     tvcolumn.set_max_width(0)
                     tvcolumn.set_visible(False)
-            i= i+1
+            i = i + 1
       
     def setModel(self, model):
         """Sets a new model to show"""
@@ -407,8 +428,8 @@ class PlaylistFrame(gtk.Frame):
     def setupDnD(self):
         """Drag and drop inizialization"""
         self.TARGETS = [('TREE_MODEL_ROW', gtk.TARGET_SAME_WIDGET, 0)]  
-        self.treeview.enable_model_drag_source( gtk.gdk.BUTTON1_MASK, self.TARGETS, gtk.gdk.ACTION_DEFAULT|gtk.gdk.ACTION_MOVE)
-        self.treeview.enable_model_drag_dest(self.TARGETS,gtk.gdk.ACTION_DEFAULT)     
+        self.treeview.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, self.TARGETS, gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+        self.treeview.enable_model_drag_dest(self.TARGETS, gtk.gdk.ACTION_DEFAULT)     
         self.treeview.connect("drag_data_get", self.control.drag)
         self.treeview.connect("drag_data_received", self.control.drop)
     
