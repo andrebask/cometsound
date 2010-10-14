@@ -21,7 +21,6 @@
 ##
 
 import gtk, os, pwd, AF, Model, gst, threading, gobject, pynotify, cerealizer, random
-import sys
 
 class Controller:
     """This Class Handles the interactions between the GUI(View) and the Model"""
@@ -268,15 +267,16 @@ class Controller:
     
     def playStopSelected(self, o):
         """Handles the click on the Play/Pause button"""
-        if self.view.actiongroup.get_action('Play/Stop').get_tooltip() == 'Play Selection':
+        if self.view.actiongroup.get_action('Play/Stop').get_stock_id() == gtk.STOCK_MEDIA_PLAY:
             if len(self.playlist) > 0:
-                self.playerThread.setPlaylist(self.playlist)
-                self.playerThread.start()
-                self.playerThread.join(0.1)
-        elif self.view.actiongroup.get_action('Play/Stop').get_tooltip() == 'Pause': 
-            self.playerThread.pause()  
-        elif self.view.actiongroup.get_action('Play/Stop').get_tooltip() == 'Play':    
-            self.playerThread.play()
+                if not self.playerThread.is_alive():
+                    self.playerThread.setPlaylist(self.playlist)
+                    self.playerThread.start()
+                    self.playerThread.join(0.1)
+                else: 
+                    self.playerThread.play()  
+        elif self.view.actiongroup.get_action('Play/Stop').get_stock_id() == gtk.STOCK_MEDIA_PAUSE: 
+            self.playerThread.pause()            
      
     def nextTrack(self, o):
         """Handles the click on the Next button"""

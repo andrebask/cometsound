@@ -1,0 +1,127 @@
+# English translations for CometSound package.
+# Copyright (C) 2010 Andrea Bernrdini
+# This file is distributed under the same license as the CometSound package.
+# andrebask <andrebask@gmail.com>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: CometSound 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-14 11:23+0200\n"
+"PO-Revision-Date: 2010-10-14 11:23+0200\n"
+"Last-Translator: Andrea Bernardini <andrebask@gmail.com>\n"
+"Language-Team: English\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: View.py:70
+msgid "_Quit"
+msgstr "_Quit"
+
+#: View.py:70
+msgid "Quit the Program"
+msgstr "Quit the Program"
+
+#: View.py:71
+msgid "_Open Folder..."
+msgstr "_Open Folder..."
+
+#: View.py:71
+msgid "Open Media Folder"
+msgstr "Open Media Folder"
+
+#: View.py:72
+msgid "_File"
+msgstr "_File"
+
+#: View.py:73
+msgid "Fil_ters"
+msgstr "Fil_ters"
+
+#: View.py:74
+msgid "Play Selection"
+msgstr "Play Selection"
+
+#: View.py:75
+msgid "Previous"
+msgstr "Previous"
+
+#: View.py:76
+msgid "Next"
+msgstr "Next"
+
+#: View.py:77
+msgid "_Help"
+msgstr "_Help"
+
+#: View.py:78
+msgid "About CometSound"
+msgstr "About CometSound"
+
+#: View.py:164
+msgid "Clear Playlist"
+msgstr "Clear Playlist"
+
+#: View.py:170
+msgid "Select All"
+msgstr "Select All"
+
+#: View.py:176
+msgid "Deselect All"
+msgstr "Deselect All"
+
+#: View.py:182
+msgid "Refresh"
+msgstr "Refresh"
+
+#: View.py:188
+msgid "Remove Selection"
+msgstr "Remove Selection"
+
+#: View.py:196
+msgid "Shuffle"
+msgstr "Shuffle"
+
+#: View.py:230
+msgid "Play"
+msgstr "Play"
+
+#: View.py:235
+msgid "Pause"
+msgstr "Pause"
+
+#: View.py:269
+msgid "Name"
+msgstr "Name"
+
+#: View.py:269
+msgid "Title"
+msgstr "Title"
+
+#: View.py:269
+msgid "Artist"
+msgstr "Artist"
+
+#: View.py:269
+msgid "Album"
+msgstr "Album"
+
+#: View.py:269
+msgid "Genre"
+msgstr "Genre"
+
+#: View.py:269
+msgid "Year"
+msgstr "Year"
+
+#: View.py:269
+msgid "Add"
+msgstr "Add"
+
+#: View.py:417
+msgid "Playlist"
+msgstr "Playlist"
+

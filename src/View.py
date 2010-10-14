@@ -66,15 +66,15 @@ class View(gtk.Window):
 
         
         # Create actions
-        actiongroup.add_actions([('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit the Program', self.quit),
-                                 ('Open', gtk.STOCK_OPEN, '_Open Folder...', None, 'Open Media Folder', self.control.openFolder),
-                                 ('File', None, '_File'),
-                                 ('RadioBand', None, 'Fil_ters'),
-                                 ('Play/Stop', gtk.STOCK_MEDIA_PLAY, None, None, 'Play Selection', self.control.playStopSelected),
-                                 ('Previous', gtk.STOCK_MEDIA_PREVIOUS, None, None, 'Previous', self.control.previousTrack),
-                                 ('Next', gtk.STOCK_MEDIA_NEXT, None, None, 'Next', self.control.nextTrack),
-                                 ('Help', None, '_Help'),
-                                 ('About', gtk.STOCK_ABOUT, 'About CometSound', None, 'About CometSound', self.showAboutDialog)
+        actiongroup.add_actions([('Quit', gtk.STOCK_QUIT, _('_Quit'), None, _('Quit the Program'), self.quit),
+                                 ('Open', gtk.STOCK_OPEN, _('_Open Folder...'), None, _('Open Media Folder'), self.control.openFolder),
+                                 ('File', None, _('_File')),
+                                 ('RadioBand', None, _('Fil_ters')),
+                                 ('Play/Stop', gtk.STOCK_MEDIA_PLAY, None, None, _('Play Selection'), self.control.playStopSelected),
+                                 ('Previous', gtk.STOCK_MEDIA_PREVIOUS, None, None, _('Previous'), self.control.previousTrack),
+                                 ('Next', gtk.STOCK_MEDIA_NEXT, None, None, _('Next'), self.control.nextTrack),
+                                 ('Help', None, _('_Help')),
+                                 ('About', gtk.STOCK_ABOUT, _('About CometSound'), None, _('About CometSound'), self.showAboutDialog)
                                  ])
 
         # Create ToggleActions
@@ -160,31 +160,31 @@ class View(gtk.Window):
         cIcon.set_from_stock(gtk.STOCK_CLEAR, gtk.ICON_SIZE_SMALL_TOOLBAR) 
         clearB = gtk.Button()
         clearB.add(cIcon)
-        clearB.set_tooltip_text('Clear Playlist')
+        clearB.set_tooltip_text(_('Clear Playlist'))
         clearB.connect("clicked", self.control.clearPlaylist)
         aIcon = gtk.Image()
         aIcon.set_from_stock(gtk.STOCK_APPLY, gtk.ICON_SIZE_SMALL_TOOLBAR)
         addAllB = gtk.Button()
         addAllB.add(aIcon)
-        addAllB.set_tooltip_text('Select All')
+        addAllB.set_tooltip_text(_('Select All'))
         addAllB.connect("clicked", self.control.addAll, True)
         rIcon = gtk.Image()
         rIcon.set_from_stock(gtk.STOCK_CANCEL, gtk.ICON_SIZE_SMALL_TOOLBAR)
         removeAllB = gtk.Button()
         removeAllB.add(rIcon)
-        removeAllB.set_tooltip_text('Deselect All')
+        removeAllB.set_tooltip_text(_('Deselect All'))
         removeAllB.connect("clicked", self.control.addAll, False)
         refIcon = gtk.Image()
         refIcon.set_from_stock(gtk.STOCK_REFRESH, gtk.ICON_SIZE_SMALL_TOOLBAR)
         refreshB = gtk.Button()
         refreshB.add(refIcon)
-        refreshB.set_tooltip_text('Refresh')
+        refreshB.set_tooltip_text(_('Refresh'))
         refreshB.connect("clicked", self.control.refreshTree)
         rsIcon = gtk.Image()
         rsIcon.set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_SMALL_TOOLBAR)
         removeSelectedB = gtk.Button()
         removeSelectedB.add(rsIcon)
-        removeSelectedB.set_tooltip_text('Remove Selection')
+        removeSelectedB.set_tooltip_text(_('Remove Selection'))
         removeSelectedB.connect("clicked", self.control.removeSelected)
         sIcon = gtk.Image()
         theme = gtk.icon_theme_get_for_screen(self.get_screen())
@@ -192,7 +192,7 @@ class View(gtk.Window):
         sIcon.set_from_pixbuf(pixbuf)
         shuffleB = gtk.Button()
         shuffleB.add(sIcon)
-        shuffleB.set_tooltip_text('Shuffle')
+        shuffleB.set_tooltip_text(_('Shuffle'))
         shuffleB.connect("clicked", self.control.shufflePlaylist)
         self.buttons.pack_start(addAllB, False)
         self.buttons.pack_start(removeAllB, False)
@@ -226,12 +226,12 @@ class View(gtk.Window):
     def setButtonPlay(self):
         """Sets the button to "play" during playing"""
         self.actiongroup.get_action('Play/Stop').set_stock_id(gtk.STOCK_MEDIA_PLAY)
-        self.actiongroup.get_action('Play/Stop').set_tooltip('Play')
+        self.actiongroup.get_action('Play/Stop').set_tooltip(_('Play'))
     
     def setButtonPause(self):
         """Sets the button to "pause" """
         self.actiongroup.get_action('Play/Stop').set_stock_id(gtk.STOCK_MEDIA_PAUSE)
-        self.actiongroup.get_action('Play/Stop').set_tooltip('Pause')
+        self.actiongroup.get_action('Play/Stop').set_tooltip(_('Pause'))
     
     def fixFrameboxPos(self, widget, event):
         """Fixes the position of the HPaned separator when window's size changes"""
@@ -266,9 +266,11 @@ class View(gtk.Window):
 class FilesFrame(gtk.Frame):
     """Gtk Frame modified to store a treeview that shows all the audio files inside the selected folder"""
     
-    columns = ['Name', '#', 'Title', 'Artist', 'Album', 'Genre', 'Year', 'Add', '']
+    
         
     def __init__(self, model, control, formatDict):
+        
+        self.columns = [_('Name'), '#', _('Title'), _('Artist'), _('Album'), _('Genre'), _('Year'), _('Add'), '']
         
         gtk.Frame.__init__(self)
         self.listOfFiles = model.getAudioFileList()
@@ -287,9 +289,9 @@ class FilesFrame(gtk.Frame):
 
         self.createTree(None, self.listOfFiles)
         # create and sort the TreeView using treeStore
-        self.treeStore.set_sort_func(10, SF.sortNameFunc, self.columns.index('Name'))
+        self.treeStore.set_sort_func(10, SF.sortNameFunc, self.columns.index(_('Name')))
         self.treeStore.set_sort_func(11, SF.sortNumFunc, self.columns.index('#'))
-        self.treeStore.set_sort_func(12, SF.sortNumFunc, self.columns.index('Year'))
+        self.treeStore.set_sort_func(12, SF.sortNumFunc, self.columns.index(_('Year')))
         self.treeStore.set_sort_column_id(10, gtk.SORT_ASCENDING)
         self.treeview = gtk.TreeView(self.treeStore)
         self.treeview.set_rules_hint(True)
@@ -329,7 +331,7 @@ class FilesFrame(gtk.Frame):
         """Builds and sets the treeview's columns"""
         i = 0
         for column in self.columns:
-            if column == 'Add':
+            if column == _('Add'):
                 cell = gtk.CellRendererToggle()
                 tvcolumn = gtk.TreeViewColumn(column)
                 self.treeview.append_column(tvcolumn)
@@ -357,17 +359,17 @@ class FilesFrame(gtk.Frame):
                     tvcolumn.set_resizable(False)
                     tvcolumn.set_fixed_width(gtk.TREE_VIEW_COLUMN_FIXED)  
                     tvcolumn.set_sort_column_id(11)        
-                if column == 'Name':
+                if column == _('Name'):
                     tvcolumn.set_sort_column_id(10) 
-                if column == 'Year':
+                if column == _('Year'):
                     tvcolumn.set_sort_column_id(12) 
-                if column == 'Title':
+                if column == _('Title'):
                     tvcolumn.set_sort_column_id(2)
-                if column == 'Artist':
+                if column == _('Artist'):
                     tvcolumn.set_sort_column_id(3)    
-                if column == 'Album':
+                if column == _('Album'):
                     tvcolumn.set_sort_column_id(6)
-                if column == 'Genre':
+                if column == _('Genre'):
                     tvcolumn.set_sort_column_id(5)                              
                 if column == '' :
                     tvcolumn.set_expand(False)
@@ -414,7 +416,7 @@ class PlaylistFrame(gtk.Frame):
         tvcolumn.set_resizable(True)   
         
         titleCell = gtk.CellRendererText()
-        tvcolumn = gtk.TreeViewColumn('Playlist')
+        tvcolumn = gtk.TreeViewColumn(_('Playlist'))
         self.treeview.append_column(tvcolumn)
         tvcolumn.pack_start(titleCell, False)    
         tvcolumn.add_attribute(titleCell, 'text', 1)
@@ -440,12 +442,40 @@ def registerClasses():
     cerealizer.register(mtgasf.ASFUnicodeAttribute)
     cerealizer.register(mtgasf.ASFDWordAttribute)
     cerealizer.register(AF.AudioFile)            
+
+import os, locale, gettext, sys
+
+APP_NAME = "cometsound"
+
+def setLanguage():
+    #Get the local directory since we are not installing anything
+    local_path = os.path.realpath(os.path.dirname(sys.argv[0]))
+    # Init the list of languages to support
+    langs = []
+    #Check the default locale
+    lc, encoding = locale.getdefaultlocale()
+    if (lc):
+        #If we have a default, it's the first in the list
+        langs = [lc]
+    # Now lets get all of the supported languages on the system
+    language = os.environ.get('LANGUAGE', None)
+    if (language):
+        langs += language.split(":")
+    langs += ["en_US", "it"]
+    
+    gettext.bindtextdomain(APP_NAME, local_path)
+    gettext.textdomain(APP_NAME)
+    # Get the language to use
+    lang = gettext.translation(APP_NAME, local_path
+        , languages=langs, fallback = True)
+    return lang.gettext
             
 def main():
     gtk.main()
     return 0
 if __name__ == "__main__":
     registerClasses()
+    _ = setLanguage()
     m = Model.Model('')
     c = Controller.Controller(m)
     View(m, c)
