@@ -22,7 +22,7 @@
 
 from mutagen.easyid3 import EasyID3
 from mutagen.asf import ASF
-from mutagen.oggvorbis import OggVorbisInfo
+from mutagen.oggvorbis import OggVorbis
 import string, sys
 
 
@@ -56,8 +56,8 @@ class AudioFile:
 				tags = ASF(fileName)
 				
 			if(fileext == ('ogg' or 'OGG')):
-				tags = OggVorbisInfo(fileName)
-				print tags.keys()
+				tags = OggVorbis(fileName)
+				#print tags
 		except:
 			for key in self.keyList:
 				self.tagsDict[key] = " "

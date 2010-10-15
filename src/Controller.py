@@ -35,7 +35,7 @@ class Controller:
         try:
             self.folder = self.model.getOldDir()
         except:
-            self.folder = "/home/" + pwd.getpwuid(os.getuid())[0] + "/"
+            self.folder = os.environ.get('HOME', None)
             
     def registerView(self,view):
         """Connects the View to the Controller"""
@@ -72,7 +72,7 @@ class Controller:
     def __reBuildViewTree(self):
         """Creates a new Model using the current folder"""
         self.model = Model.Model(self.folder, self.view.progressBar)
-        dir = "/home/" + pwd.getpwuid(os.getuid())[0] + "/.CometSound/"
+        dir = os.environ.get('HOME', None) + "/.CometSound/"
         if not os.path.exists(dir):
             os.makedirs(dir)
         cachefile = dir + "cache"
@@ -269,7 +269,7 @@ class Controller:
         """Handles the click on the Play/Pause button"""
         if self.view.actiongroup.get_action('Play/Stop').get_stock_id() == gtk.STOCK_MEDIA_PLAY:
             if len(self.playlist) > 0:
-                if not self.playerThread.is_alive():
+                if not self.playerThread.isStarted():
                     self.playerThread.setPlaylist(self.playlist)
                     self.playerThread.start()
                     self.playerThread.join(0.1)
@@ -303,7 +303,7 @@ class Controller:
                 n.show()
         else:
             winTitle = t['filename']
-            label = "File:\t" + winTitle 
+            label = "File:\t" + winTitle + "\n\n"
             self.view.label.set_text(label)
             self.view.set_title(winTitle)    
     
@@ -426,10 +426,14 @@ class PlayerThread(threading.Thread):
         self.playlist = playlist
         self.control = control
         self.playing = False
+        self.started = False
         self.trackNum = -1        
         self.__createPlayer()
         self.stopevent = threading.Event()
-
+    
+    def isStarted(self):
+        return self.started
+    
     def __createPlayer(self):
         """Creates and prepares the Gstreamer play bin"""
         self.player = gst.element_factory_make("playbin2", "player")
@@ -450,6 +454,7 @@ class PlayerThread(threading.Thread):
             
     def run(self):
         """Starts the thread"""
+        self.started = True
         self.control.view.slider.set_sensitive(True)
         self.next()
         while not self.stopevent.isSet():    

@@ -448,25 +448,29 @@ import os, locale, gettext, sys
 APP_NAME = "cometsound"
 
 def setLanguage():
-    #Get the local directory since we are not installing anything
-    local_path = os.path.realpath(os.path.dirname(sys.argv[0]))
-    # Init the list of languages to support
+    #language files path
+    localPath = os.path.realpath(os.path.dirname(sys.argv[0]))
+    listPath = localPath.split('/')
+    if listPath[1] == 'local':
+        langPath = '/usr/local/share/locale-langpack/'
+    else:
+        langPath = '/usr/share/locale-langpack/'    
     langs = []
     #Check the default locale
     lc, encoding = locale.getdefaultlocale()
     if (lc):
         #If we have a default, it's the first in the list
         langs = [lc]
-    # Now lets get all of the supported languages on the system
-    language = os.environ.get('LANGUAGE', None)
+    # Get supported languages on the system
+    language = os.environ.get('LANG', None)
     if (language):
         langs += language.split(":")
     langs += ["en_US", "it"]
     
-    gettext.bindtextdomain(APP_NAME, local_path)
+    gettext.bindtextdomain(APP_NAME, langPath)
     gettext.textdomain(APP_NAME)
     # Get the language to use
-    lang = gettext.translation(APP_NAME, local_path
+    lang = gettext.translation(APP_NAME, langPath
         , languages=langs, fallback = True)
     return lang.gettext
             
