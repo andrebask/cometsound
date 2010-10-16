@@ -126,6 +126,7 @@ class View(gtk.Window):
         self.label = gtk.Label('\n\n')
         self.label.set_justify(gtk.JUSTIFY_LEFT)
         self.label.set_padding(0, 5)
+        self.label.set_line_wrap(True)
         tl = gtk.ToolItem()
         tl.add(self.label)
         tl.set_expand(True)

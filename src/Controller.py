@@ -313,7 +313,7 @@ class Controller:
         """Updates the track label with the tags values"""
         t = self.extractTags(completefilename)
         if t['title'] != '' and t['title'] != ' ':
-            label = "Title:\t%s\nAlbum:\t%s\nArtist:\t%s" % (t['title'], t['album'], t['artist'])
+            label = "Title:\t\t%s\nAlbum:\t%s\nArtist:\t\t%s" % (t['title'][:50], t['album'][:50], t['artist'][:50])
             winTitle = "%s - %s - %s" % (t['title'], t['album'], t['artist'])
             self.view.label.set_text(label)
             self.view.set_title(winTitle)
@@ -327,7 +327,7 @@ class Controller:
         else:
             winTitle = t['filename']
             label = "File:\t" + winTitle + "\n\n"
-            self.view.label.set_text(label)
+            self.view.label.set_text(label[:50])
             self.view.set_title(winTitle)    
     
     def updatePlaylist(self):
