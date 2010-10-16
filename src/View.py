@@ -66,11 +66,12 @@ class View(gtk.Window):
 
         
         # Create actions
-        actiongroup.add_actions([('Quit', gtk.STOCK_QUIT, _('_Quit'), None, _('Quit the Program'), self.quit),
-                                 ('Open', gtk.STOCK_OPEN, _('_Open Folder...'), None, _('Open Media Folder'), self.control.openFolder),
+        actiongroup.add_actions([('Quit', gtk.STOCK_QUIT, _('_Quit'), None, _('Quit the program'), self.quit),
+                                 ('Open', gtk.STOCK_OPEN, _('_Open folder...'), None, _('Open media folder'), self.control.openFolder),
+                                 ('Preferences', gtk.STOCK_PREFERENCES, _('Preferences'), None, _('Change settings'), self.openPreferences),
                                  ('File', None, _('_File')),
                                  ('RadioBand', None, _('Fil_ters')),
-                                 ('Play/Stop', gtk.STOCK_MEDIA_PLAY, None, None, _('Play Selection'), self.control.playStopSelected),
+                                 ('Play/Stop', gtk.STOCK_MEDIA_PLAY, None, None, _('Play selection'), self.control.playStopSelected),
                                  ('Previous', gtk.STOCK_MEDIA_PREVIOUS, None, None, _('Previous'), self.control.previousTrack),
                                  ('Next', gtk.STOCK_MEDIA_NEXT, None, None, _('Next'), self.control.nextTrack),
                                  ('Help', None, _('_Help')),
@@ -94,6 +95,7 @@ class View(gtk.Window):
                                         <menubar name="MenuBar">
                                           <menu action="File">
                                             <menuitem action="Open"/>
+                                            <menuitem action="Preferences"/>
                                             <menuitem action="Quit"/>
                                           </menu>
                                           <menu action="RadioBand">
@@ -202,7 +204,8 @@ class View(gtk.Window):
         self.buttons.pack_start(clearB, False)
         self.buttons.pack_start(removeSelectedB, False)
         
-        self.filesTree = FilesFrame(self.model, self.control, self.formatDict)
+        self.columns = [_('Name'), '#', _('Title'), _('Artist'), _('Album'), _('Genre'), _('Year'), _('Add'), '']
+        self.filesTree = FilesFrame(self.model, self.control, self.formatDict, self.columns)
         self.playlistFrame = PlaylistFrame(self.control, [])
         
         self.framebox.add(self.filesTree)
@@ -219,6 +222,10 @@ class View(gtk.Window):
         self.vbox.pack_start(self.framebox, True)
         self.show_all()
         self.filesTree.setModel(self.model)
+        
+    
+    def openPreferences(self, o):
+        p = PreferencesDialog(self.columns, self.control)
         
     def getFormatDict(self):
         return self.formatDict     
@@ -268,15 +275,15 @@ class FilesFrame(gtk.Frame):
     
     
         
-    def __init__(self, model, control, formatDict):
+    def __init__(self, model, control, formatDict, columns):
         
-        self.columns = [_('Name'), '#', _('Title'), _('Artist'), _('Album'), _('Genre'), _('Year'), _('Add'), '']
+        
         
         gtk.Frame.__init__(self)
         self.listOfFiles = model.getAudioFileList()
         self.formatDict = formatDict
         self.control = control
-        
+        self.columns = columns
         #self.set_label("Files selection:")
         
         self.scroll = gtk.ScrolledWindow()
@@ -340,12 +347,17 @@ class FilesFrame(gtk.Frame):
                 tvcolumn.set_resizable(False)
                 tvcolumn.set_fixed_width(gtk.TREE_VIEW_COLUMN_FIXED)
                 cell.set_property('active', False)
-                cell.connect('toggled', self.control.toggle, self.treeStore)              
+                cell.connect('toggled', self.control.toggle, self.treeStore)
+                tvcolumn.set_visible(self.control.settings[column])              
             else:
                 cell = gtk.CellRendererText()
                 cell.set_padding(2, 0)
                 tvcolumn = gtk.TreeViewColumn(column)
                 self.treeview.append_column(tvcolumn)
+                try:
+                    tvcolumn.set_visible(self.control.settings[column])
+                except:  
+                    tvcolumn.set_visible(True)  
                 if column != '#':
                     tvcolumn.pack_start(cell, True)    
                     tvcolumn.add_attribute(cell, 'text', i)
@@ -366,7 +378,8 @@ class FilesFrame(gtk.Frame):
                 if column == _('Title'):
                     tvcolumn.set_sort_column_id(2)
                 if column == _('Artist'):
-                    tvcolumn.set_sort_column_id(3)    
+                    tvcolumn.set_sort_column_id(3) 
+                    #tvcolumn.set_visible(False)   
                 if column == _('Album'):
                     tvcolumn.set_sort_column_id(6)
                 if column == _('Genre'):
@@ -376,7 +389,16 @@ class FilesFrame(gtk.Frame):
                     tvcolumn.set_max_width(0)
                     tvcolumn.set_visible(False)
             i = i + 1
-      
+    
+    def setColumnsVisibility(self):
+        columns = self.treeview.get_columns()
+        for c in columns:
+            try:
+                c.set_visible(self.control.settings[c.get_title()])
+            except: 
+                #print sys.exc_info() 
+                c.set_visible(True)
+        
     def setModel(self, model):
         """Sets a new model to show"""
         self.listOfFiles = model.getAudioFileList()
@@ -434,7 +456,77 @@ class PlaylistFrame(gtk.Frame):
         self.treeview.enable_model_drag_dest(self.TARGETS, gtk.gdk.ACTION_DEFAULT)     
         self.treeview.connect("drag_data_get", self.control.drag)
         self.treeview.connect("drag_data_received", self.control.drop)
+
+class PreferencesDialog(gtk.Dialog):
     
+    def __init__(self, columns, control):
+        gtk.Window.__init__(self)
+        self.control = control
+        self.control.readSettings()
+        settings = self.control.settings
+        if settings == None:
+            settings = {'audiosink': 'autoaudiosink',
+                    '#': True,
+                     _('Title'): True,
+                     _('Artist'): True,
+                      _('Album'): True,
+                       _('Genre'): True,
+                        _('Year'): True,
+                         _('Add'): True
+                         } 
+            
+        self.set_title(_('CometSound preferences'))
+        sinks = ['Auto', 'ALSA', 'PulseAudio', 'OSS', 'Jack']
+        gstSinks = ['autoaudiosink', 'alsasink', 'pulsesink', 'osssink', 'jackaudiosink']
+        vbox = self.get_child()
+        audioLabel = gtk.Label()
+        audioLabel.set_alignment(0,0)
+        audioLabel.set_padding(0,6)
+        audioLabel.set_markup(_('<b>Audio output (Restart required)</b>'))
+        audioCombo = gtk.combo_box_new_text()
+        for s in sinks:
+            audioCombo.append_text(s)
+        audioCombo.set_active(gstSinks.index(settings['audiosink']))
+        
+        columnsLabel = gtk.Label()
+        columnsLabel.set_alignment(0,0)
+        columnsLabel.set_padding(0,6)
+        columnsLabel.set_markup(_('<b>Visible columns</b>'))
+        labels = dict()
+        cbox1 = gtk.VButtonBox() 
+        cbox1.set_layout(gtk.BUTTONBOX_START)
+        cbox2 = gtk.VButtonBox() 
+        cbox2.set_layout(gtk.BUTTONBOX_START)
+        hbox = gtk.HBox()
+        hbox.pack_start(cbox1)
+        hbox.pack_start(cbox2)
+        count = 0
+        for c in columns:
+            if c != '' and c != _('Name'):
+                cb = gtk.CheckButton(c)
+                labels[c] = cb
+                cb.set_active(settings[c])
+                if count % 2 == 0:
+                    cbox1.pack_start(cb)
+                else:
+                    cbox2.pack_start(cb)    
+                count+=1
+        vbox.pack_start(audioLabel)
+        vbox.pack_start(audioCombo)
+        vbox.pack_start(columnsLabel)
+        vbox.pack_start(hbox) 
+        self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)   
+        self.show_all()
+        response = self.run()
+        if response == -7 or response == -4:
+            newsettings = {'audiosink': gstSinks[audioCombo.get_active()]}
+            for c in columns:
+                if c != '' and c != _('Name'):
+                    newsettings[c] = labels[c].get_active()
+            self.control.writeSettings(newsettings)
+            self.control.refreshColumnsVisibility()
+            self.hide()
+        
 import AF, cerealizer
 import mutagen.asf as mtgasf
     

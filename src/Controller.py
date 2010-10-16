@@ -29,6 +29,7 @@ class Controller:
     def __init__(self, model):
         self.model = model
         self.playlist = []
+        self.readSettings()
         self.playerThread = PlayerThread(self.playlist, self)
         self.position = 0
         self.duration = 0
@@ -40,6 +41,27 @@ class Controller:
     def registerView(self,view):
         """Connects the View to the Controller"""
         self.view = view
+    
+    def writeSettings(self, settings):
+        dir = os.environ.get('HOME', None) + "/.CometSound/"
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        cachefile = dir + "settings"
+        FILE = open(cachefile,'w')
+        cerealizer.dump(settings, FILE)
+        FILE.close()
+        self.settings = settings
+        
+    def readSettings(self):
+        try: 
+            FILE = open(os.environ.get('HOME', None) + "/.CometSound/settings",'rb')
+            self.settings = cerealizer.load(FILE)
+            FILE.close()
+        except:
+            self.settings = None
+    
+    def refreshColumnsVisibility(self):
+        self.view.filesTree.setColumnsVisibility()
         
     def openFolder(self, o):
         """Creates the dialog window that permits to choose the folder to scan"""
@@ -146,9 +168,10 @@ class Controller:
             try:
                 path = str(i)
                 if rowModel[path][8] != '':
-                    rowModel[path][7] = add 
-                    toggled = add
-                    self.__addRemove(toggled, rowModel[path][8])
+                    if add != rowModel[path][7]:
+                        toggled = add
+                        rowModel[path][7] = add 
+                        self.__addRemove(toggled, rowModel[path][8])
                 elif rowModel[path][7] != add:
                     self.toggle(None, path, rowModel)  
                 i+=1
@@ -156,7 +179,7 @@ class Controller:
                 rowexists = False
                 #print sys.exc_info()                     
             if not rowexists:
-                break
+                break    
         self.updatePlaylist()
         
     def __addRemove(self, toggled, cfname):
@@ -309,7 +332,7 @@ class Controller:
     
     def updatePlaylist(self):
         """Refreshes playlist view"""
-        self.view.playlistFrame.listStore.clear()        
+        self.view.playlistFrame.listStore.clear()       
         for track in self.playlist:
             
             if self.playlist.index(track) == self.playerThread.trackNum:
@@ -325,7 +348,7 @@ class Controller:
             else:
                 f = self.extractTags(track)['filename']
                 self.view.playlistFrame.listStore.append([icon, f])        
-    
+        
     def clearPlaylist(self, widget, data=None):
         """Removes all the files from the playlist"""
         #self.addAll(None, False) #slow
@@ -425,6 +448,7 @@ class PlayerThread(threading.Thread):
         threading.Thread.__init__(self)
         self.playlist = playlist
         self.control = control
+        self.player = None
         self.playing = False
         self.started = False
         self.trackNum = -1        
@@ -437,11 +461,15 @@ class PlayerThread(threading.Thread):
     def __createPlayer(self):
         """Creates and prepares the Gstreamer play bin"""
         self.player = gst.element_factory_make("playbin2", "player")
-        sink = gst.element_factory_make("alsasink", "alsa-output")
+        try:
+            sink = gst.element_factory_make(self.control.settings['audiosink'], "output")
+        except:
+            print self.control.settings['audiosink'] + ' not found, using gstreamer default sink'
+            sink = gst.element_factory_make('autoaudiosink', "output")    
         self.player.set_property("audio-sink", sink)
         self.bus = self.player.get_bus()
         self.bus.add_signal_watch()
-        self.bus.connect("message", self.on_message)
+        self.bus.connect("message", self.on_message)        
         
     def setPlaylist(self, playlist):
         self.playlist = playlist
