@@ -464,7 +464,7 @@ class PlayerThread(threading.Thread):
         try:
             sink = gst.element_factory_make(self.control.settings['audiosink'], "output")
         except:
-            print self.control.settings['audiosink'] + ' not found, using gstreamer default sink'
+            print 'Audio output not found, using gstreamer default sink'
             sink = gst.element_factory_make('autoaudiosink', "output")    
         self.player.set_property("audio-sink", sink)
         self.bus = self.player.get_bus()

@@ -25,7 +25,7 @@ pygtk.require('2.0')
 
 class View(gtk.Window):
     
-    version = '0.1'
+    version = '0.1.1'
     formatDict = {'.mp3': True, '.wma': True, '.ogg': True}
         
     def __init__(self, model, control):
@@ -348,17 +348,12 @@ class FilesFrame(gtk.Frame):
                 tvcolumn.set_resizable(False)
                 tvcolumn.set_fixed_width(gtk.TREE_VIEW_COLUMN_FIXED)
                 cell.set_property('active', False)
-                cell.connect('toggled', self.control.toggle, self.treeStore)
-                tvcolumn.set_visible(self.control.settings[column])              
+                cell.connect('toggled', self.control.toggle, self.treeStore)          
             else:
                 cell = gtk.CellRendererText()
                 cell.set_padding(2, 0)
                 tvcolumn = gtk.TreeViewColumn(column)
-                self.treeview.append_column(tvcolumn)
-                try:
-                    tvcolumn.set_visible(self.control.settings[column])
-                except:  
-                    tvcolumn.set_visible(True)  
+                self.treeview.append_column(tvcolumn)  
                 if column != '#':
                     tvcolumn.pack_start(cell, True)    
                     tvcolumn.add_attribute(cell, 'text', i)
@@ -390,7 +385,8 @@ class FilesFrame(gtk.Frame):
                     tvcolumn.set_max_width(0)
                     tvcolumn.set_visible(False)
             i = i + 1
-    
+        self.setColumnsVisibility()
+        
     def setColumnsVisibility(self):
         columns = self.treeview.get_columns()
         for c in columns:
@@ -462,6 +458,7 @@ class PreferencesDialog(gtk.Dialog):
     
     def __init__(self, columns, control):
         gtk.Window.__init__(self)
+        self.set_size_request(300,250)
         self.control = control
         self.control.readSettings()
         settings = self.control.settings
