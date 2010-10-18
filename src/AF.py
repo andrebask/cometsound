@@ -26,21 +26,21 @@ from mutagen.oggvorbis import OggVorbis
 import string, sys
 
 
+fname = "fileName"	
+keyList = ["title", "artist", "album", "genre", "year", "num"]
+formatDict = dict()
+formatDict['mp3'] = ["title", "artist", "album", "genre", "date", "tracknumber"]
+formatDict['ogg'] = ["title", "artist", "album", "genre", "year", "tracknumber"]
+formatDict['wma'] = ["Title", "Author", "WM/AlbumTitle", "WM/Genre", "WM/Year", "WM/TrackNumber"]
+
 class AudioFile:
 	"""Data structure that represents an audio file,
 	   it reads and stores tags from the file"""
-		
-	fname = "fileName"	
-	keyList = ["title", "artist", "album", "genre", "year", "num"]
-	formatDict = dict()
-	formatDict['mp3'] = ["title", "artist", "album", "genre", "date", "tracknumber"]
-	formatDict['ogg'] = ["title", "artist", "album", "genre", "year", "tracknumber"]
-	formatDict['wma'] = ["Title", "Author", "WM/AlbumTitle", "WM/Genre", "WM/Year", "WM/TrackNumber"]
 
 	def __init__(self, directory, fileName):
 		"""Builds the audio file structure from the file system path"""
 		self.tagsDict = dict()
-		self.tagsDict[self.fname] = [fileName]
+		self.tagsDict[fname] = [fileName]
 		self.directoryName = directory + "/"
 		
 		self.__readAudioFile(directory + "/" + fileName)	
@@ -63,8 +63,8 @@ class AudioFile:
 				self.tagsDict[key] = " "
 			#print sys.exc_info()	
 		else:
-			list = [(key, keyTag) for key in self.keyList for keyTag in self.formatDict[string.lower(fileext)]
-					 if self.keyList.index(key) == self.formatDict[string.lower(fileext)].index(keyTag)]
+			list = [(key, keyTag) for key in keyList for keyTag in formatDict[string.lower(fileext)]
+					 if keyList.index(key) == formatDict[string.lower(fileext)].index(keyTag)]
 			for couple in list:
 				try:
 					self.tagsDict[couple[0]] = tags[couple[1]]
@@ -75,13 +75,13 @@ class AudioFile:
 		"""Returns a list with the tag values:
 		   file name, title, artist, album, genre, year, track number"""
 		return [
-                self.getTagValue(self.fname),
-                self.getTagValue(self.keyList[5]),
-                self.getTagValue(self.keyList[0]),
-                self.getTagValue(self.keyList[1]),
-                self.getTagValue(self.keyList[2]),
-                self.getTagValue(self.keyList[3]),
-                self.getTagValue(self.keyList[4]),
+                self.getTagValue(fname),
+                self.getTagValue(keyList[5]),
+                self.getTagValue(keyList[0]),
+                self.getTagValue(keyList[1]),
+                self.getTagValue(keyList[2]),
+                self.getTagValue(keyList[3]),
+                self.getTagValue(keyList[4]),
                 ]
 		
 	

@@ -20,7 +20,7 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, stat, AF, os, string, commands, pwd, cerealizer
+import gtk, stat, AF, os, string, commands, cerealizer
 
 class Model:
     """Data structure that represents the file system tree"""
@@ -43,7 +43,7 @@ class Model:
         self.directory = directory   
         if self.directory == '':  
             try: 
-                FILE = open(os.environ.get('HOME', None) + "/.CometSound/cache",'rb')
+                FILE = open(os.path.join(os.environ.get('HOME', None) , '.CometSound' , 'cache'), 'rb')
                 self.audioFileList = cerealizer.load(FILE)
                 FILE.close()
             except:
@@ -82,11 +82,11 @@ class Model:
                 except:
                     print "error reading " + directory + '/' + fileName
                     continue
-                if string.lower(fileName[-4:]) == "." + 'mp3':
+                if string.lower(fileName[-4:]) == '.mp3':
                     list.append(AF.AudioFile(directory, fileName))
-                elif string.lower(fileName[-4:]) == "." + 'wma':
+                elif string.lower(fileName[-4:]) == '.wma':
                     list.append(AF.AudioFile(directory, fileName))
-                elif string.lower(fileName[-4:]) == "." + 'ogg':
+                elif string.lower(fileName[-4:]) == '.ogg':
                     list.append(AF.AudioFile(directory, fileName))
                 elif stat.S_ISDIR(filestat.st_mode):
                     #print filestat.st_mtime

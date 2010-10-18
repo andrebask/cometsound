@@ -23,9 +23,11 @@
 import Model, Controller, gtk, gobject, string, pygtk, SortFunctions as SF
 pygtk.require('2.0')
 
+version = '0.1.1'
+
 class View(gtk.Window):
     
-    version = '0.1.1'
+    
     formatDict = {'.mp3': True, '.wma': True, '.ogg': True}
         
     def __init__(self, model, control):
@@ -251,16 +253,8 @@ class View(gtk.Window):
             self.framebox.set_position(int(size[1] * 1.2))
     
     def showAboutDialog(self, o):
-        about = gtk.AboutDialog()
-        about.set_name('CometSound')    
-        about.set_version(self.version)
-        about.set_copyright(u'Copyright \u00A9 2010 Andrea Bernardini')
-        about.set_website('https://launchpad.net/cometsound')
-        pix = self.icon.get_pixbuf().scale_simple(60, 60, gtk.gdk.INTERP_BILINEAR)
-        about.set_logo(pix)
-        response = about.run()
-        if response == -6:
-            about.hide()
+        ad = AboutDialog(self.icon)
+        
             
     def quit(self, o):
         self.destroy()
@@ -270,6 +264,20 @@ class View(gtk.Window):
         if self.control.playerThread.isAlive():
             self.control.playerThread.terminate()    
         gtk.main_quit()
+
+class AboutDialog(gtk.AboutDialog):
+    
+    def __init__(self, icon):  
+        gtk.AboutDialog.__init__(self)
+        self.set_name('CometSound')    
+        self.set_version(version)
+        self.set_copyright(u'Copyright \u00A9 2010 Andrea Bernardini')
+        self.set_website('https://launchpad.net/cometsound')
+        pix = icon.get_pixbuf().scale_simple(60, 60, gtk.gdk.INTERP_BILINEAR)
+        self.set_logo(pix)
+        response = self.run()
+        if response == -6 or response == -4:
+            self.hide()
         
 class FilesFrame(gtk.Frame):
     """Gtk Frame modified to store a treeview that shows all the audio files inside the selected folder"""

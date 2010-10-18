@@ -20,11 +20,12 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, os, pwd, AF, Model, gst, threading, gobject, pynotify, cerealizer, random
+import gtk, os, AF, Model, gst, threading, gobject, pynotify, cerealizer, random
 
 class Controller:
     """This Class Handles the interactions between the GUI(View) and the Model"""
     folder = ''
+    cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound") 
     
     def __init__(self, model):
         self.model = model
@@ -43,10 +44,10 @@ class Controller:
         self.view = view
     
     def writeSettings(self, settings):
-        dir = os.environ.get('HOME', None) + "/.CometSound/"
+        dir = self.cacheDir
         if not os.path.exists(dir):
             os.makedirs(dir)
-        cachefile = dir + "settings"
+        cachefile = os.path.join(dir, 'settings')
         FILE = open(cachefile,'w')
         cerealizer.dump(settings, FILE)
         FILE.close()
@@ -54,10 +55,11 @@ class Controller:
         
     def readSettings(self):
         try: 
-            FILE = open(os.environ.get('HOME', None) + "/.CometSound/settings",'rb')
+            FILE = open(os.path.join(self.cacheDir, 'settings'),'rb')
             self.settings = cerealizer.load(FILE)
             FILE.close()
         except:
+            #print sys.exc_info()
             self.settings = None
     
     def refreshColumnsVisibility(self):
@@ -94,10 +96,10 @@ class Controller:
     def __reBuildViewTree(self):
         """Creates a new Model using the current folder"""
         self.model = Model.Model(self.folder, self.view.progressBar)
-        dir = os.environ.get('HOME', None) + "/.CometSound/"
+        dir = self.cacheDir
         if not os.path.exists(dir):
             os.makedirs(dir)
-        cachefile = dir + "cache"
+        cachefile = os.path.join(dir, "cache")
         FILE = open(cachefile,'w')
         cerealizer.dump(self.model.getAudioFileList(), FILE)
         FILE.close()
@@ -332,9 +334,9 @@ class Controller:
     
     def updatePlaylist(self):
         """Refreshes playlist view"""
-        self.view.playlistFrame.listStore.clear()       
+        self.view.playlistFrame.listStore.clear() 
+        append = self.view.playlistFrame.listStore.append      
         for track in self.playlist:
-            
             if self.playlist.index(track) == self.playerThread.trackNum:
                 if self.playerThread.playing:
                     icon = gtk.STOCK_MEDIA_PLAY
@@ -344,10 +346,10 @@ class Controller:
                 icon = None        
             t = self.extractTags(track)['title']
             if t != '' and t != ' ':
-                self.view.playlistFrame.listStore.append([icon, t])             
+                append([icon, t])             
             else:
                 f = self.extractTags(track)['filename']
-                self.view.playlistFrame.listStore.append([icon, f])        
+                append([icon, f])        
         
     def clearPlaylist(self, widget, data=None):
         """Removes all the files from the playlist"""
