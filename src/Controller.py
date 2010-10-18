@@ -317,7 +317,7 @@ class Controller:
             winTitle = "%s - %s - %s" % (t['title'], t['album'], t['artist'])
             self.view.label.set_text(label)
             self.view.set_title(winTitle)
-            tooltip = label + "\nYear:\t%s\nGenre:\t%s\nNum:\t%s" % (t['year'], t['genre'], t['num'])
+            tooltip = label + "\nYear:\t\t%s\nGenre:\t\t%s\nNum:\t\t%s" % (t['year'], t['genre'], t['num'])
             self.view.label.set_tooltip_text(tooltip)
             if notify:
                 pynotify.init('label')

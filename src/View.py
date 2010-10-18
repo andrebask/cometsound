@@ -393,8 +393,8 @@ class FilesFrame(gtk.Frame):
             try:
                 c.set_visible(self.control.settings[c.get_title()])
             except: 
-                #print sys.exc_info() 
-                c.set_visible(True)
+                if c != '' : 
+                    c.set_visible(True)
         
     def setModel(self, model):
         """Sets a new model to show"""
