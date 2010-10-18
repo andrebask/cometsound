@@ -23,6 +23,7 @@
 from mutagen.easyid3 import EasyID3
 from mutagen.asf import ASF
 from mutagen.oggvorbis import OggVorbis
+from mutagen.flac import FLAC
 import string, sys
 
 
@@ -32,6 +33,7 @@ formatDict = dict()
 formatDict['mp3'] = ["title", "artist", "album", "genre", "date", "tracknumber"]
 formatDict['ogg'] = ["title", "artist", "album", "genre", "year", "tracknumber"]
 formatDict['wma'] = ["Title", "Author", "WM/AlbumTitle", "WM/Genre", "WM/Year", "WM/TrackNumber"]
+formatDict['flac'] = ["title", "artist", "album", "genre", "date", "tracknumber"]
 
 class AudioFile:
 	"""Data structure that represents an audio file,
@@ -47,17 +49,19 @@ class AudioFile:
 			
 	def __readAudioFile(self, fileName):
 		"""Detects the file extension, reads and stores tags""" 
-		fileext = fileName[-3:]
+		fileext = fileName.split('.')[-1:][0]
 		try:
 			if(fileext == ('mp3' or 'MP3')):
 				tags = EasyID3(fileName)
 				
-			if(fileext == ('wma' or 'WMA')):
+			elif(fileext == ('wma' or 'WMA')):
 				tags = ASF(fileName)
 				
-			if(fileext == ('ogg' or 'OGG')):
+			elif(fileext == ('ogg' or 'OGG')):
 				tags = OggVorbis(fileName)
 				#print tags
+			elif(fileext == ('flac' or 'FLAC')):
+				tags = FLAC(fileName)	
 		except:
 			for key in self.keyList:
 				self.tagsDict[key] = " "

@@ -28,7 +28,7 @@ version = '0.1.1'
 class View(gtk.Window):
     
     
-    formatDict = {'.mp3': True, '.wma': True, '.ogg': True}
+    formatDict = {'.mp3': True, '.wma': True, '.ogg': True, 'flac': True}
         
     def __init__(self, model, control):
         
@@ -87,6 +87,8 @@ class View(gtk.Window):
                                         'Windows Media Audio', self.control.toggleWma, self.formatDict[".wma"]),
                                        ('Ogg', None, 'O_gg', '<Control>g',
                                         'Ogg Vorbis', self.control.toggleOgg, self.formatDict[".ogg"]),
+                                       ('Flac', None, '_Flac', '<Control>f',
+                                        'Ogg Vorbis', self.control.toggleFlac, self.formatDict["flac"])
                                        ], None)
 
         # Add the actiongroup to the uimanager
@@ -104,6 +106,7 @@ class View(gtk.Window):
                                             <menuitem action="Mp3"/>
                                             <menuitem action="Wma"/>
                                             <menuitem action="Ogg"/>
+                                            <menuitem action="Flac"/>
                                           </menu>
                                           <menu action="Help">
                                             <menuitem action="About"/>

@@ -290,6 +290,12 @@ class Controller:
         self.__refreshViewTree()
         return
     
+    def toggleFlac(self, data):
+        """Enables/disables Ogg filtering"""
+        self.view.getFormatDict()['flac'] = self.view.actiongroup.get_action('Flac').get_active()
+        self.__refreshViewTree()
+        return
+    
     def playStopSelected(self, o):
         """Handles the click on the Play/Pause button"""
         if self.view.actiongroup.get_action('Play/Stop').get_stock_id() == gtk.STOCK_MEDIA_PLAY:

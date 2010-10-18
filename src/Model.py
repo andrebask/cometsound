@@ -88,6 +88,8 @@ class Model:
                     list.append(AF.AudioFile(directory, fileName))
                 elif string.lower(fileName[-4:]) == '.ogg':
                     list.append(AF.AudioFile(directory, fileName))
+                elif string.lower(fileName[-5:]) == '.flac':
+                    list.append(AF.AudioFile(directory, fileName))    
                 elif stat.S_ISDIR(filestat.st_mode):
                     #print filestat.st_mtime
                     l = self.__searchFiles(directory + '/' + fileName)
