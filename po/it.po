@@ -1,0 +1,146 @@
+# Italian translation for cometsound
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the cometsound package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: cometsound\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-10-16 23:50+0200\n"
+"PO-Revision-Date: 2010-10-17 14:38+0000\n"
+"Last-Translator: Andrea Bernardini <Unknown>\n"
+"Language-Team: Italian <it@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-10-19 05:22+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: View.py:69
+msgid "_Quit"
+msgstr "_Esci"
+
+#: View.py:69
+msgid "Quit the program"
+msgstr "Esci dal programma"
+
+#: View.py:70
+msgid "_Open folder..."
+msgstr "Apri Cartella..."
+
+#: View.py:70
+msgid "Open media folder"
+msgstr "Apri cartella multimediale"
+
+#: View.py:71
+msgid "Preferences"
+msgstr "Preferenze"
+
+#: View.py:71
+msgid "Change settings"
+msgstr "Cambia le impostazioni"
+
+#: View.py:72
+msgid "_File"
+msgstr "_File"
+
+#: View.py:73
+msgid "Fil_ters"
+msgstr "Filtri"
+
+#: View.py:74
+msgid "Play selection"
+msgstr "Riproduci la selezione"
+
+#: View.py:75
+msgid "Previous"
+msgstr "Precedente"
+
+#: View.py:76
+msgid "Next"
+msgstr "Successivo"
+
+#: View.py:77
+msgid "_Help"
+msgstr "Aiuto"
+
+#: View.py:78
+msgid "About CometSound"
+msgstr "Informazioni su CometSound"
+
+#: View.py:166
+msgid "Clear Playlist"
+msgstr "Svuota scaletta"
+
+#: View.py:172
+msgid "Select All"
+msgstr "Seleziona tutto"
+
+#: View.py:178
+msgid "Deselect All"
+msgstr "Deseleziona tutto"
+
+#: View.py:184
+msgid "Refresh"
+msgstr "Ricarica"
+
+#: View.py:190
+msgid "Remove Selection"
+msgstr "Rimuovi selezione"
+
+#: View.py:198
+msgid "Shuffle"
+msgstr "Mischia"
+
+#: View.py:208 View.py:300 View.py:375 View.py:506 View.py:525
+msgid "Name"
+msgstr "Nome"
+
+#: View.py:208 View.py:379 View.py:471
+msgid "Title"
+msgstr "Titolo"
+
+#: View.py:208 View.py:381 View.py:472
+msgid "Artist"
+msgstr "Artista"
+
+#: View.py:208 View.py:384 View.py:473
+msgid "Album"
+msgstr "Album"
+
+#: View.py:208 View.py:386 View.py:474
+msgid "Genre"
+msgstr "Genere"
+
+#: View.py:208 View.py:302 View.py:377 View.py:475
+msgid "Year"
+msgstr "Anno"
+
+#: View.py:208 View.py:342 View.py:476
+msgid "Add"
+msgstr "Aggiungi"
+
+#: View.py:237
+msgid "Play"
+msgstr "Riproduci"
+
+#: View.py:242
+msgid "Pause"
+msgstr "Pausa"
+
+#: View.py:442
+msgid "Playlist"
+msgstr "Scaletta"
+
+#: View.py:479
+msgid "CometSound preferences"
+msgstr "Preferenze di CometSound"
+
+#: View.py:486
+msgid "<b>Audio output (Restart required)</b>"
+msgstr "<b>Uscita audio (Richiede riavvio)</b>"
+
+#: View.py:495
+msgid "<b>Visible columns</b>"
+msgstr "<b>Colonne visibili</b>"
