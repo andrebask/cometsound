@@ -43,7 +43,7 @@ class PreferencesDialog(gtk.Dialog):
     
     def __init__(self, columns, control):
         gtk.Window.__init__(self)
-        self.set_size_request(300,250)
+        self.set_size_request(300,320)
         self.control = control
         self.control.readSettings()
         settings = self.control.settings
@@ -94,18 +94,33 @@ class PreferencesDialog(gtk.Dialog):
                 else:
                     cbox2.pack_start(cb)    
                 count+=1
+                
+        statusLabel = gtk.Label()
+        statusLabel.set_alignment(0,0)
+        statusLabel.set_padding(0,6)
+        statusLabel.set_markup(_('<b>Status Icon</b>'))
+        statusCombo = gtk.combo_box_new_text()
+        statusCombo.append_text(_('Enable status icon with track\'s informations'))
+        statusCombo.append_text(_('Enable status icon'))
+        statusCombo.append_text(_('Disable status icon'))
+        statusCombo.set_active(settings['statusicon'])
+                
         vbox.pack_start(audioLabel)
         vbox.pack_start(audioCombo)
         vbox.pack_start(columnsLabel)
         vbox.pack_start(hbox) 
+        vbox.pack_start(statusLabel)
+        vbox.pack_start(statusCombo)
         self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)   
         self.show_all()
         response = self.run()
         if response == -7 or response == -4:
             newsettings = {'audiosink': gstSinks[audioCombo.get_active()]}
+            newsettings['statusicon'] = statusCombo.get_active()
             for c in columns:
                 if c != '' and c != _('Name'):
                     newsettings[c] = labels[c].get_active()
             self.control.writeSettings(newsettings)
             self.control.refreshColumnsVisibility()
+            self.control.refreshStatusIcon()
             self.hide()            

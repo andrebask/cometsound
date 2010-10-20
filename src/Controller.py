@@ -65,6 +65,9 @@ class Controller:
     
     def refreshColumnsVisibility(self):
         self.view.filesTree.setColumnsVisibility()
+    
+    def refreshStatusIcon(self):
+        self.view.setStatusIcon()
         
     def openFolder(self, o):
         """Creates the dialog window that permits to choose the folder to scan"""

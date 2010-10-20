@@ -50,9 +50,11 @@ class View(gtk.Window):
         self.set_position(gtk.WIN_POS_CENTER)
         self.icon = gtk.Image()
         self.icon.set_from_file("icon.svg")
-        pix = self.icon.get_pixbuf().scale_simple(60, 60, gtk.gdk.INTERP_BILINEAR)
-        self.set_icon(pix)
-        self.setStatusIcon(pix)
+        self.pix = self.icon.get_pixbuf().scale_simple(60, 60, gtk.gdk.INTERP_BILINEAR)
+        self.set_icon(self.pix)
+        self.tray = None
+        if self.control.settings['statusicon'] == (0 or 1):
+            self.setStatusIcon()
         
         self.vbox = gtk.VBox()
         self.add(self.vbox)       
@@ -235,12 +237,16 @@ class View(gtk.Window):
         self.show_all()
         self.filesTree.setModel(self.model)
     
-    def setStatusIcon(self, pix):
-        self.tray = gtk.StatusIcon()
-        pix = pix.scale_simple(20, 20, gtk.gdk.INTERP_BILINEAR)
-        self.tray.set_from_pixbuf(pix)
-        self.tray.connect('popup-menu', self.openMenu) 
-        self.tray.connect('activate', self.minimize) 
+    def setStatusIcon(self):
+        pix = self.pix
+        if self.tray != None:
+            self.tray.set_visible(False)
+        if self.control.settings['statusicon'] != 2:    
+            self.tray = gtk.StatusIcon()
+            pix = pix.scale_simple(20, 20, gtk.gdk.INTERP_BILINEAR)
+            self.tray.set_from_pixbuf(pix)
+            self.tray.connect('popup-menu', self.openMenu) 
+            self.tray.connect('activate', self.minimize) 
     
     def minimize(self, obj = None):
         if self.get_visible():
@@ -251,7 +257,7 @@ class View(gtk.Window):
     def openMenu(self, icon, event_button, event_time):    
         statusMenu = gtk.Menu()
         
-        if self.label.get_text() != '\n\n':
+        if self.label.get_text() != '\n\n' and self.control.settings['statusicon'] == 0:
             label = gtk.MenuItem(self.label.get_text())
             label.show()
             statusMenu.append(label)
