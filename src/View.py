@@ -20,7 +20,7 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, gobject, string, pygtk
+import gtk, pygtk
 pygtk.require('2.0')
 from FileBrowser import FilesFrame
 from Dialogs import AboutDialog, PreferencesDialog
@@ -52,7 +52,8 @@ class View(gtk.Window):
         self.icon.set_from_file("icon.svg")
         pix = self.icon.get_pixbuf().scale_simple(60, 60, gtk.gdk.INTERP_BILINEAR)
         self.set_icon(pix)
-
+        self.setStatusIcon(pix)
+        
         self.vbox = gtk.VBox()
         self.add(self.vbox)       
         
@@ -233,9 +234,57 @@ class View(gtk.Window):
         self.vbox.pack_start(self.framebox, True)
         self.show_all()
         self.filesTree.setModel(self.model)
-        
     
-    def openPreferences(self, o):
+    def setStatusIcon(self, pix):
+        self.tray = gtk.StatusIcon()
+        pix = pix.scale_simple(20, 20, gtk.gdk.INTERP_BILINEAR)
+        self.tray.set_from_pixbuf(pix)
+        self.tray.connect('popup-menu', self.openMenu) 
+        self.tray.connect('activate', self.minimize) 
+    
+    def minimize(self, obj = None):
+        if self.get_visible():
+            self.hide()
+        else:
+            self.show()
+        
+    def openMenu(self, icon, event_button, event_time):    
+        statusMenu = gtk.Menu()
+        
+        if self.label.get_text() != '\n\n':
+            label = gtk.MenuItem(self.label.get_text())
+            label.show()
+            statusMenu.append(label)
+            
+            sep = gtk.SeparatorMenuItem()
+            sep.show()
+            statusMenu.append(sep)
+        
+        statusPlay = gtk.CheckMenuItem(_('Play'))
+        statusPlay.set_active(self.control.playerThread.playing)
+        statusPlay.show()
+        statusMenu.append(statusPlay)
+        statusPlay.connect('toggled', self.control.playStopSelected)
+        
+        next = gtk.MenuItem(_('Next'))
+        next.show()
+        statusMenu.append(next)
+        next.connect('activate', self.control.nextTrack)
+        
+        previous = gtk.MenuItem(_('Previous'))
+        previous.show()
+        statusMenu.append(previous)
+        previous.connect('activate', self.control.previousTrack)
+        
+        quit = gtk.MenuItem(_('Quit'))
+        quit.show()
+        statusMenu.append(quit)
+        quit.connect('activate', self.quit)
+        
+        statusMenu.popup(None, None, gtk.status_icon_position_menu,
+                   event_button, event_time, self.tray)
+        
+    def openPreferences(self, obj = None):
         p = PreferencesDialog(self.columns, self.control)
         
     def getFormatDict(self):
@@ -244,13 +293,13 @@ class View(gtk.Window):
     def setButtonPlay(self):
         """Sets the button to "play" during playing"""
         self.actiongroup.get_action('Play/Stop').set_stock_id(gtk.STOCK_MEDIA_PLAY)
-        self.actiongroup.get_action('Play/Stop').set_tooltip(_('Play'))
-    
+        self.actiongroup.get_action('Play/Stop').set_tooltip(_('Play'))    
+        
     def setButtonPause(self):
         """Sets the button to "pause" """
         self.actiongroup.get_action('Play/Stop').set_stock_id(gtk.STOCK_MEDIA_PAUSE)
         self.actiongroup.get_action('Play/Stop').set_tooltip(_('Pause'))
-    
+        
     def fixFrameboxPos(self, widget, event):
         """Fixes the position of the HPaned separator when window's size changes"""
         self.maximized = not self.maximized
@@ -264,7 +313,7 @@ class View(gtk.Window):
         ad = AboutDialog(self.icon, version)
         
             
-    def quit(self, o):
+    def quit(self, obj = None):
         self.destroy()
         
     def destroy(self):

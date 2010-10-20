@@ -297,7 +297,7 @@ class Controller:
         self.__refreshViewTree()
         return
     
-    def playStopSelected(self, o):
+    def playStopSelected(self, obj = None):
         """Handles the click on the Play/Pause button"""
         if self.view.actiongroup.get_action('Play/Stop').get_stock_id() == gtk.STOCK_MEDIA_PLAY:
             if len(self.playlist) > 0:
@@ -310,11 +310,11 @@ class Controller:
         elif self.view.actiongroup.get_action('Play/Stop').get_stock_id() == gtk.STOCK_MEDIA_PAUSE: 
             self.playerThread.pause()            
      
-    def nextTrack(self, o):
+    def nextTrack(self, obj = None):
         """Handles the click on the Next button"""
         self.playerThread.next()
      
-    def previousTrack(self, o):
+    def previousTrack(self, obj = None):
         """Handles the click on the Previous button"""
         self.playerThread.previous()
         
