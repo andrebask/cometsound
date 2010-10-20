@@ -43,6 +43,7 @@ class FilesFrame(gtk.Frame):
         s = gobject.TYPE_STRING
         g = gobject.TYPE_BOOLEAN
         self.treeStore = gtk.TreeStore(s, s, s, s, s, s, s, g, s)
+        self.listStore = gtk.ListStore(s, s, s, s, s, s, s, g, s)
 
         self.createTree(None, self.listOfFiles)
         # create and sort the TreeView using treeStore
@@ -67,7 +68,9 @@ class FilesFrame(gtk.Frame):
         for f in filelist:
             if type(f).__name__ == 'instance':
                 if self.formatDict[string.lower(f.getTagValues()[0][-4:])] == True:
-                    self.treeStore.append(parent, f.getTagValues() + [None] + [f.getDir() + f.getTagValues()[0]])
+                    data = f.getTagValues() + [None] + [f.getDir() + f.getTagValues()[0]]
+                    self.treeStore.append(parent, data)
+                    self.listStore.append(data)
             elif type(f).__name__ == 'list':
                 if not self.__isEmpty(f):
                     parent2 = self.treeStore.append(parent, [f[0], '', '', '', '', '', '', '', ''])
@@ -149,5 +152,6 @@ class FilesFrame(gtk.Frame):
         """Sets a new model to show"""
         self.listOfFiles = model.getAudioFileList()
         self.treeStore.clear()
+        self.listStore.clear()
         self.createTree(None, self.listOfFiles)
      

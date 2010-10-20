@@ -63,7 +63,7 @@ class AudioFile:
 			elif(fileext == ('flac' or 'FLAC')):
 				tags = FLAC(fileName)	
 		except:
-			for key in self.keyList:
+			for key in keyList:
 				self.tagsDict[key] = " "
 			#print sys.exc_info()	
 		else:

@@ -49,6 +49,7 @@ class PreferencesDialog(gtk.Dialog):
         settings = self.control.settings
         if settings == None:
             settings = {'audiosink': 'autoaudiosink',
+                    'statusicon': 0,    
                     '#': True,
                      _('Title'): True,
                      _('Artist'): True,

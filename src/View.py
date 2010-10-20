@@ -25,6 +25,7 @@ pygtk.require('2.0')
 from FileBrowser import FilesFrame
 from Dialogs import AboutDialog, PreferencesDialog
 from Playlist import PlaylistFrame
+from SearchBox import SearchBox
 import CometSound
 
 version = '0.1.1'
@@ -53,9 +54,34 @@ class View(gtk.Window):
         self.pix = self.icon.get_pixbuf().scale_simple(60, 60, gtk.gdk.INTERP_BILINEAR)
         self.set_icon(self.pix)
         self.tray = None
-        if self.control.settings['statusicon'] == (0 or 1):
-            self.setStatusIcon()
+        self.setStatusIcon()
         
+        self.createPrimaryToolbar()
+        
+        self.createSlider()
+        
+        self.columns = [_('Name'), '#', _('Title'), _('Artist'), _('Album'), _('Genre'), _('Year'), _('Add'), '']
+        self.filesTree = FilesFrame(self.model, self.control, self.formatDict, self.columns)
+        self.playlistFrame = PlaylistFrame(self.control, [])
+        
+        self.createSecondaryToolbar()
+        
+        self.framebox.add(self.filesTree)
+        self.framebox.add(self.playlistFrame)
+        
+        # Create a progress bar to show during the model creation
+        self.progressBar = gtk.ProgressBar()
+        self.progressBar.set_properties('min-horizontal-bar-height', 10)
+                                     
+        self.vbox.pack_start(self.menubar, False)
+        self.vbox.pack_start(self.hbox, False)
+        self.vbox.pack_start(self.slider, False)
+        self.vbox.pack_start(self.buttons, False)
+        self.vbox.pack_start(self.framebox, True)
+        self.show_all()
+        self.filesTree.setModel(self.model)
+    
+    def createPrimaryToolbar(self):
         self.vbox = gtk.VBox()
         self.add(self.vbox)       
         
@@ -131,7 +157,7 @@ class View(gtk.Window):
                                         </ui>''')
 
         # Create a MenuBar
-        menubar = uimanager.get_widget('/MenuBar')
+        self.menubar = uimanager.get_widget('/MenuBar')
         toolbar = uimanager.get_widget('/ToolBar')
         #toolbar.set_size_request(170, 50)
         
@@ -152,12 +178,9 @@ class View(gtk.Window):
         tv = gtk.ToolItem()
         tv.add(self.volume)
         toolbar.insert(tv, -1)
-        
-        
-        #self.hbox.pack_end(self.volume, False)
-        #self.hbox.pack_end(self.label, True)
         self.hbox.pack_start(toolbar, True)
-        
+    
+    def createSlider(self):
         # Create a slider to show player progress
         self.adjustment = gtk.Adjustment(0.0, 0.00, 100.0, 0.1, 1.0, 1.0)
         hscale = gtk.HScale(self.adjustment)
@@ -170,38 +193,26 @@ class View(gtk.Window):
         hscale.connect('format-value', self.control.sliderFormat)
         self.slider = hscale
         self.slider.set_sensitive(False)
+    
+    def createButton(self, imageStock, tooltip, func, data = None):
+        Icon = gtk.Image()
+        Icon.set_from_stock(imageStock, gtk.ICON_SIZE_SMALL_TOOLBAR) 
+        B = gtk.Button()
+        B.add(Icon)
+        B.set_tooltip_text(tooltip)
+        B.connect("clicked", func, data)        
+        return B
+    
+    def createSecondaryToolbar(self):
         
         self.buttons = gtk.HBox()
-        cIcon = gtk.Image()
-        cIcon.set_from_stock(gtk.STOCK_CLEAR, gtk.ICON_SIZE_SMALL_TOOLBAR) 
-        clearB = gtk.Button()
-        clearB.add(cIcon)
-        clearB.set_tooltip_text(_('Clear Playlist'))
-        clearB.connect("clicked", self.control.clearPlaylist)
-        aIcon = gtk.Image()
-        aIcon.set_from_stock(gtk.STOCK_APPLY, gtk.ICON_SIZE_SMALL_TOOLBAR)
-        addAllB = gtk.Button()
-        addAllB.add(aIcon)
-        addAllB.set_tooltip_text(_('Select All'))
-        addAllB.connect("clicked", self.control.addAll, True)
-        rIcon = gtk.Image()
-        rIcon.set_from_stock(gtk.STOCK_CANCEL, gtk.ICON_SIZE_SMALL_TOOLBAR)
-        removeAllB = gtk.Button()
-        removeAllB.add(rIcon)
-        removeAllB.set_tooltip_text(_('Deselect All'))
-        removeAllB.connect("clicked", self.control.addAll, False)
-        refIcon = gtk.Image()
-        refIcon.set_from_stock(gtk.STOCK_REFRESH, gtk.ICON_SIZE_SMALL_TOOLBAR)
-        refreshB = gtk.Button()
-        refreshB.add(refIcon)
-        refreshB.set_tooltip_text(_('Refresh'))
-        refreshB.connect("clicked", self.control.refreshTree)
-        rsIcon = gtk.Image()
-        rsIcon.set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_SMALL_TOOLBAR)
-        removeSelectedB = gtk.Button()
-        removeSelectedB.add(rsIcon)
-        removeSelectedB.set_tooltip_text(_('Remove Selection'))
-        removeSelectedB.connect("clicked", self.control.removeSelected)
+
+        clearB = self.createButton(gtk.STOCK_CLEAR, _('Clear Playlist'), self.control.clearPlaylist)
+        addAllB = self.createButton(gtk.STOCK_APPLY, _('Select All'), self.control.addAll, True)
+        removeAllB = self.createButton(gtk.STOCK_CANCEL, _('Deselect All'), self.control.addAll, False)
+        refreshB = self.createButton(gtk.STOCK_REFRESH, _('Refresh'), self.control.refreshTree)
+        removeSelectedB = self.createButton(gtk.STOCK_REMOVE, _('Remove Selection'), self.control.removeSelected)
+        
         sIcon = gtk.Image()
         theme = gtk.icon_theme_get_for_screen(self.get_screen())
         pixbuf = theme.choose_icon(['stock_shuffle'], 18, 0).load_icon()
@@ -210,38 +221,40 @@ class View(gtk.Window):
         shuffleB.add(sIcon)
         shuffleB.set_tooltip_text(_('Shuffle'))
         shuffleB.connect("clicked", self.control.shufflePlaylist)
+        
+        searchBox = SearchBox(self.filesTree.listStore, self.control)
+        
+        file = gtk.RadioButton(None, 'File')
+        file.connect('toggled', searchBox.changeSearchColumn, 0)
+        title = gtk.RadioButton(file, _('Title'))
+        title.connect('toggled', searchBox.changeSearchColumn, 2)
+        artist = gtk.RadioButton(title, _('Artist'))
+        artist.connect('toggled', searchBox.changeSearchColumn, 3)
+        album = gtk.RadioButton(artist, _('Album'))
+        album.connect('toggled', searchBox.changeSearchColumn, 4)
+        
         self.buttons.pack_start(addAllB, False)
         self.buttons.pack_start(removeAllB, False)
         self.buttons.pack_start(refreshB, False)
+        self.buttons.pack_start(searchBox, False)
+        self.buttons.pack_start(file, False)
+        self.buttons.pack_start(title, False)
+        self.buttons.pack_start(artist, False)
+        self.buttons.pack_start(album, False)
         self.buttons.pack_start(gtk.Label(), True)
         self.buttons.pack_start(shuffleB, False)
         self.buttons.pack_start(clearB, False)
         self.buttons.pack_start(removeSelectedB, False)
-        
-        self.columns = [_('Name'), '#', _('Title'), _('Artist'), _('Album'), _('Genre'), _('Year'), _('Add'), '']
-        self.filesTree = FilesFrame(self.model, self.control, self.formatDict, self.columns)
-        self.playlistFrame = PlaylistFrame(self.control, [])
-        
-        self.framebox.add(self.filesTree)
-        self.framebox.add(self.playlistFrame)
-        
-        # Create a progress bar to show during the model creation
-        self.progressBar = gtk.ProgressBar()
-        self.progressBar.set_properties('min-horizontal-bar-height', 10)
-                                     
-        self.vbox.pack_start(menubar, False)
-        self.vbox.pack_start(self.hbox, False)
-        self.vbox.pack_start(self.slider, False)
-        self.vbox.pack_start(self.buttons, False)
-        self.vbox.pack_start(self.framebox, True)
-        self.show_all()
-        self.filesTree.setModel(self.model)
     
     def setStatusIcon(self):
         pix = self.pix
+        try:
+            mode = self.control.settings['statusicon']
+        except:
+            mode = 0    
         if self.tray != None:
             self.tray.set_visible(False)
-        if self.control.settings['statusicon'] != 2:    
+        if mode != 2:    
             self.tray = gtk.StatusIcon()
             pix = pix.scale_simple(20, 20, gtk.gdk.INTERP_BILINEAR)
             self.tray.set_from_pixbuf(pix)
