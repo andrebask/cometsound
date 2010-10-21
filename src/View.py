@@ -232,6 +232,7 @@ class View(gtk.Window):
         artist.connect('toggled', searchBox.changeSearchColumn, 3)
         album = gtk.RadioButton(artist, _('Album'))
         album.connect('toggled', searchBox.changeSearchColumn, 4)
+        self.searchBox = searchBox
         
         self.buttons.pack_start(addAllB, False)
         self.buttons.pack_start(removeAllB, False)

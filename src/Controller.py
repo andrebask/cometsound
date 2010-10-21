@@ -115,8 +115,9 @@ class Controller:
     def __refreshViewTree(self): 
         """Refreshes the treeview"""  
         self.view.filesTree.setModel(self.model)
+        self.view.searchBox.setListStore(self.view.filesTree.listStore)
     
-    def refreshTree(self, widget):
+    def refreshTree(self, widget, data = None):
         self.view.vbox.pack_start(self.view.progressBar, False)
         self.view.show_all()
         self.__reBuildViewTree()

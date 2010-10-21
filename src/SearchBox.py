@@ -28,15 +28,12 @@ class SearchBox(gtk.Entry):
         
         gtk.Entry.__init__(self)
         self.control = control
-        self.listStore = listStore
         self.artistStore = gtk.ListStore(gobject.TYPE_STRING)
         self.albumStore = gtk.ListStore(gobject.TYPE_STRING)
-        self.albumList = []
-        self.artistList = []
-        self.listStore.foreach(self.copyValues)
+        self.setListStore(listStore)
         self.set_size_request(350, 28)
         self.completion = gtk.EntryCompletion()
-        self.completion.set_model(listStore)
+        self.completion.set_model(self.listStore)
         self.completion.set_text_column(0)
         self.completion.set_match_func(self.matchFunc)
         self.completion.connect('match-selected', self.matchAction)
@@ -44,7 +41,6 @@ class SearchBox(gtk.Entry):
     
     def copyValues(self, model, path, iter, user_data = None):
         value = model.get_value(iter, 4)
-        num = model.get_value(iter, 1)
         if value not in self.albumList:
             self.albumList.append(value)
             self.albumStore.append([value])
@@ -52,6 +48,14 @@ class SearchBox(gtk.Entry):
         if value not in self.artistList:
             self.artistList.append(value)
             self.artistStore.append([value])
+    
+    def setListStore(self, listStore):
+        self.listStore = listStore
+        self.albumList = []
+        self.artistList = []
+        self.artistStore.clear()
+        self.albumStore.clear()
+        self.listStore.foreach(self.copyValues)
             
     def changeSearchColumn(self, widget, data=None): 
         
@@ -73,7 +77,10 @@ class SearchBox(gtk.Entry):
     def matchFunc(self, completion, key_string, iter, func_data = None):
         model = completion.get_model()
         searchColumn = completion.get_text_column()
-        row = model.get_value(iter, searchColumn).lower()
+        try:
+            row = model.get_value(iter, searchColumn).lower()
+        except:
+            return False    
         key = key_string.lower()               
         if row.find(key) != -1:
             return True
