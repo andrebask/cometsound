@@ -1,0 +1,189 @@
+# Russian translation for cometsound
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the cometsound package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: cometsound\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-10-21 13:01+0200\n"
+"PO-Revision-Date: 2010-10-18 11:56+0000\n"
+"Last-Translator: Eugene Marshal <Unknown>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-10-21 13:05+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: Dialogs.py:54
+#: FileBrowser.py:126
+#: View.py:63
+#: View.py:229
+msgid "Title"
+msgstr ""
+
+#: Dialogs.py:55
+#: FileBrowser.py:128
+#: View.py:63
+#: View.py:231
+msgid "Artist"
+msgstr ""
+
+#: Dialogs.py:56
+#: FileBrowser.py:131
+#: View.py:63
+#: View.py:233
+msgid "Album"
+msgstr ""
+
+#: Dialogs.py:57
+#: FileBrowser.py:133
+#: View.py:63
+msgid "Genre"
+msgstr ""
+
+#: Dialogs.py:58
+#: FileBrowser.py:52
+#: FileBrowser.py:124
+#: View.py:63
+msgid "Year"
+msgstr ""
+
+#: Dialogs.py:59
+#: FileBrowser.py:94
+#: View.py:63
+msgid "Add"
+msgstr ""
+
+#: Dialogs.py:62
+msgid "CometSound preferences"
+msgstr ""
+
+#: Dialogs.py:69
+msgid "<b>Audio output (Restart required)</b>"
+msgstr ""
+
+#: Dialogs.py:78
+msgid "<b>Visible columns</b>"
+msgstr ""
+
+#: Dialogs.py:89
+#: Dialogs.py:122
+#: FileBrowser.py:50
+#: FileBrowser.py:122
+#: View.py:63
+msgid "Name"
+msgstr ""
+
+#: Dialogs.py:102
+msgid "<b>Status Icon</b>"
+msgstr ""
+
+#: Dialogs.py:104
+msgid "Enable status icon with track's informations"
+msgstr ""
+
+#: Dialogs.py:105
+msgid "Enable status icon"
+msgstr ""
+
+#: Dialogs.py:106
+msgid "Disable status icon"
+msgstr ""
+
+#: Playlist.py:59
+msgid "Playlist"
+msgstr ""
+
+#: View.py:105
+msgid "_Quit"
+msgstr "В_ыйти"
+
+#: View.py:105
+msgid "Quit the program"
+msgstr "Выйти из программы"
+
+#: View.py:106
+msgid "_Open folder..."
+msgstr "_Oткрыть каталог..."
+
+#: View.py:106
+msgid "Open media folder"
+msgstr "Открыть папку с данными"
+
+#: View.py:107
+msgid "Preferences"
+msgstr "Свойства"
+
+#: View.py:107
+msgid "Change settings"
+msgstr "Изменить настройки"
+
+#: View.py:108
+msgid "_File"
+msgstr "_Файл"
+
+#: View.py:109
+msgid "Fil_ters"
+msgstr "Филь_тры"
+
+#: View.py:110
+msgid "Play selection"
+msgstr "Воспроизвести выделенное"
+
+#: View.py:111
+#: View.py:293
+msgid "Previous"
+msgstr "Предыдущий"
+
+#: View.py:112
+#: View.py:288
+msgid "Next"
+msgstr ""
+
+#: View.py:113
+msgid "_Help"
+msgstr ""
+
+#: View.py:114
+msgid "About CometSound"
+msgstr ""
+
+#: View.py:210
+msgid "Clear Playlist"
+msgstr ""
+
+#: View.py:211
+msgid "Select All"
+msgstr ""
+
+#: View.py:212
+msgid "Deselect All"
+msgstr ""
+
+#: View.py:213
+msgid "Refresh"
+msgstr ""
+
+#: View.py:214
+msgid "Remove Selection"
+msgstr ""
+
+#: View.py:222
+msgid "Shuffle"
+msgstr ""
+
+#: View.py:282
+#: View.py:315
+msgid "Play"
+msgstr ""
+
+#: View.py:298
+msgid "Quit"
+msgstr ""
+
+#: View.py:320
+msgid "Pause"
+msgstr ""
