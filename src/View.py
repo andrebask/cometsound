@@ -28,7 +28,7 @@ from Playlist import PlaylistFrame
 from SearchBox import SearchBox
 import CometSound
 
-version = '0.1.1'
+version = '0.1.2'
 _ = CometSound.t.getTranslationFunc()
 
 class View(gtk.Window):
@@ -104,7 +104,7 @@ class View(gtk.Window):
         # Create actions
         actiongroup.add_actions([('Quit', gtk.STOCK_QUIT, _('_Quit'), None, _('Quit the program'), self.quit),
                                  ('Open', gtk.STOCK_OPEN, _('_Open folder...'), None, _('Open media folder'), self.control.openFolder),
-                                 ('Preferences', gtk.STOCK_PREFERENCES, _('Preferences'), None, _('Change settings'), self.openPreferences),
+                                 ('Preferences', gtk.STOCK_PREFERENCES, _('Preferences'), '<Control>P', _('Change settings'), self.openPreferences),
                                  ('File', None, _('_File')),
                                  ('RadioBand', None, _('Fil_ters')),
                                  ('Play/Stop', gtk.STOCK_MEDIA_PLAY, None, None, _('Play selection'), self.control.playStopSelected),
