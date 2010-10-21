@@ -75,7 +75,10 @@ class PlayerThread(threading.Thread):
            calling the next() method to play an other track"""
         t = message.type
         if t == gst.MESSAGE_EOS:
-            self.next()
+            if self.trackNum < len(self.playlist)-1:
+                self.next()
+            else:
+                self.stop()    
         elif t == gst.MESSAGE_ERROR:
             self.player.set_state(gst.STATE_NULL)
             err, debug = message.parse_error()
@@ -113,9 +116,6 @@ class PlayerThread(threading.Thread):
                 self.player.set_property("uri", "file://" + self.playlist[self.trackNum])
                 self.play()
                 self.control.updateLabel(self.playlist[self.trackNum], notify)
-        else:
-            if not self.playing:
-                self.stop()
         
     def previous(self, notify = True):
         """Starts playing of the previous track in the playlist"""
