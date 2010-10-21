@@ -23,6 +23,8 @@
 import gtk, os, AF, Model, gst, pynotify, cerealizer, random
 from Player import PlayerThread
 
+icons = {'True': gtk.STOCK_MEDIA_PLAY, 'False': gtk.STOCK_MEDIA_PAUSE}
+
 class Controller:
     """This Class Handles the interactions between the GUI(View) and the Model"""
     folder = ''
@@ -119,91 +121,65 @@ class Controller:
         self.view.show_all()
         self.__reBuildViewTree()
             
-    def toggle(self, cell, path, rowModel, cfnameList = None):
+    def toggle(self, cell, path, rowModel):
         """Adds or removes the selected files to the playlist and updates the treeview"""
         completeFilename = rowModel[path][8]
-        if cfnameList != None:
-            try:
-                cfnameList.index(completeFilename)
-                found = True
-            except ValueError:
-                found = False    
-        else:
-            found = True       
-        if found:
-            rowModel[path][7] = not rowModel[path][7]
-            toggled = rowModel[path][7]
-            self.__addRemove(toggled, completeFilename)
-        self.__recursiveToggle(path, rowModel, cfnameList)
+        rowModel[path][7] = not rowModel[path][7]
+        toggled = rowModel[path][7]
+        self.__addRemove(toggled, completeFilename)
+        self.__recursiveToggle(path, rowModel)
         self.updatePlaylist()
         
-    def __recursiveToggle(self, path, rowModel, cfnameList = None):
+    def __recursiveToggle(self, path, rowModel):
         i=0
         rowexists = True
         while True:
             try:
                 completeFilename = rowModel[path + (":%d" % (i))][8]
-                if cfnameList != None:
-                    try:
-                        cfnameList.index(completeFilename)
-                        found = True
-                        deleteMode = True
-                    except ValueError:
-                        found = False    
-                else:
-                    found = True
-                    deleteMode = False       
-                if found:
-                    rowModel[path + (":%d" % (i))][7] = rowModel[path][7] and not deleteMode
-                    toggled = rowModel[path + (":%d" % (i))][7]
-                    self.__addRemove(toggled, completeFilename)   
-                self.__recursiveToggle((path + (":%d" % (i))), rowModel, cfnameList)
+                rowModel[path + (":%d" % (i))][7] = rowModel[path][7]
+                toggled = rowModel[path + (":%d" % (i))][7]
+                self.__addRemove(toggled, completeFilename)   
+                self.__recursiveToggle((path + (":%d" % (i))), rowModel)
                 i+=1
             except:
                 rowexists = False
                 #print sys.exc_info()                    
             if not rowexists:
                 break
-    
+
     def addAll(self, widget, add):
         """Adds to the playlist all the files of the current folder"""
         rowModel = self.view.filesTree.treeStore
-        i=0
-        rowexists = True
-        while True:
-            try:
-                path = str(i)
-                if rowModel[path][8] != '':
-                    if add != rowModel[path][7]:
-                        toggled = add
-                        rowModel[path][7] = add 
-                        self.__addRemove(toggled, rowModel[path][8])
-                elif rowModel[path][7] != add:
-                    self.toggle(None, path, rowModel)  
-                i+=1
-            except:
-                rowexists = False
-                #print sys.exc_info()                     
-            if not rowexists:
-                break    
+        rowModel.foreach(self.__add, add)
         self.updatePlaylist()
         
+    def __add(self, model, path, iter, add = None):
+        value = model.get_value(iter, 8)
+        toggled = model.get_value(iter, 7)
+        if value != '':
+            if add != toggled:
+                model.set_value(iter, 7, add)
+                self.__addRemove(add, value)
+        elif toggled != add:    
+            self.toggle(None, path, model)
+            
     def __addRemove(self, toggled, cfname):
         """Handles the addition and the removal of the files in the playlist"""
+        pt = self.playerThread
         if toggled and cfname != '':
             self.playlist.append(cfname)
         elif cfname != '':
             try:
-                if self.playlist[self.playerThread.trackNum] == cfname:
-                    if self.playerThread.playing:
-                        self.playerThread.next(False)
+                if self.playlist[pt.trackNum] == cfname:
+                    if pt.playing:
+                        pt.next(False)
                         if len(self.playlist) == 1:
-                            self.playerThread.stop()
+                            pt.stop()
                     else:
-                        self.playerThread.next(False)
-                        self.playerThread.pause()
-                if self.playerThread.trackNum > self.playlist.index(cfname):
-                    self.playerThread.trackNum -= 1    
+                        pt.next(False)
+                        pt.pause()
+                if pt.trackNum > self.playlist.index(cfname):
+                    pt.trackNum -= 1    
                 self.playlist.remove(cfname)                                
             except:
                 pass
@@ -341,17 +317,15 @@ class Controller:
             label = "File:\t" + winTitle + "\n\n"
             self.view.label.set_text(label[:50])
             self.view.set_title(winTitle)    
-    
+
     def updatePlaylist(self):
         """Refreshes playlist view"""
         self.view.playlistFrame.listStore.clear() 
-        append = self.view.playlistFrame.listStore.append      
+        append = self.view.playlistFrame.listStore.append              
+        playing = str(self.playerThread.playing)
         for track in self.playlist:
             if self.playlist.index(track) == self.playerThread.trackNum:
-                if self.playerThread.playing:
-                    icon = gtk.STOCK_MEDIA_PLAY
-                else:
-                    icon = gtk.STOCK_MEDIA_PAUSE
+                icon = icons[playing]
             else:
                 icon = None        
             t = self.extractTags(track)['title']
@@ -359,7 +333,7 @@ class Controller:
                 append([icon, t])             
             else:
                 f = self.extractTags(track)['filename']
-                append([icon, f])        
+                append([icon, f]) 
         
     def clearPlaylist(self, widget, data=None):
         """Removes all the files from the playlist"""
@@ -368,7 +342,7 @@ class Controller:
         self.playerThread.clearPlaylist()
         self.updatePlaylist()
     
-    def removeSelected(self, widget):
+    def removeSelected(self, widget, data = None):
         """Removes only the selected files from the playlist"""
         rowList = self.view.playlistFrame.treeview.get_selection().get_selected_rows()[1]
         cfnameList = []
@@ -377,19 +351,16 @@ class Controller:
             cfnameList.append(cfname)
             self.__addRemove(False, cfname)        
         rowModel = self.view.filesTree.treeStore
-        i=0
-        rowexists = True
-        while True:
-            try:
-                path = str(i)
-                self.toggle(None, path, rowModel, cfnameList) 
-                i+=1
-            except:
-                rowexists = False
-                #print sys.exc_info()        
-            if not rowexists:
-                break            
-        self.updatePlaylist()
+        rowModel.foreach(self.__delete, cfnameList)    
+        self.updatePlaylist()    
+    
+    def __delete(self, model, path, iter, cfnameList = None):
+        value = model.get_value(iter, 8)
+        toggled = model.get_value(iter, 7)
+        if value in cfnameList:
+            toggled = not toggled
+            model.set_value(iter, 7, toggled)
+            self.__addRemove(toggled, value)
             
     def shufflePlaylist(self, widget, data=None):
         """Mixes the songs in the playlist"""
