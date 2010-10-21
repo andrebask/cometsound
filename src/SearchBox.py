@@ -20,7 +20,7 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk
+import gtk, gobject, SortFunctions as SF
 
 class SearchBox(gtk.Entry):
     
@@ -28,10 +28,12 @@ class SearchBox(gtk.Entry):
         
         gtk.Entry.__init__(self)
         self.control = control
-        self.playlist = control.playlist
         self.listStore = listStore
-        self.lastMatch = None
-        self.count = 0
+        self.artistStore = gtk.ListStore(gobject.TYPE_STRING)
+        self.albumStore = gtk.ListStore(gobject.TYPE_STRING)
+        self.albumList = []
+        self.artistList = []
+        self.listStore.foreach(self.copyValues)
         self.set_size_request(350, 28)
         self.completion = gtk.EntryCompletion()
         self.completion.set_model(listStore)
@@ -40,13 +42,32 @@ class SearchBox(gtk.Entry):
         self.completion.connect('match-selected', self.matchAction)
         self.set_completion(self.completion)
     
+    def copyValues(self, model, path, iter, user_data = None):
+        value = model.get_value(iter, 4)
+        num = model.get_value(iter, 1)
+        if value not in self.albumList:
+            self.albumList.append(value)
+            self.albumStore.append([value])
+        value = model.get_value(iter, 3)
+        if value not in self.artistList:
+            self.artistList.append(value)
+            self.artistStore.append([value])
+            
     def changeSearchColumn(self, widget, data=None): 
+        
         if widget.get_active():  
             self.completion = gtk.EntryCompletion()
-            self.completion.set_model(self.listStore)
-            self.completion.set_text_column(data)
+            if data == 3:
+                self.completion.set_model(self.artistStore)
+                self.completion.set_text_column(0)
+            elif data == 4:
+                self.completion.set_model(self.albumStore)
+                self.completion.set_text_column(0)    
+            else:    
+                self.completion.set_model(self.listStore)    
+                self.completion.set_text_column(data)
             self.completion.set_match_func(self.matchFunc)
-            self.completion.connect('match-selected', self.matchAction)
+            self.completion.connect('match-selected', self.matchAction, data)
             self.set_completion(self.completion)
             
     def matchFunc(self, completion, key_string, iter, func_data = None):
@@ -59,7 +80,23 @@ class SearchBox(gtk.Entry):
         else:
             return False
     
-    def matchAction(self, completion, model, iter):
-        fileName = model.get_value(iter, 8)
-        self.playlist.append(fileName)
+    def matchAction(self, completion, model, iter, column):
+        if column == 0 or column == 2:
+            fileName = model.get_value(iter, 8)
+            self.control.playlist.append(fileName)
+        else:
+            if column == 3:
+                self.listStore.set_sort_func(13, SF.sortArtistFunc, 4)
+                self.listStore.set_sort_column_id(13, gtk.SORT_ASCENDING)
+            elif column == 4:
+                self.listStore.set_sort_func(13, SF.sortNumFunc, 1)
+                self.listStore.set_sort_column_id(13, gtk.SORT_ASCENDING)    
+            value = model.get_value(iter, 0)  
+            self.listStore.foreach(self.add, (value, column))  
         self.control.updatePlaylist()
+    
+    def add(self, model, path, iter, (value, column)):
+        v = model.get_value(iter, column)
+        if v == value:
+            fileName = model.get_value(iter, 8)
+            self.control.playlist.append(fileName)
