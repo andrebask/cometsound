@@ -54,7 +54,8 @@ class PlayerThread(threading.Thread):
         
     def setPlaylist(self, playlist):
         self.playlist = playlist
-    
+        self.control.playlist = self.playlist
+        
     def clearPlaylist(self):
         """Removes all the files from the playlist"""
         self.playlist = []

@@ -110,9 +110,15 @@ class View(gtk.Window):
                                  ('Play/Stop', gtk.STOCK_MEDIA_PLAY, None, None, _('Play selection'), self.control.playStopSelected),
                                  ('Previous', gtk.STOCK_MEDIA_PREVIOUS, None, None, _('Previous'), self.control.previousTrack),
                                  ('Next', gtk.STOCK_MEDIA_NEXT, None, None, _('Next'), self.control.nextTrack),
+                                 ('Playlists', None, _('Playlists')),
                                  ('Help', None, _('_Help')),
                                  ('About', gtk.STOCK_ABOUT, _('About CometSound'), None, _('About CometSound'), self.showAboutDialog)
                                  ])
+        actions = self.control.readPlaylists()
+        uilist = ''
+        for act in actions:
+            actiongroup.add_actions([(act, None, act, None, None, self.control.loadPlaylist)])
+            uilist = uilist + '<menuitem action="%s"/>' % (act)
 
         # Create ToggleActions
         actiongroup.add_toggle_actions([('Mp3', None, '_Mp3', '<Control>m',
@@ -142,6 +148,9 @@ class View(gtk.Window):
                                             <menuitem action="Ogg"/>
                                             <menuitem action="Flac"/>
                                           </menu>
+                                          <menu action="Playlists">'''
+                                           + uilist +
+                                      ''' </menu>
                                           <menu action="Help">
                                             <menuitem action="About"/>
                                           </menu>
@@ -221,6 +230,7 @@ class View(gtk.Window):
         shuffleB.add(sIcon)
         shuffleB.set_tooltip_text(_('Shuffle'))
         shuffleB.connect("clicked", self.control.shufflePlaylist)
+        saveB = self.createButton(gtk.STOCK_SAVE, _('Save Playlist'), self.control.savePlaylistDialog)
         
         searchBox = SearchBox(self.filesTree.listStore, self.control)
         
@@ -243,6 +253,7 @@ class View(gtk.Window):
         self.buttons.pack_start(artist, False)
         self.buttons.pack_start(album, False)
         self.buttons.pack_start(gtk.Label(), True)
+        self.buttons.pack_start(saveB, False)
         self.buttons.pack_start(shuffleB, False)
         self.buttons.pack_start(clearB, False)
         self.buttons.pack_start(removeSelectedB, False)

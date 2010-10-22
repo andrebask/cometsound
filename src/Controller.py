@@ -318,7 +318,52 @@ class Controller:
             label = "File:\t" + winTitle + "\n\n"
             self.view.label.set_text(label[:50])
             self.view.set_title(winTitle)    
-
+    
+    def readPlaylists(self):
+        try:
+            dir = os.path.join(self.cacheDir, 'playlists')
+            fileList = os.listdir(dir)
+            return fileList
+        except:
+            return []
+    
+    def loadPlaylist(self, widget, data=None):
+        file = widget.get_label()
+        dir = os.path.join(self.cacheDir, 'playlists')
+        playlistFile = os.path.join(dir, file)
+        FILE = open(playlistFile,'r')
+        files = []
+        for line in FILE:
+            files.append(line[:-1]) 
+        self.playerThread.setPlaylist(files)
+        FILE.close()
+        self.updatePlaylist()
+        
+    def savePlaylistDialog(self, widget, data=None):
+        d = gtk.Dialog('Save Playlist')
+        d.set_size_request(200, 100)
+        l = gtk.Label('Insert playlist name:')
+        e = gtk.Entry()
+        vbox = d.get_child()
+        vbox.pack_start(l)
+        vbox.pack_start(e)
+        d.add_button(gtk.STOCK_SAVE, gtk.RESPONSE_OK)
+        d.show_all()
+        response = d.run()
+        if response == gtk.RESPONSE_OK:
+            self.savePlaylist(e.get_text())
+            d.destroy()
+    
+    def savePlaylist(self, playlist):
+        dir = os.path.join(self.cacheDir, 'playlists')
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        playlistFile = os.path.join(dir, playlist)
+        FILE = open(playlistFile,'w')
+        for track in self.playlist:
+            FILE.write(track + '\n')
+        FILE.close()
+    
     def updatePlaylist(self):
         """Refreshes playlist view"""
         self.view.playlistFrame.listStore.clear() 
