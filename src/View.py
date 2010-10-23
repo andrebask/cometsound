@@ -114,6 +114,7 @@ class View(gtk.Window):
                                  ('Help', None, _('_Help')),
                                  ('About', gtk.STOCK_ABOUT, _('About CometSound'), None, _('About CometSound'), self.showAboutDialog)
                                  ])
+        
         actions = self.control.readPlaylists()
         uilist = ''
         for act in actions:
@@ -164,7 +165,9 @@ class View(gtk.Window):
                                             <separator name="sep1"/>
                                         </toolbar>
                                         </ui>''')
-
+        self.actiongroup = actiongroup
+        self.uimanager = uimanager
+        
         # Create a MenuBar
         self.menubar = uimanager.get_widget('/MenuBar')
         toolbar = uimanager.get_widget('/ToolBar')
@@ -189,6 +192,11 @@ class View(gtk.Window):
         toolbar.insert(tv, -1)
         self.hbox.pack_start(toolbar, True)
     
+    def updatePlaylistsMenu(self, newPlaylist):
+        self.actiongroup.add_actions([(newPlaylist, None, newPlaylist, None, None, self.control.loadPlaylist)])
+        merge_id = self.uimanager.new_merge_id()
+        self.uimanager.add_ui(merge_id, 'ui/MenuBar/Playlists', newPlaylist, newPlaylist, gtk.UI_MANAGER_MENUITEM, False)
+        
     def createSlider(self):
         # Create a slider to show player progress
         self.adjustment = gtk.Adjustment(0.0, 0.00, 100.0, 0.1, 1.0, 1.0)

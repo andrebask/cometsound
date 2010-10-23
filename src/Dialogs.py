@@ -124,4 +124,4 @@ class PreferencesDialog(gtk.Dialog):
             self.control.writeSettings(newsettings)
             self.control.refreshColumnsVisibility()
             self.control.refreshStatusIcon()
-            self.hide()            
+            self.destroy()        

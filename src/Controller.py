@@ -363,6 +363,7 @@ class Controller:
         for track in self.playlist:
             FILE.write(track + '\n')
         FILE.close()
+        self.view.updatePlaylistsMenu(playlist)
     
     def updatePlaylist(self):
         """Refreshes playlist view"""
