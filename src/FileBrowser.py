@@ -69,6 +69,8 @@ class FilesFrame(gtk.Frame):
             if type(f).__name__ == 'instance':
                 if self.formatDict[string.lower(f.getTagValues()[0][-4:])] == True:
                     data = f.getTagValues() + [None] + [f.getDir() + f.getTagValues()[0]]
+                    data[2] = data[2] + '\t(' + data[4] + ')'
+                    data[4] = data[4] + '\t(' + data[3] + ')'
                     self.treeStore.append(parent, data)
                     self.listStore.append(data)
             elif type(f).__name__ == 'list':

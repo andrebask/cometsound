@@ -79,6 +79,7 @@ class SearchBox(gtk.Entry):
         searchColumn = completion.get_text_column()
         try:
             row = model.get_value(iter, searchColumn).lower()
+            row = row.split('(')[0]
         except:
             return False    
         key = key_string.lower()               
