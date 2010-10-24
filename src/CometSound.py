@@ -25,47 +25,12 @@ import mutagen.asf as mtgasf
 import Model
 import Controller
 import View
+from Translator import Translator
     
 def registerClasses():
     cerealizer.register(mtgasf.ASFUnicodeAttribute)
     cerealizer.register(mtgasf.ASFDWordAttribute)
     cerealizer.register(AF.AudioFile)            
-
-import os, locale, gettext, sys
-
-APP_NAME = "cometsound"
-
-class Translator:
-    
-    def __init__(self):
-        #language files path
-        localPath = os.path.realpath(os.path.dirname(sys.argv[0]))
-        listPath = localPath.split('/')
-        if listPath[1] == 'local':
-            langPath = '/usr/local/share/locale-langpack/'
-        else:
-            langPath = '/usr/share/locale-langpack/'    
-        langs = []
-        #Check the default locale
-        lc, encoding = locale.getdefaultlocale()
-        if (lc):
-            #If we have a default, it's the first in the list
-            langs = [lc]
-        # Get supported languages on the system
-        language = os.environ.get('LANG', None)
-        if (language):
-            langs += language.split(":")
-        langs += ["en_US", "en_GB", "it"]
-        
-        gettext.bindtextdomain(APP_NAME, langPath)
-        gettext.textdomain(APP_NAME)
-        # Get the language to use
-        lang = gettext.translation(APP_NAME, langPath
-            , languages=langs, fallback = True)
-        self._ = lang.gettext
-        
-    def getTranslationFunc(self):
-        return self._
           
 t = Translator()
             

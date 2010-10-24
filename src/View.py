@@ -20,13 +20,13 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, pygtk
+import gtk, pygtk, os, CometSound
 pygtk.require('2.0')
-from FileBrowser import FilesFrame
-from Dialogs import AboutDialog, PreferencesDialog
+from Dialogs import AboutDialog
+from Dialogs import PreferencesDialog
 from Playlist import PlaylistFrame
 from SearchBox import SearchBox
-import CometSound
+from FileBrowser import FilesFrame
 
 version = '0.1.2'
 _ = CometSound.t.getTranslationFunc()
@@ -111,7 +111,7 @@ class View(gtk.Window):
                                  ('Previous', gtk.STOCK_MEDIA_PREVIOUS, None, None, _('Previous'), self.control.previousTrack),
                                  ('Next', gtk.STOCK_MEDIA_NEXT, None, None, _('Next'), self.control.nextTrack),
                                  ('Playlists', None, _('Playlists')),
-                                 ('PlaylistsFolder', None, _('Open folder...'), None, None,self.control.openPlaylistFolder),
+                                 ('PlaylistsFolder', None, _('Open folder...'), None, None,self.openPlaylistFolder),
                                  ('Help', None, _('_Help')),
                                  ('About', gtk.STOCK_ABOUT, _('About CometSound'), None, _('About CometSound'), self.showAboutDialog)
                                  ])
@@ -327,6 +327,9 @@ class View(gtk.Window):
         
     def openPreferences(self, obj = None):
         p = PreferencesDialog(self.columns, self.control)
+    
+    def openPlaylistFolder(self, widget, data=None):
+        os.system('xdg-open %s' % os.path.join(self.cacheDir, 'playlists'))
         
     def getFormatDict(self):
         return self.formatDict     

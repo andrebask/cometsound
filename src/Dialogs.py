@@ -38,11 +38,28 @@ class AboutDialog(gtk.AboutDialog):
         if response == -6 or response == -4:
             self.hide()
             
-            
+class SavePlaylistDialog(gtk.Dialog):
+    
+    def __init__(self):
+        gtk.Dialog.__init__(self)
+        self.set_title(_('Save Playlist'))
+        self.set_size_request(200, 100)
+        l = gtk.Label(_('Insert playlist name:'))
+        e = gtk.Entry()
+        vbox = self.get_child()
+        vbox.pack_start(l)
+        vbox.pack_start(e)
+        self.add_button(gtk.STOCK_SAVE, gtk.RESPONSE_OK)
+        self.show_all()
+        response = self.run()
+        if response == gtk.RESPONSE_OK:
+            self.savePlaylist(e.get_text())
+            self.destroy()
+                
 class PreferencesDialog(gtk.Dialog):
     
     def __init__(self, columns, control):
-        gtk.Window.__init__(self)
+        gtk.Dialog.__init__(self)
         self.set_size_request(300,320)
         self.control = control
         self.control.readSettings()

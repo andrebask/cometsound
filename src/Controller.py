@@ -338,24 +338,9 @@ class Controller:
         self.playerThread.setPlaylist(files)
         FILE.close()
         self.updatePlaylist()
-    
-    def openPlaylistFolder(self, widget, data=None):
-        os.system('xdg-open %s' % os.path.join(self.cacheDir, 'playlists'))
         
     def savePlaylistDialog(self, widget, data=None):
-        d = gtk.Dialog('Save Playlist')
-        d.set_size_request(200, 100)
-        l = gtk.Label('Insert playlist name:')
-        e = gtk.Entry()
-        vbox = d.get_child()
-        vbox.pack_start(l)
-        vbox.pack_start(e)
-        d.add_button(gtk.STOCK_SAVE, gtk.RESPONSE_OK)
-        d.show_all()
-        response = d.run()
-        if response == gtk.RESPONSE_OK:
-            self.savePlaylist(e.get_text())
-            d.destroy()
+        d = SavePlaylistDialog()
     
     def savePlaylist(self, playlist):
         dir = os.path.join(self.cacheDir, 'playlists')
