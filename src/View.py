@@ -111,6 +111,7 @@ class View(gtk.Window):
                                  ('Previous', gtk.STOCK_MEDIA_PREVIOUS, None, None, _('Previous'), self.control.previousTrack),
                                  ('Next', gtk.STOCK_MEDIA_NEXT, None, None, _('Next'), self.control.nextTrack),
                                  ('Playlists', None, _('Playlists')),
+                                 ('PlaylistsFolder', None, _('Open folder...'), None, None,self.control.openPlaylistFolder),
                                  ('Help', None, _('_Help')),
                                  ('About', gtk.STOCK_ABOUT, _('About CometSound'), None, _('About CometSound'), self.showAboutDialog)
                                  ])
@@ -149,7 +150,8 @@ class View(gtk.Window):
                                             <menuitem action="Ogg"/>
                                             <menuitem action="Flac"/>
                                           </menu>
-                                          <menu action="Playlists">'''
+                                          <menu action="Playlists">
+                                            <menuitem action="PlaylistsFolder"/>'''
                                            + uilist +
                                       ''' </menu>
                                           <menu action="Help">

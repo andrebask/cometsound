@@ -338,6 +338,9 @@ class Controller:
         self.playerThread.setPlaylist(files)
         FILE.close()
         self.updatePlaylist()
+    
+    def openPlaylistFolder(self, widget, data=None):
+        os.system('xdg-open %s' % os.path.join(self.cacheDir, 'playlists'))
         
     def savePlaylistDialog(self, widget, data=None):
         d = gtk.Dialog('Save Playlist')
