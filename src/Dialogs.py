@@ -34,27 +34,32 @@ class AboutDialog(gtk.AboutDialog):
         self.set_website('https://launchpad.net/cometsound')
         pix = icon.get_pixbuf().scale_simple(60, 60, gtk.gdk.INTERP_BILINEAR)
         self.set_logo(pix)
+        
         response = self.run()
-        if response == -6 or response == -4:
-            self.hide()
+        if response == gtk.RESPONSE_CANCEL or response == gtk.RESPONSE_DELETE_EVENT:
+            self.destroy()
             
 class SavePlaylistDialog(gtk.Dialog):
     
-    def __init__(self):
+    def __init__(self, control):
         gtk.Dialog.__init__(self)
         self.set_title(_('Save Playlist'))
-        self.set_size_request(200, 100)
+        self.set_size_request(250, 100)
         l = gtk.Label(_('Insert playlist name:'))
         e = gtk.Entry()
         vbox = self.get_child()
         vbox.pack_start(l)
         vbox.pack_start(e)
+        self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
         self.add_button(gtk.STOCK_SAVE, gtk.RESPONSE_OK)
         self.show_all()
+        
         response = self.run()
         if response == gtk.RESPONSE_OK:
-            self.savePlaylist(e.get_text())
+            control.savePlaylist(e.get_text())
             self.destroy()
+        if response == gtk.RESPONSE_CANCEL or response == gtk.RESPONSE_DELETE_EVENT:
+            self.destroy()    
                 
 class PreferencesDialog(gtk.Dialog):
     
@@ -131,8 +136,9 @@ class PreferencesDialog(gtk.Dialog):
         vbox.pack_start(statusCombo)
         self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)   
         self.show_all()
+        
         response = self.run()
-        if response == -7 or response == -4:
+        if response == gtk.RESPONSE_CLOSE or response == gtk.RESPONSE_DELETE_EVENT:
             newsettings = {'audiosink': gstSinks[audioCombo.get_active()]}
             newsettings['statusicon'] = statusCombo.get_active()
             for c in columns:

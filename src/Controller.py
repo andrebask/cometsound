@@ -338,9 +338,6 @@ class Controller:
         self.playerThread.setPlaylist(files)
         FILE.close()
         self.updatePlaylist()
-        
-    def savePlaylistDialog(self, widget, data=None):
-        d = SavePlaylistDialog()
     
     def savePlaylist(self, playlist):
         dir = os.path.join(self.cacheDir, 'playlists')

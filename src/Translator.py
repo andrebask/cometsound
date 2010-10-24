@@ -44,7 +44,7 @@ class Translator:
         language = os.environ.get('LANG', None)
         if (language):
             langs += language.split(":")
-        langs += ["en_US", "en_GB", "it"]
+        langs += ["en", "en_US", "en_GB", "it"] #default
         
         gettext.bindtextdomain(APP_NAME, langPath)
         gettext.textdomain(APP_NAME)

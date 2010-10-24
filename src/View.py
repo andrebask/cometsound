@@ -22,8 +22,7 @@
 
 import gtk, pygtk, os, CometSound
 pygtk.require('2.0')
-from Dialogs import AboutDialog
-from Dialogs import PreferencesDialog
+from Dialogs import AboutDialog, PreferencesDialog, SavePlaylistDialog
 from Playlist import PlaylistFrame
 from SearchBox import SearchBox
 from FileBrowser import FilesFrame
@@ -240,7 +239,7 @@ class View(gtk.Window):
         shuffleB.add(sIcon)
         shuffleB.set_tooltip_text(_('Shuffle'))
         shuffleB.connect("clicked", self.control.shufflePlaylist)
-        saveB = self.createButton(gtk.STOCK_SAVE, _('Save Playlist'), self.control.savePlaylistDialog)
+        saveB = self.createButton(gtk.STOCK_SAVE, _('Save Playlist'), self.savePlaylistDialog)
         
         searchBox = SearchBox(self.filesTree.listStore, self.control)
         
@@ -329,7 +328,11 @@ class View(gtk.Window):
         p = PreferencesDialog(self.columns, self.control)
     
     def openPlaylistFolder(self, widget, data=None):
-        os.system('xdg-open %s' % os.path.join(self.cacheDir, 'playlists'))
+        cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")
+        os.system('xdg-open %s' % os.path.join(cacheDir, 'playlists'))
+    
+    def savePlaylistDialog(self, widget, data=None):
+        d = SavePlaylistDialog(self.control)
         
     def getFormatDict(self):
         return self.formatDict     
