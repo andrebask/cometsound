@@ -51,7 +51,8 @@ class Model:
             return
         else:
             try:
-                self.numOfFiles = int(commands.getstatusoutput("find \"%s\" | wc -l" % (directory))[1]) #find /home/andrebask/ -name "[[:alnum:]]*.mp3" | wc -l
+                self.numOfFiles = int(commands.getstatusoutput("find \"%s\" | wc -l" % (directory))[1])
+                self.fraction = float(1) / self.numOfFiles
             except:
                 self.folder = ''    
         self.audioFileList = self.__searchFiles(self.directory) 
@@ -101,9 +102,8 @@ class Model:
     def __updateProgressBar(self):
         """Updates the progress bar that shows the current status of the scan"""
         if self.progressBar != None:
-            fraction = float(self.count) / self.numOfFiles
-            self.progressBar.set_fraction(fraction)
-            #self.progressBar.set_text(str(fraction)[2:4] + "%")
+            self.progressBar.set_fraction(self.count * self.fraction)
+            #self.progressBar.set_text(str(self.count * self.fraction)[2:4] + "%")
             self.count+=1
             while gtk.events_pending():
                 gtk.main_iteration() 

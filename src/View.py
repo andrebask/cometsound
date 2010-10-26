@@ -53,9 +53,10 @@ class View(gtk.Window):
         self.pix = self.icon.get_pixbuf().scale_simple(60, 60, gtk.gdk.INTERP_BILINEAR)
         self.set_icon(self.pix)
         self.tray = None
-        self.setStatusIcon()
         
         self.createPrimaryToolbar()
+        
+        self.setStatusIcon()
         
         self.createSlider()
         
@@ -281,20 +282,11 @@ class View(gtk.Window):
             self.tray.set_from_pixbuf(pix)
             self.tray.connect('popup-menu', self.openMenu) 
             self.tray.connect('activate', self.minimize) 
-    
-    def minimize(self, obj = None):
-        if self.get_visible():
-            self.hide()
-        else:
-            self.show()
-        
-    def openMenu(self, icon, event_button, event_time):    
+            
         statusMenu = gtk.Menu()
-        
-        if self.label.get_text() != '\n\n' and self.control.settings['statusicon'] == 0:
-            label = gtk.MenuItem(self.label.get_text())
-            label.show()
-            statusMenu.append(label)
+        if self.control.settings['statusicon'] == 0:
+            self.menulabel = gtk.MenuItem(self.label.get_text())
+            statusMenu.append(self.menulabel)
             
             sep = gtk.SeparatorMenuItem()
             sep.show()
@@ -319,10 +311,23 @@ class View(gtk.Window):
         quit = gtk.MenuItem(_('Quit'))
         quit.show()
         statusMenu.append(quit)
-        quit.connect('activate', self.quit)
-        
-        statusMenu.popup(None, None, gtk.status_icon_position_menu,
+        quit.connect('activate', self.quit)    
+        self.statusMenu = statusMenu    
+    
+    def openMenu(self, icon, event_button, event_time):    
+        if self.label.get_text() != '\n\n' and self.control.settings['statusicon'] == 0:
+            self.statusMenu.remove(self.menulabel)
+            self.menulabel = gtk.MenuItem(self.label.get_text())
+            self.menulabel.show()
+            self.statusMenu.prepend(self.menulabel)
+        self.statusMenu.popup(None, None, gtk.status_icon_position_menu,
                    event_button, event_time, self.tray)
+            
+    def minimize(self, obj = None):
+        if self.get_visible():
+            self.hide()
+        else:
+            self.show()
         
     def openPreferences(self, obj = None):
         p = PreferencesDialog(self.columns, self.control)
