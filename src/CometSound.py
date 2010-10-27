@@ -33,6 +33,16 @@ def registerClasses():
     cerealizer.register(AF.AudioFile)            
           
 t = Translator()
+
+import fcntl, sys, os
+pidFile = os.path.join(os.environ.get('HOME', None), '.CometSound', 'program.pid') 
+fp = open(pidFile, 'w')
+try:
+    fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
+except IOError:
+    print 'CometSound is already running'
+    sys.exit(0)
+
             
 def main():
     gtk.main()

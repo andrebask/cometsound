@@ -20,7 +20,7 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, gobject, SortFunctions as SF
+import gtk, gobject, SortFunctions as SF, time
 
 class SearchBox(gtk.Entry):
     
@@ -36,9 +36,13 @@ class SearchBox(gtk.Entry):
         self.completion.set_model(self.listStore)
         self.completion.set_text_column(0)
         self.completion.set_match_func(self.matchFunc)
-        self.completion.connect('match-selected', self.matchAction)
+        self.completion.connect('match-selected', self.matchAction, 0)
         self.set_completion(self.completion)
     
+    def clear(self, editable, data = None):
+        self.set_text('')
+        self.disconnect_by_func(self.clear)
+        
     def copyValues(self, model, path, iter, user_data = None):
         value = model.get_value(iter, 4)
         if value not in self.albumList:
@@ -89,6 +93,7 @@ class SearchBox(gtk.Entry):
             return False
     
     def matchAction(self, completion, model, iter, column):
+        self.connect('changed', self.clear)
         if column == 0 or column == 2:
             fileName = model.get_value(iter, 8)
             self.control.playlist.append(fileName)
@@ -102,7 +107,7 @@ class SearchBox(gtk.Entry):
             value = model.get_value(iter, 0)  
             self.listStore.foreach(self.add, (value, column))  
         self.control.updatePlaylist()
-    
+
     def add(self, model, path, iter, (value, column)):
         v = model.get_value(iter, column)
         if v == value:

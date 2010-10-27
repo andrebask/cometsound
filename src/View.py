@@ -252,6 +252,13 @@ class View(gtk.Window):
         artist.connect('toggled', searchBox.changeSearchColumn, 3)
         album = gtk.RadioButton(artist, _('Album'))
         album.connect('toggled', searchBox.changeSearchColumn, 4)
+
+        self.searchButtons = [file, title, artist, album]
+        
+        for b in self.searchButtons:
+            b.set_relief(gtk.RELIEF_NONE)
+            b.set_mode(False)
+            
         self.searchBox = searchBox
         
         self.buttons.pack_start(addAllB, False)
@@ -266,7 +273,7 @@ class View(gtk.Window):
         self.buttons.pack_start(saveB, False)
         self.buttons.pack_start(shuffleB, False)
         self.buttons.pack_start(clearB, False)
-        self.buttons.pack_start(removeSelectedB, False)
+        self.buttons.pack_start(removeSelectedB, False)  
     
     def setStatusIcon(self):
         pix = self.pix

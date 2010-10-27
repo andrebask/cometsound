@@ -366,7 +366,7 @@ class Controller:
             else:
                 f = self.extractTags(track)['filename']
                 append([icon, f]) 
-        
+
     def clearPlaylist(self, widget, data=None):
         """Removes all the files from the playlist"""
         #self.addAll(None, False) #slow
