@@ -31,7 +31,6 @@ class SearchBox(gtk.Entry):
         self.artistStore = gtk.ListStore(gobject.TYPE_STRING)
         self.albumStore = gtk.ListStore(gobject.TYPE_STRING)
         self.setListStore(listStore)
-        self.set_size_request(350, 28)
         self.completion = gtk.EntryCompletion()
         self.completion.set_model(self.listStore)
         self.completion.set_text_column(0)

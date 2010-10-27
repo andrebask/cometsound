@@ -27,7 +27,7 @@ from Playlist import PlaylistFrame
 from SearchBox import SearchBox
 from FileBrowser import FilesFrame
 
-version = '0.1.2'
+version = '0.1.3'
 _ = CometSound.t.getTranslationFunc()
 
 class View(gtk.Window):
@@ -260,11 +260,12 @@ class View(gtk.Window):
             b.set_mode(False)
             
         self.searchBox = searchBox
+        self.searchBox.set_size_request(self.get_screen().get_width() / 5, 30) 
         
         self.buttons.pack_start(addAllB, False)
         self.buttons.pack_start(removeAllB, False)
         self.buttons.pack_start(refreshB, False)
-        self.buttons.pack_start(searchBox, False)
+        self.buttons.pack_start(searchBox, True)
         self.buttons.pack_start(file, False)
         self.buttons.pack_start(title, False)
         self.buttons.pack_start(artist, False)
