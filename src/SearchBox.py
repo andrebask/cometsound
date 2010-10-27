@@ -20,7 +20,7 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, gobject, SortFunctions as SF, time
+import gtk, gobject, SortFunctions as SF
 
 class SearchBox(gtk.Entry):
     

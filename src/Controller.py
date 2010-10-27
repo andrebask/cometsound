@@ -37,6 +37,8 @@ class Controller:
         self.playerThread = PlayerThread(self.playlist, self)
         self.position = 0
         self.duration = 0
+        pynotify.init('label')
+        self.notification = pynotify.Notification(' ',' ')
         try:
             self.folder = self.model.getOldDir()
         except:
@@ -309,10 +311,8 @@ class Controller:
             tooltip = label + "\nYear:\t\t%s\nGenre:\t\t%s\nNum:\t\t%s" % (t['year'], t['genre'], t['num'])
             self.view.label.set_tooltip_text(tooltip)
             if notify:
-                pynotify.init('label')
-                #imageURI = 'file://' + os.path.abspath(os.path.curdir) + '/logo.png'
-                n = pynotify.Notification(t['title'], "%s\n%s" % (t['album'], t['artist']))
-                n.show()
+                self.notification.update(t['title'], "%s\n%s" % (t['album'], t['artist']))
+                self.notification.show()
         else:
             winTitle = t['filename']
             label = "File:\t" + winTitle + "\n\n"
