@@ -68,19 +68,7 @@ class PreferencesDialog(gtk.Dialog):
         self.set_size_request(300,320)
         self.control = control
         self.control.readSettings()
-        settings = self.control.settings
-        if settings == None:
-            settings = {'audiosink': 'autoaudiosink',
-                    'statusicon': 0,    
-                    '#': True,
-                     _('Title'): True,
-                     _('Artist'): True,
-                      _('Album'): True,
-                       _('Genre'): True,
-                        _('Year'): True,
-                         _('Add'): True
-                         } 
-            
+        settings = self.control.settings            
         self.set_title(_('CometSound preferences'))
         sinks = ['Auto', 'ALSA', 'PulseAudio', 'OSS', 'Jack']
         gstSinks = ['autoaudiosink', 'alsasink', 'pulsesink', 'osssink', 'jackaudiosink']

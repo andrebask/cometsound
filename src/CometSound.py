@@ -35,7 +35,10 @@ def registerClasses():
 t = Translator()
 
 import fcntl, sys, os
-pidFile = os.path.join(os.environ.get('HOME', None), '.CometSound', 'program.pid') 
+dir = os.path.join(os.environ.get('HOME', None), '.CometSound')
+pidFile = os.path.join(dir, 'program.pid') 
+if not os.path.exists(dir):
+    os.makedirs(dir)
 fp = open(pidFile, 'w')
 try:
     fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)

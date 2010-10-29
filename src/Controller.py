@@ -22,6 +22,8 @@
 
 import gtk, os, AF, Model, gst, pynotify, cerealizer, random
 from Player import PlayerThread
+from View import CometSound
+_ = CometSound.t.getTranslationFunc()
 
 icons = {'True': gtk.STOCK_MEDIA_PLAY, 'False': gtk.STOCK_MEDIA_PAUSE}
 
@@ -65,7 +67,16 @@ class Controller:
             FILE.close()
         except:
             #print sys.exc_info()
-            self.settings = None
+            self.settings = {'audiosink': 'autoaudiosink',
+                    'statusicon': 0,    
+                    '#': True,
+                     _('Title'): True,
+                     _('Artist'): True,
+                      _('Album'): True,
+                       _('Genre'): True,
+                        _('Year'): True,
+                         _('Add'): True
+                         }
     
     def refreshColumnsVisibility(self):
         self.view.filesTree.setColumnsVisibility()
