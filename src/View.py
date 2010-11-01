@@ -27,7 +27,7 @@ from Playlist import PlaylistFrame
 from SearchBox import SearchBox
 from FileBrowser import FilesFrame
 
-version = '0.1.3'
+version = '0.1.4'
 _ = CometSound.t.getTranslationFunc()
 
 class View(gtk.Window):

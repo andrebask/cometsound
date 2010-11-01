@@ -91,11 +91,6 @@ class Controller:
         if old != self.folder:
             if os.stat(self.folder).st_uid == os.getuid():
                 self.__reBuildViewTree()
-        else:
-            try:
-                self.view.vbox.remove(self.view.progressBar) 
-            except:
-                pass
             
     def __openDialog(self):
         folderChooser = gtk.FileChooserDialog('Select Folder...', None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER, (gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
@@ -182,6 +177,10 @@ class Controller:
         pt = self.playerThread
         if toggled and cfname != '':
             self.playlist.append(cfname)
+            if len(self.playlist) == 1 and pt.trackNum != -1:
+                pt.trackNum = -1
+                pt.next()
+                pt.pause()
         elif cfname != '':
             try:
                 if self.playlist[pt.trackNum] == cfname:
@@ -313,7 +312,13 @@ class Controller:
         
     def updateLabel(self, completefilename, notify = True):
         """Updates the track label with the tags values"""
-        t = self.extractTags(completefilename)
+        try:
+            t = self.extractTags(completefilename)
+        except:
+            label = '\n\n'
+            self.view.label.set_text(label)
+            self.view.set_title('CometSound')    
+            return
         if t['title'] != '' and t['title'] != ' ':
             label = "Title:\t\t%s\nAlbum:\t%s\nArtist:\t\t%s" % (t['title'][:50], t['album'][:50], t['artist'][:50])
             winTitle = "%s - %s - %s" % (t['title'], t['album'], t['artist'])

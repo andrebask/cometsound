@@ -81,10 +81,9 @@ class PlayerThread(threading.Thread):
             else:
                 self.stop()    
         elif t == gst.MESSAGE_ERROR:
-            self.player.set_state(gst.STATE_NULL)
+            self.stop()
             err, debug = message.parse_error()
             print "Error: %s" % err, debug
-            self.playing = False
             
     def pause(self, widget = None, event = None):
         """Pauses playing"""
@@ -105,8 +104,10 @@ class PlayerThread(threading.Thread):
         """Stops playing"""
         self.playing = False
         self.player.set_state(gst.STATE_NULL)   
+        self.player.set_property("uri", '')
         self.control.resetSlider()
         self.control.view.setButtonPlay()
+        self.control.updateLabel('')
         
     def next(self, notify = True):
         """Starts playing of the next track in the playlist"""
