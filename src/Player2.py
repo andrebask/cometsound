@@ -50,8 +50,8 @@ class PlayerThread(threading.Thread):
         self.player.set_property("audio-sink", sink)
         self.bus = self.player.get_bus()
         self.bus.add_signal_watch()
-        self.bus.connect("message", self.onMessage)    
-        self.player.connect("about-to-finish", self.onFinish)    
+        self.bus.connect("message", self.onMessage)  
+        self.player.connect("about-to-finish", self.onFinish)      
         
     def setPlaylist(self, playlist):
         self.playlist = playlist
@@ -85,7 +85,7 @@ class PlayerThread(threading.Thread):
             self.stop()
             err, debug = message.parse_error()
             print "Error: %s" % err, debug
-
+    
     def onFinish(self, player):
         """Handles the end of a stream, 
            preparing the player to play an other track"""
@@ -112,10 +112,8 @@ class PlayerThread(threading.Thread):
         """Stops playing"""
         self.playing = False
         self.player.set_state(gst.STATE_NULL)   
-        self.player.set_property("uri", '')
         self.control.resetSlider()
         self.control.view.setButtonPlay()
-        self.control.updateLabel('')
         
     def next(self, notify = True):
         """Starts playing of the next track in the playlist"""

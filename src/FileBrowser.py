@@ -156,4 +156,3 @@ class FilesFrame(gtk.Frame):
         self.treeStore.clear()
         self.listStore.clear()
         self.createTree(None, self.listOfFiles)
-     
