@@ -21,6 +21,7 @@
 ##
 
 import gtk, string, gobject, SortFunctions as SF, CometSound
+from TagsEditorDialog import TagsEditor
 
 _ = CometSound.t.getTranslationFunc()
 
@@ -54,6 +55,7 @@ class FilesFrame(gtk.Frame):
         self.treeview = gtk.TreeView(self.treeStore)
         self.treeview.set_rules_hint(True)
         self.treeview.connect("button-press-event", self.control.doubleClickSelect)
+        self.treeview.connect("button-press-event", self.control.rightClick, self.openMenu)
         # create the TreeViewColumns to display the data
         self.__createColumns()    
         
@@ -128,8 +130,7 @@ class FilesFrame(gtk.Frame):
                 if column == _('Title'):
                     tvcolumn.set_sort_column_id(2)
                 if column == _('Artist'):
-                    tvcolumn.set_sort_column_id(3) 
-                    #tvcolumn.set_visible(False)   
+                    tvcolumn.set_sort_column_id(3)    
                 if column == _('Album'):
                     tvcolumn.set_sort_column_id(6)
                 if column == _('Genre'):
@@ -156,3 +157,24 @@ class FilesFrame(gtk.Frame):
         self.treeStore.clear()
         self.listStore.clear()
         self.createTree(None, self.listOfFiles)
+    
+    def openMenu(self, time, path):
+        cfname = self.treeview.get_model()[path][8]
+        
+        trackMenu = gtk.Menu()
+        add = gtk.MenuItem(_('Add to playlist'))
+        add.show()
+        trackMenu.append(add)
+        add.connect('activate', self.addToPlaylist, path)
+        if cfname != '':
+            edit = gtk.MenuItem(_('Edit tags'))
+            edit.show()
+            trackMenu.append(edit)
+            edit.connect('activate', self.openTagsEditor, cfname, path)
+        trackMenu.popup(None, None, None, 3, time)
+        
+    def openTagsEditor(self, obj, cfname, path):
+        td = TagsEditor(cfname, self.treeview.get_model(), path)    
+    
+    def addToPlaylist(self, obj, path):
+        self.control.toggle(None, path, self.treeview.get_model())    

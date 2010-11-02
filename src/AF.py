@@ -1,5 +1,5 @@
 ##
-#    Project: CometSound - A Music player written in Python 
+#    Project: CometSound - A music player written in Python 
 #    Author: Andrea Bernardini <andrebask@gmail.com>
 #    Copyright: 2010 Andrea Bernardini
 #    License: GPL-2+
@@ -43,25 +43,15 @@ class AudioFile:
 		"""Builds the audio file structure from the file system path"""
 		self.tagsDict = dict()
 		self.tagsDict[fname] = [fileName]
+		self.keyDict = dict()
 		self.directoryName = directory + "/"
-		
-		self.__readAudioFile(directory + "/" + fileName)	
+		self.cfname = directory + "/" + fileName
+		self.__readAudioFile(self.cfname)	
 			
 	def __readAudioFile(self, fileName):
 		"""Detects the file extension, reads and stores tags""" 
-		fileext = fileName.split('.')[-1:][0]
 		try:
-			if(fileext == ('mp3' or 'MP3')):
-				tags = EasyID3(fileName)
-				
-			elif(fileext == ('wma' or 'WMA')):
-				tags = ASF(fileName)
-				
-			elif(fileext == ('ogg' or 'OGG')):
-				tags = OggVorbis(fileName)
-				#print tags
-			elif(fileext == ('flac' or 'FLAC')):
-				tags = FLAC(fileName)	
+			tags, fileext = self.read(fileName)
 		except:
 			for key in keyList:
 				self.tagsDict[key] = " "
@@ -74,7 +64,23 @@ class AudioFile:
 					self.tagsDict[couple[0]] = tags[couple[1]]
 				except:
 					self.tagsDict[couple[0]] = " "
+				self.keyDict[couple[0]] = couple[1]
 	
+	def read(self, fileName):		
+		fileext = fileName.split('.')[-1:][0]
+		if(fileext == ('mp3' or 'MP3')):
+			tags = EasyID3(fileName)
+			
+		elif(fileext == ('wma' or 'WMA')):
+			tags = ASF(fileName)
+			
+		elif(fileext == ('ogg' or 'OGG')):
+			tags = OggVorbis(fileName)
+			#print tags
+		elif(fileext == ('flac' or 'FLAC')):
+			tags = FLAC(fileName)
+		return tags, fileext
+				
 	def getTagValues(self):
 		"""Returns a list with the tag values:
 		   file name, title, artist, album, genre, year, track number"""
@@ -93,6 +99,13 @@ class AudioFile:
 		"""Returns the specific tag associated with the given key""" 
 		return str(self.tagsDict[key][0])	
 	
+	def writeTagValue(self, key, value):
+		tags, fileext = self.read(self.cfname)
+		key = self.keyDict[key]
+		tags[key] = unicode(value)
+		tags.pprint()
+		tags.save()
+		
 	def getDir(self):
 		"""Returns the name of this file's directory"""
 		return self.directoryName		

@@ -1,5 +1,5 @@
 ##
-#    Project: CometSound - A Music player written in Python 
+#    Project: CometSound - A music player written in Python 
 #    Author: Andrea Bernardini <andrebask@gmail.com>
 #    Copyright: 2010 Andrea Bernardini
 #    License: GPL-2+

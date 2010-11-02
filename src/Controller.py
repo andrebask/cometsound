@@ -1,5 +1,5 @@
 ##
-#    Project: CometSound - A Music player written in Python 
+#    Project: CometSound - A music player written in Python 
 #    Author: Andrea Bernardini <andrebask@gmail.com>
 #    Copyright: 2010 Andrea Bernardini
 #    License: GPL-2+
@@ -23,6 +23,7 @@
 import gtk, os, AF, Model, gst, pynotify, cerealizer, random
 from Player import PlayerThread
 from View import CometSound
+
 _ = CometSound.t.getTranslationFunc()
 
 icons = {'True': gtk.STOCK_MEDIA_PLAY, 'False': gtk.STOCK_MEDIA_PAUSE}
@@ -203,6 +204,8 @@ class Controller:
         if event.type == gtk.gdk._2BUTTON_PRESS:
             path = self.__detectPath(tree, event)
             self.toggle(None, path, tree.get_model())
+            
+            
         
     def doubleClickPlay(self, tree, event):
         """Detects double click on the playlist and play the selected track"""
@@ -215,6 +218,11 @@ class Controller:
                 self.playerThread.next()    
             else:
                 self.playStopSelected(None)
+    
+    def rightClick(self, tree, event, openMenu):
+        if event.type == gtk.gdk.BUTTON_PRESS and event.button == 3:
+            path = self.__detectPath(tree, event) 
+            openMenu(event.time, path)
                 
     def __detectPath(self, tree, event): 
         """Determines the path corresponding to the area of the double click"""              
@@ -326,6 +334,7 @@ class Controller:
             self.view.set_title(winTitle)
             tooltip = label + "\nYear:\t\t%s\nGenre:\t\t%s\nNum:\t\t%s" % (t['year'], t['genre'], t['num'])
             self.view.label.set_tooltip_text(tooltip)
+            self.view.tray.set_tooltip_text(label)
             if notify:
                 self.notification.update(t['title'], "%s\n%s" % (t['album'], t['artist']))
                 self.notification.show()
