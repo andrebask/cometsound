@@ -20,14 +20,14 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, CometSound
-from AF import AudioFile, keyList
+import gtk, os, CometSound
+from AF import AudioFile
 
 _ = CometSound.t.getTranslationFunc()
 
 class TagsEditor(gtk.Dialog):
     
-    def __init__(self, cfname, treeModel, path):
+    def __init__(self, cfname, treeModel, path, columns, colToKey):
         gtk.Dialog.__init__(self)
         i = cfname.rfind('/')
         self.set_title(_('Edit Tags'))       
@@ -40,17 +40,18 @@ class TagsEditor(gtk.Dialog):
         l1.set_alignment(0.1,0.5)
         e = gtk.Entry()
         e.set_text(cfname[i+1:])
+        entries = {}
+        entries['file'] = e
         hbox.pack_start(l1)
         hbox.pack_start(e)
         vbox.pack_start(hbox)
-        entries = {}
-        for key in keyList:
+        for key in columns[1:6]:
             hbox = gtk.HBox()
-            l = gtk.Label(_(key) + ':')
+            l = gtk.Label(key + ':')
             l.set_size_request(5,5)
             l.set_alignment(0.1,0.5)
             e = gtk.Entry()
-            e.set_text(file.getTagValue(key))
+            e.set_text(file.getTagValue(colToKey[key]))
             entries[key] = e
             hbox.pack_start(l)
             hbox.pack_start(e)
@@ -62,8 +63,15 @@ class TagsEditor(gtk.Dialog):
         if response == gtk.RESPONSE_CANCEL or response == gtk.RESPONSE_DELETE_EVENT:
             self.destroy()
         elif response == gtk.RESPONSE_APPLY:
-            for key in keyList:
-                file.writeTagValue(key, entries[key].get_text())    
+            for key in columns[1:6]:
+                val = entries[key].get_text()
+                file.writeTagValue(colToKey[key], val)  
+                n = columns.index(key)
+                treeModel[path][n] = val
+            newname = os.path.join(cfname[:i], entries['file'].get_text())
+            os.rename(cfname, newname)
+            treeModel[path][len(columns)-1] = newname
+            treeModel[path][0] = entries['file'].get_text()      
             self.destroy()
             
         

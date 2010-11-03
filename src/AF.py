@@ -24,7 +24,11 @@ from mutagen.easyid3 import EasyID3
 from mutagen.asf import ASF
 from mutagen.oggvorbis import OggVorbis
 from mutagen.flac import FLAC
-import string, sys
+from mutagen.oggflac import OggFLAC
+from mutagen.oggspeex import OggSpeex
+from mutagen.ogg import error as OggError
+
+import string, os
 
 
 fname = "fileName"	
@@ -42,10 +46,10 @@ class AudioFile:
 	def __init__(self, directory, fileName):
 		"""Builds the audio file structure from the file system path"""
 		self.tagsDict = dict()
-		self.tagsDict[fname] = [fileName]
+		self.tagsDict[fname] = fileName
 		self.keyDict = dict()
 		self.directoryName = directory + "/"
-		self.cfname = directory + "/" + fileName
+		self.cfname = os.path.join(directory, fileName)
 		self.__readAudioFile(self.cfname)	
 			
 	def __readAudioFile(self, fileName):
@@ -54,16 +58,16 @@ class AudioFile:
 			tags, fileext = self.read(fileName)
 		except:
 			for key in keyList:
-				self.tagsDict[key] = " "
+				self.tagsDict[key] = ''
 			#print sys.exc_info()	
 		else:
 			list = [(key, keyTag) for key in keyList for keyTag in formatDict[string.lower(fileext)]
 					 if keyList.index(key) == formatDict[string.lower(fileext)].index(keyTag)]
 			for couple in list:
 				try:
-					self.tagsDict[couple[0]] = tags[couple[1]]
+					self.tagsDict[couple[0]] = str(tags[couple[1]][0])
 				except:
-					self.tagsDict[couple[0]] = " "
+					self.tagsDict[couple[0]] = ''
 				self.keyDict[couple[0]] = couple[1]
 	
 	def read(self, fileName):		
@@ -75,8 +79,13 @@ class AudioFile:
 			tags = ASF(fileName)
 			
 		elif(fileext == ('ogg' or 'OGG')):
-			tags = OggVorbis(fileName)
-			#print tags
+			try:
+				tags = OggVorbis(fileName)
+			except OggError:	
+				tags = OggFLAC(fileName)
+			except:
+				tags = OggSpeex(fileName)
+					
 		elif(fileext == ('flac' or 'FLAC')):
 			tags = FLAC(fileName)
 		return tags, fileext
@@ -97,7 +106,7 @@ class AudioFile:
 	
 	def getTagValue(self, key):
 		"""Returns the specific tag associated with the given key""" 
-		return str(self.tagsDict[key][0])	
+		return self.tagsDict[key]
 	
 	def writeTagValue(self, key, value):
 		tags, fileext = self.read(self.cfname)

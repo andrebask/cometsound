@@ -30,6 +30,9 @@ from FileBrowser import FilesFrame
 version = '0.1.5'
 _ = CometSound.t.getTranslationFunc()
 
+columns = [_('Name'), '#', _('Title'), _('Artist'),
+            _('Album'), _('Genre'), _('Year'), _('Add'), '']
+
 class View(gtk.Window):
     
     
@@ -60,7 +63,7 @@ class View(gtk.Window):
         
         self.createSlider()
         
-        self.columns = [_('Name'), '#', _('Title'), _('Artist'), _('Album'), _('Genre'), _('Year'), _('Add'), '']
+        self.columns = columns
         self.filesTree = FilesFrame(self.model, self.control, self.formatDict, self.columns)
         self.playlistFrame = PlaylistFrame(self.control, [])
         

@@ -29,11 +29,8 @@ class Translator:
     def __init__(self):
         #language files path
         localPath = os.path.realpath(os.path.dirname(sys.argv[0]))
-        listPath = localPath.split('/')
-        if listPath[1] == 'local':
-            langPath = '/usr/local/share/locale-langpack/'
-        else:
-            langPath = '/usr/share/locale-langpack/'    
+        langPath = localPath.split('cometsound')[0]
+        langPath = os.path.join(langPath, 'locale-langpack')   
         langs = []
         #Check the default locale
         lc, encoding = locale.getdefaultlocale()

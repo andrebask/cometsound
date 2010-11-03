@@ -25,6 +25,9 @@ from TagsEditorDialog import TagsEditor
 
 _ = CometSound.t.getTranslationFunc()
 
+colToKey  = {'#': 'num', _('Title'): 'title', _('Artist'): 'artist',
+                _('Album'): 'album', _('Genre'): 'genre', _('Year'): 'year'}
+
 class FilesFrame(gtk.Frame):
     """Gtk Frame modified to store a treeview that shows all the audio files inside the selected folder"""
             
@@ -174,7 +177,7 @@ class FilesFrame(gtk.Frame):
         trackMenu.popup(None, None, None, 3, time)
         
     def openTagsEditor(self, obj, cfname, path):
-        td = TagsEditor(cfname, self.treeview.get_model(), path)    
+        td = TagsEditor(cfname, self.treeview.get_model(), path, self.columns, colToKey)    
     
     def addToPlaylist(self, obj, path):
         self.control.toggle(None, path, self.treeview.get_model())    
