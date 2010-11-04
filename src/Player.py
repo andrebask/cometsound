@@ -77,8 +77,9 @@ class PlayerThread(threading.Thread):
            calling the stop() method to shut down the player"""
         t = message.type
         if t == gst.MESSAGE_ELEMENT:
-            self.control.updateLabel(self.playlist[self.trackNum])
-            self.control.updatePlaylist()
+            if self.trackNum > -1 and self.started:
+                self.control.updateLabel(self.playlist[self.trackNum])
+                self.control.updatePlaylist()
         elif t == gst.MESSAGE_EOS:
             self.stop()    
         elif t == gst.MESSAGE_ERROR:
@@ -115,7 +116,7 @@ class PlayerThread(threading.Thread):
         self.player.set_property("uri", '')
         self.control.resetSlider()
         self.control.view.setButtonPlay()
-        self.control.updateLabel('')
+        self.control.updateLabel(None)
         
     def next(self, notify = True):
         """Starts playing of the next track in the playlist"""
@@ -125,7 +126,8 @@ class PlayerThread(threading.Thread):
             if os.path.isfile(self.playlist[self.trackNum]):
                 self.player.set_property("uri", "file://" + self.playlist[self.trackNum])
                 self.play()
-                self.control.updateLabel(self.playlist[self.trackNum], notify)
+            if len(self.playlist) == 0:
+                self.control.updateLabel(self.playlist[self.trackNum], notify and self.started)
         
     def previous(self, notify = True):
         """Starts playing of the previous track in the playlist"""

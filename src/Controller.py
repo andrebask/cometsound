@@ -20,7 +20,7 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, os, AF, Model, gst, pynotify, cerealizer, random
+import gtk, os, AF, Model, gst, pynotify, cerealizer, random, sys
 from Player import PlayerThread
 from View import CometSound
 
@@ -184,20 +184,21 @@ class Controller:
                 pt.pause()
         elif cfname != '':
             try:
-                if self.playlist[pt.trackNum] == cfname:
-                    if pt.playing:
-                        pt.next(False)
-                        if len(self.playlist) == 1:
-                            pt.stop()
-                    else:
-                        pt.next(False)
-                        pt.pause()
+                if pt.started:
+                    if self.playlist[pt.trackNum] == cfname:
+                        if pt.playing:
+                            pt.next(False)
+                            if len(self.playlist) == 1:
+                                pt.stop()
+                        else:
+                            pt.next(False)
+                            pt.pause()
                 if pt.trackNum > self.playlist.index(cfname):
                     pt.trackNum -= 1    
                 self.playlist.remove(cfname)                                
             except:
                 pass
-                #print sys.exc_info()
+                print sys.exc_info()
         
     def doubleClickSelect(self, tree, event):
         """Detects double click on the treeview and updates the selection"""
@@ -391,7 +392,7 @@ class Controller:
             else:
                 f = self.extractTags(track)['filename']
                 append([icon, f]) 
-
+            
     def clearPlaylist(self, widget, data=None):
         """Removes all the files from the playlist"""
         #self.addAll(None, False) #slow
