@@ -34,15 +34,13 @@ class Translator:
         langs = []
         #Check the default locale
         lc, encoding = locale.getdefaultlocale()
-        if (lc):
-            #If we have a default, it's the first in the list
-            langs = [lc]
         # Get supported languages on the system
         language = os.environ.get('LANG', None)
         if (language):
-            langs += language.split(":")
-        langs += ["en", "en_US", "en_GB", "it"] #default
-        
+            l = [language.split(".")[0]]
+            langs += l
+        langs += [lc, "en", "en_US", "en_GB", "it"] #default
+
         gettext.bindtextdomain(APP_NAME, langPath)
         gettext.textdomain(APP_NAME)
         # Get the language to use

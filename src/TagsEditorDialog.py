@@ -35,7 +35,7 @@ class TagsEditor(gtk.Dialog):
         self.set_size_request(300, 300)
         vbox = self.get_child()
         hbox = gtk.HBox()
-        l1 = gtk.Label('file:')
+        l1 = gtk.Label('File:')
         l1.set_size_request(5,5)
         l1.set_alignment(0.1,0.5)
         e = gtk.Entry()

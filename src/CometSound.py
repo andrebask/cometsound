@@ -28,8 +28,6 @@ import View
 from Translator import Translator
     
 def registerClasses():
-    #cerealizer.register(mtgasf.ASFUnicodeAttribute)
-    #cerealizer.register(mtgasf.ASFDWordAttribute)
     cerealizer.register(AF.AudioFile)            
           
 t = Translator()
