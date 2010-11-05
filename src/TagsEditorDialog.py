@@ -45,7 +45,7 @@ class TagsEditor(gtk.Dialog):
         hbox.pack_start(l1)
         hbox.pack_start(e)
         vbox.pack_start(hbox)
-        for key in columns[1:6]:
+        for key in columns[1:7]:
             hbox = gtk.HBox()
             l = gtk.Label(key + ':')
             l.set_size_request(5,5)
@@ -59,19 +59,21 @@ class TagsEditor(gtk.Dialog):
         self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
         self.add_button(gtk.STOCK_SAVE, gtk.RESPONSE_APPLY)    
         self.show_all()    
+        
+        row = treeModel.get_iter(path)
         response = self.run()
         if response == gtk.RESPONSE_CANCEL or response == gtk.RESPONSE_DELETE_EVENT:
             self.destroy()
         elif response == gtk.RESPONSE_APPLY:
-            for key in columns[1:6]:
+            for key in columns[1:7]:
                 val = entries[key].get_text()
                 file.writeTagValue(colToKey[key], val)  
                 n = columns.index(key)
-                treeModel[path][n] = val
+                treeModel.set_value(row, n, val)
             newname = os.path.join(cfname[:i], entries['file'].get_text())
             os.rename(cfname, newname)
-            treeModel[path][len(columns)-1] = newname
-            treeModel[path][0] = entries['file'].get_text()      
+            treeModel.set_value(row, len(columns)-1, newname)
+            treeModel.set_value(row, 0, entries['file'].get_text())    
             self.destroy()
             
         

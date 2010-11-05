@@ -79,7 +79,7 @@ class PlayerThread(threading.Thread):
         if t == gst.MESSAGE_ELEMENT:
             if self.trackNum > -1 and self.started:
                 self.control.updateLabel(self.playlist[self.trackNum])
-                self.control.updatePlaylist()
+            self.control.updatePlaylist()
         elif t == gst.MESSAGE_EOS:
             self.stop()    
         elif t == gst.MESSAGE_ERROR:

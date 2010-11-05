@@ -163,7 +163,6 @@ class FilesFrame(gtk.Frame):
     
     def openMenu(self, time, path):
         cfname = self.treeview.get_model()[path][8]
-        
         trackMenu = gtk.Menu()
         add = gtk.MenuItem(_('Add to playlist'))
         add.show()

@@ -48,7 +48,7 @@ class AudioFile:
 		self.tagsDict = dict()
 		self.tagsDict[fname] = fileName
 		self.keyDict = dict()
-		self.directoryName = directory + "/"
+		self.directoryName = directory + '/'
 		self.cfname = os.path.join(directory, fileName)
 		self.__readAudioFile(self.cfname)	
 			
@@ -114,7 +114,7 @@ class AudioFile:
 		tags[key] = unicode(value)
 		tags.pprint()
 		tags.save()
-		
+
 	def getDir(self):
 		"""Returns the name of this file's directory"""
 		return self.directoryName		

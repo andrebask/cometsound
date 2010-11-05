@@ -20,7 +20,8 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, os, AF, Model, gst, pynotify, cerealizer, random, sys
+import gtk, os, Model, gst, pynotify, cerealizer, random, time
+from AF import AudioFile
 from Player import PlayerThread
 from View import CometSound
 
@@ -77,7 +78,8 @@ class Controller:
                        _('Genre'): True,
                         _('Year'): True,
                          _('Add'): True
-                         }
+                         }      
+        
     
     def refreshColumnsVisibility(self):
         self.view.filesTree.setColumnsVisibility()
@@ -120,6 +122,7 @@ class Controller:
         FILE.close()
         self.__refreshViewTree()
         self.view.vbox.remove(self.view.progressBar)
+        self.model.lastUpdate = time.time()
         
     def __refreshViewTree(self): 
         """Refreshes the treeview"""  
@@ -127,9 +130,11 @@ class Controller:
         self.view.searchBox.setListStore(self.view.filesTree.listStore)
     
     def refreshTree(self, widget, data = None):
-        self.view.vbox.pack_start(self.view.progressBar, False)
-        self.view.show_all()
-        self.__reBuildViewTree()
+#        self.view.vbox.pack_start(self.view.progressBar, False)
+#        self.view.show_all()
+#        self.__reBuildViewTree()
+        self.model.updateModel()
+        self.__refreshViewTree()
             
     def toggle(self, cell, path, rowModel):
         """Adds or removes the selected files to the playlist and updates the treeview"""
@@ -198,7 +203,7 @@ class Controller:
                 self.playlist.remove(cfname)                                
             except:
                 pass
-                print sys.exc_info()
+                #print sys.exc_info()
         
     def doubleClickSelect(self, tree, event):
         """Detects double click on the treeview and updates the selection"""
@@ -439,7 +444,7 @@ class Controller:
         index = completefilename.rfind("/")    
         directory = completefilename[:index]
         filename = completefilename[index+1:]
-        af = AF.AudioFile(directory, filename)
+        af = AudioFile(directory, filename)
         title = af.getTagValue('title')
         album = af.getTagValue('album')
         artist = af.getTagValue('artist')
