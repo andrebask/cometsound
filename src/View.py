@@ -380,6 +380,7 @@ class View(gtk.Window):
         self.destroy()
         
     def destroy(self):
+        self.control.saveCache()
         self.control.playerThread.stop()
         if self.control.playerThread.isAlive():
             self.control.playerThread.terminate()    

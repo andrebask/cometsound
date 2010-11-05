@@ -30,7 +30,8 @@ class Model:
         
     def __init__(self, directory, progressBar = None):
         self.progressBar = progressBar
-        self.lastUpdate = 0
+        self.cachefname = os.path.join(os.environ.get('HOME', None) , '.CometSound' , 'cache')
+        self.lastUpdate = os.path.getmtime(self.cachefname)
         self.setDir(directory)
      
     def getAudioFileList(self):
@@ -44,13 +45,11 @@ class Model:
            and builds the file system tree (using __searchFiles method)"""
         self.directory = directory   
         if self.directory == '':  
-            try:
-                fname = os.path.join(os.environ.get('HOME', None) , '.CometSound' , 'cache') 
-                FILE = open(fname, 'rb')
+            try: 
+                FILE = open(self.cachefname, 'rb')
                 self.audioFileList = cerealizer.load(FILE)
                 FILE.close()
                 self.directory = self.getOldDir()
-                self.lastUpdate = os.path.getmtime(fname)
             except:
                 self.directory = ''    
             return

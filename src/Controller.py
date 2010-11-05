@@ -113,6 +113,13 @@ class Controller:
     def __reBuildViewTree(self):
         """Creates a new Model using the current folder"""
         self.model = Model.Model(self.folder, self.view.progressBar)
+        self.saveCache()
+        self.__refreshViewTree()
+        self.view.vbox.remove(self.view.progressBar)
+        self.model.lastUpdate = time.time()
+    
+    def saveCache(self):
+        """Saves the model in a cache file, using serialization"""
         dir = self.cacheDir
         if not os.path.exists(dir):
             os.makedirs(dir)
@@ -120,9 +127,6 @@ class Controller:
         FILE = open(cachefile,'w')
         cerealizer.dump(self.model.getAudioFileList(), FILE)
         FILE.close()
-        self.__refreshViewTree()
-        self.view.vbox.remove(self.view.progressBar)
-        self.model.lastUpdate = time.time()
         
     def __refreshViewTree(self): 
         """Refreshes the treeview"""  
@@ -130,9 +134,6 @@ class Controller:
         self.view.searchBox.setListStore(self.view.filesTree.listStore)
     
     def refreshTree(self, widget, data = None):
-#        self.view.vbox.pack_start(self.view.progressBar, False)
-#        self.view.show_all()
-#        self.__reBuildViewTree()
         self.model.updateModel()
         self.__refreshViewTree()
             
