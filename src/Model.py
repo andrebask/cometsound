@@ -88,9 +88,7 @@ class Model:
                 except:
                     print "error reading " + directory + '/' + fileName
                     continue
-                i = fileName.rfind('.')
-                ext = string.lower(fileName[i:])
-                if ext in ['.mp3', '.wma', '.ogg', '.flac']:
+                if self.isAudio(fileName):
                     list.append(AudioFile(directory, fileName))   
                 elif stat.S_ISDIR(filestat.st_mode):
                     #print filestat.st_mtime
@@ -121,44 +119,47 @@ class Model:
         for file in fileTree:
             if type(file).__name__ == 'list':
                 dir = file[0]
-                if os.path.getmtime(self.curDir + '/' + dir) > self.lastUpdate:
+                path = os.path.join(self.curDir, dir)
+                if os.path.getmtime(path) > self.lastUpdate:
                     print 'updating ' + dir 
-                    fileTree[fileTree.index(file)] = [dir] + self.__searchFiles(self.curDir + '/' + dir)
-                if self.__changed(self.curDir + '/' + dir):#TODO
+                    fileTree[fileTree.index(file)] = [dir] + self.__searchFiles(path)
+                if self.__isChanged(path):
                     self.__searchChanged(file, dir)
             elif type(file).__name__ == 'instance': 
-                if os.path.getmtime(self.curDir + '/' + dir) > self.lastUpdate:
-                    fileTree.remove(file)
+                path = os.path.join(self.curDir, file.getTagValue('fileName'))
+                try:
+                    if stat.S_ISREG(os.stat(path).st_mode):
+                        if os.path.getmtime(path) > self.lastUpdate:
+                            print 'deleting ' + file.getTagValue('fileName')
+                            fileTree.remove(file)
+                except OSError:
+                    print 'deleting ' + file.getTagValue('fileName')
+                    fileTree.remove(file)                                
             self.curDir = loopDir
         for file in os.listdir(self.curDir):
-            #TODO           
-    
-#    def __searchChanged(self, fileTree, path, cfname, dir = ''):
-#        self.curDir += '/' + dir
-#        loopDir = self.curDir
-#        for file in fileTree:
-#            if type(file).__name__ == 'list':
-#                if cfname == None:
-#                    dir = file[0]
-#                    if os.path.getmtime(self.curDir + '/' + dir) > self.lastUpdate:
-#                        print 'updating ' + dir 
-#                        for f in file:
-#                            if type(file).__name__ == 'instance':
-#                                fileName = f.getTagValue('fileName')
-#                                file[file.index(f)] = AudioFile(dir, fileName)
-#                    self.__searchChanged(file, path, cfname, dir)
-#                elif file[0] == path[0]:
-#                    path.remove(path[0])
-#                    self.__searchChanged(file, path, cfname)
-#            elif type(file).__name__ == 'instance' and len(path) == 1: 
-#                if cfname == None and type(fileTree[0]).__name__ != 'str':                     
-#                    fileName = file.getTagValue('fileName')
-#                    dir = file.getDir()
-#                    if os.path.getmtime(dir + '/' + fileName) > self.lastUpdate:
-#                        print 'updating ' + fileName
-#                        fileTree[fileTree.index(file)] = AudioFile(dir, fileName)
-#                elif file.getTagValue('fileName') == path[0]:
-#                    print 'updating ' + cfname
-#                    dir, fileName = os.path.split(cfname)
-#                    fileTree[fileTree.index(file)] = AudioFile(dir, fileName)
-#            self.curDir = loopDir                   
+            path = os.path.join(self.curDir, file)
+            if stat.S_ISREG(os.stat(path).st_mode):
+                if os.path.getmtime(path) > self.lastUpdate and self.isAudio(file):
+                    print 'adding ' + file
+                    fileTree.append(AudioFile(self.curDir, file))
+            
+            
+    def __isChanged(self, dir):
+        """Recursively checks if in the directory 
+            is there any recently modified audio file"""
+        filelist = os.listdir(dir)
+        for f in filelist:
+            path = os.path.join(dir, f)
+            mtime = os.path.getmtime(path)
+            fstat = os.stat(path)
+            if mtime > self.lastUpdate and self.isAudio(f):
+                return True
+            if stat.S_ISDIR(fstat.st_mode):   
+                if self.__isChanged(path):
+                    return True           
+        return False  
+     
+    def isAudio(self, fileName):
+        i = fileName.rfind('.')
+        ext = string.lower(fileName[i:])
+        return ext in ['.mp3', '.wma', '.ogg', '.flac']                 
