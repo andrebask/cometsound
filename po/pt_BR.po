@@ -1,0 +1,223 @@
+# Brazilian Portuguese translation for cometsound
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# Translate by NXdev <unk.dcc@gmail.com>
+# This file is distributed under the same license as the cometsound package.
+# NXdev <unk.dcc@gmail.com>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: cometsound\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-11-05 23:40+0100\n"
+"Last-Translator: Sergio Gabriel <unk.dcc@gmail.com>\n"
+"Language-Team: Brazilian Portuguese <unk.dcc@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-11-04 05:18+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:74
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:28
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:133
+#: Programmazione/Python/workspace/CometSound/src/View.py:33
+#: Programmazione/Python/workspace/CometSound/src/View.py:252
+msgid "Title"
+msgstr "Título"
+
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:75
+#: Programmazione/Python/workspace/CometSoun	d/src/FileBrowser.py:28
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:135
+#: Programmazione/Python/workspace/CometSound/src/View.py:33
+#: Programmazione/Python/workspace/CometSound/src/View.py:254
+msgid "Artist"
+msgstr "Artista"
+
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:76
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:29
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:137
+#: Programmazione/Python/workspace/CometSound/src/View.py:34
+#: Programmazione/Python/workspace/CometSound/src/View.py:256
+msgid "Album"
+msgstr "Álbum"
+
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:77
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:29
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:139
+#: Programmazione/Python/workspace/CometSound/src/View.py:34
+msgid "Genre"
+msgstr "Género"
+
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:78
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:29
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:56
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:131
+#: Programmazione/Python/workspace/CometSound/src/View.py:34
+msgid "Year"
+msgstr "Ano"
+
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:79
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:101
+#: Programmazione/Python/workspace/CometSound/src/View.py:34
+msgid "Add"
+msgstr "Adicionar"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:46
+#: Programmazione/Python/workspace/CometSound/src/View.py:246
+msgid "Save Playlist"
+msgstr "Salvar Playlist"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:48
+msgid "Insert playlist name:"
+msgstr "Inserir nome da playlist:"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:72
+msgid "CometSound preferences"
+msgstr "CometSound preferências"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:79
+msgid "<b>Audio output (Restart required)</b>"
+msgstr "<b>Saída de áudio (Reiniciar Aplicação)</b>"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:88
+msgid "<b>Visible columns</b>"
+msgstr "<b>Colunas visíveis</b>"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:99
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:133
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:54
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:129
+#: Programmazione/Python/workspace/CometSound/src/View.py:33
+msgid "Name"
+msgstr "Nome"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:112
+msgid "<b>Status Icon</b>"
+msgstr "<b>Ícone de Status</b>"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:114
+msgid "Enable status icon with track's informations"
+msgstr "Ativar ícone de status com informações da faixa"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:115
+msgid "Enable status icon"
+msgstr "Ativar ícone de status"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:116
+msgid "Disable status icon"
+msgstr "Desativar ícone de status"
+
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:168
+msgid "Add to playlist"
+msgstr "Adicionar a playlist"
+
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:173
+msgid "Edit tags"
+msgstr "Editar etiquetas"
+
+#: Programmazione/Python/workspace/CometSound/src/Playlist.py:59
+msgid "Playlist"
+msgstr "Playlist"
+
+#: Programmazione/Python/workspace/CometSound/src/TagsEditorDialog.py:33
+msgid "Edit Tags"
+msgstr "Editar Etiquetas"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:108
+msgid "_Quit"
+msgstr "_Sair"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:108
+msgid "Quit the program"
+msgstr "Sair do programa"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:109
+msgid "_Open folder..."
+msgstr "_Abrir Pasta..."
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:109
+msgid "Open media folder"
+msgstr "Abrir pasta multimédia"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:110
+msgid "Preferences"
+msgstr "Preferências"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:110
+msgid "Change settings"
+msgstr "Editar configurações"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:111
+msgid "_File"
+msgstr "_Arquivo"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:112
+msgid "Fil_ters"
+msgstr "Fil_tros"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:113
+msgid "Play selection"
+msgstr "Play seleção"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:114
+#: Programmazione/Python/workspace/CometSound/src/View.py:317
+msgid "Previous"
+msgstr "Anterior"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:115
+#: Programmazione/Python/workspace/CometSound/src/View.py:312
+msgid "Next"
+msgstr "Próxima"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:116
+msgid "Playlists"
+msgstr "Playlists"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:117
+msgid "Open folder..."
+msgstr "Abrir pasta..."
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:118
+msgid "_Help"
+msgstr "_Ajuda"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:119
+msgid "About CometSound"
+msgstr "Sobre CometSound"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:232
+msgid "Clear Playlist"
+msgstr "Limpar Playlist"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:233
+msgid "Select All"
+msgstr "Selecionar Tudo"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:234
+msgid "Deselect All"
+msgstr "Selecionar Nenhum"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:235
+msgid "Refresh"
+msgstr "Atualizar"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:236
+msgid "Remove Selection"
+msgstr "Remover Seleção"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:244
+msgid "Shuffle"
+msgstr "Aleatório"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:306
+#: Programmazione/Python/workspace/CometSound/src/View.py:359
+msgid "Play"
+msgstr "Play"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:322
+msgid "Quit"
+msgstr "Sair"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:364
+msgid "Pause"
+msgstr "Pausar"

@@ -27,7 +27,7 @@ from Playlist import PlaylistFrame
 from SearchBox import SearchBox
 from FileBrowser import FilesFrame
 
-version = '0.1.5'
+version = '0.2'
 _ = CometSound.t.getTranslationFunc()
 
 columns = [_('Name'), '#', _('Title'), _('Artist'),

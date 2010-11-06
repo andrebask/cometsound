@@ -31,7 +31,10 @@ class Model:
     def __init__(self, directory, progressBar = None):
         self.progressBar = progressBar
         self.cachefname = os.path.join(os.environ.get('HOME', None) , '.CometSound' , 'cache')
-        self.lastUpdate = os.path.getmtime(self.cachefname)
+        try:
+            self.lastUpdate = os.path.getmtime(self.cachefname)
+        except:
+            self.lastUpdate = 0    
         self.setDir(directory)
      
     def getAudioFileList(self):
