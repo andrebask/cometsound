@@ -43,10 +43,17 @@ class Controller:
         self.duration = 0
         pynotify.init('label')
         self.notification = pynotify.Notification(' ',' ')
+        
         try:
             self.folder = self.model.getOldDir()
         except:
             self.folder = os.environ.get('HOME', None)
+        
+        try:
+            from MediaKeysHandler import MediaKeys
+            MediaKeys(self)
+        except:
+            pass
             
     def registerView(self,view):
         """Connects the View to the Controller"""
@@ -186,7 +193,7 @@ class Controller:
             self.playlist.append(cfname)
             if len(self.playlist) == 1 and pt.trackNum != -1:
                 pt.trackNum = -1
-                pt.next()
+                pt.next(False)
                 pt.pause()
         elif cfname != '':
             try:
