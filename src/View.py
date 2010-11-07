@@ -246,12 +246,12 @@ class View(gtk.Window):
         saveB = self.createButton(gtk.STOCK_SAVE, _('Save Playlist'), self.savePlaylistDialog)
         
         searchBox = SearchBox(self.filesTree.listStore, self.control)
-        
-        file = gtk.RadioButton(None, 'File')
-        file.connect('toggled', searchBox.changeSearchColumn, 0)
-        title = gtk.RadioButton(file, _('Title'))
+                
+        title = gtk.RadioButton(None, _('Title'))
         title.connect('toggled', searchBox.changeSearchColumn, 2)
-        artist = gtk.RadioButton(title, _('Artist'))
+        file = gtk.RadioButton(title, 'File')
+        file.connect('toggled', searchBox.changeSearchColumn, 0)
+        artist = gtk.RadioButton(file, _('Artist'))
         artist.connect('toggled', searchBox.changeSearchColumn, 3)
         album = gtk.RadioButton(artist, _('Album'))
         album.connect('toggled', searchBox.changeSearchColumn, 4)

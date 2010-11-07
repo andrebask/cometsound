@@ -73,19 +73,24 @@ class PlayerThread(threading.Thread):
         gtk.main_quit()
                 
     def onMessage(self, bus, message):
-        """Handles the end of streaming, 
-           calling the stop() method to shut down the player"""
+        """Handles the change of streaming, 
+           updating the label or calling the stop() method
+            to shut down the player at the end of playback"""
         t = message.type
-        if t == gst.MESSAGE_ELEMENT:
+        if t == gst.MESSAGE_ELEMENT and self.playing:
             if self.trackNum > -1 and self.started:
-                self.control.updateLabel(self.playlist[self.trackNum])
+                self.control.updateLabel(self.playlist[self.trackNum], self.playing)
             self.control.updatePlaylist()
         elif t == gst.MESSAGE_EOS:
-            self.stop()    
+            self.trackNum = -1
+            self.next()    
+            self.stop()
         elif t == gst.MESSAGE_ERROR:
             self.stop()
             err, debug = message.parse_error()
             print "Error: %s" % err, debug
+        elif t == gst.MESSAGE_NEW_CLOCK and self.trackNum == 0:
+            self.control.updateLabel(self.playlist[self.trackNum], self.playing)
 
     def onFinish(self, player):
         """Handles the end of a stream, 
@@ -113,7 +118,6 @@ class PlayerThread(threading.Thread):
         """Stops playing"""
         self.playing = False
         self.player.set_state(gst.STATE_NULL)   
-        self.player.set_property("uri", '')
         self.control.resetSlider()
         self.control.view.setButtonPlay()
         self.control.updateLabel(None)
@@ -126,8 +130,6 @@ class PlayerThread(threading.Thread):
             if os.path.isfile(self.playlist[self.trackNum]):
                 self.player.set_property("uri", "file://" + self.playlist[self.trackNum])
                 self.play()
-            if len(self.playlist) == 0:
-                self.control.updateLabel(self.playlist[self.trackNum], notify and self.started)
         
     def previous(self, notify = True):
         """Starts playing of the previous track in the playlist"""

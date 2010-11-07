@@ -193,18 +193,18 @@ class Controller:
             self.playlist.append(cfname)
             if len(self.playlist) == 1 and pt.trackNum != -1:
                 pt.trackNum = -1
-                pt.next(False)
+                pt.next()
                 pt.pause()
         elif cfname != '':
             try:
                 if pt.started:
                     if self.playlist[pt.trackNum] == cfname:
                         if pt.playing:
-                            pt.next(False)
+                            pt.next()
                             if len(self.playlist) == 1:
                                 pt.stop()
                         else:
-                            pt.next(False)
+                            pt.next()
                             pt.pause()
                 if pt.trackNum > self.playlist.index(cfname):
                     pt.trackNum -= 1    

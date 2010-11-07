@@ -33,7 +33,7 @@ class SearchBox(gtk.Entry):
         self.setListStore(listStore)
         self.completion = gtk.EntryCompletion()
         self.completion.set_model(self.listStore)
-        self.completion.set_text_column(0)
+        self.completion.set_text_column(2)
         self.completion.set_match_func(self.matchFunc)
         self.completion.connect('match-selected', self.matchAction, 0)
         self.set_completion(self.completion)
