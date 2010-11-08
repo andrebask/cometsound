@@ -27,7 +27,7 @@ from Playlist import PlaylistFrame
 from SearchBox import SearchBox
 from FileBrowser import FilesFrame
 
-version = '0.2'
+version = '0.2.1'
 _ = CometSound.t.getTranslationFunc()
 
 columns = [_('Name'), '#', _('Title'), _('Artist'),
@@ -53,7 +53,7 @@ class View(gtk.Window):
         self.set_position(gtk.WIN_POS_CENTER)
         self.icon = gtk.Image()
         self.icon.set_from_file("icon.svg")
-        self.pix = self.icon.get_pixbuf().scale_simple(60, 60, gtk.gdk.INTERP_BILINEAR)
+        self.pix = self.icon.get_pixbuf().scale_simple(48, 48, gtk.gdk.INTERP_BILINEAR)
         self.set_icon(self.pix)
         self.tray = None
         
@@ -75,6 +75,7 @@ class View(gtk.Window):
         # Create a progress bar to show during the model creation
         self.progressBar = gtk.ProgressBar()
         self.progressBar.set_properties('min-horizontal-bar-height', 10)
+        
                                      
         self.vbox.pack_start(self.menubar, False)
         self.vbox.pack_start(self.hbox, False)
@@ -83,7 +84,8 @@ class View(gtk.Window):
         self.vbox.pack_start(self.framebox, True)
         self.show_all()
         self.filesTree.setModel(self.model)
-    
+        self.searchBox.grab_focus()
+        
     def createPrimaryToolbar(self):
         self.vbox = gtk.VBox()
         self.add(self.vbox)       
@@ -246,7 +248,7 @@ class View(gtk.Window):
         saveB = self.createButton(gtk.STOCK_SAVE, _('Save Playlist'), self.savePlaylistDialog)
         
         searchBox = SearchBox(self.filesTree.listStore, self.control)
-                
+                        
         title = gtk.RadioButton(None, _('Title'))
         title.connect('toggled', searchBox.changeSearchColumn, 2)
         file = gtk.RadioButton(title, 'File')
