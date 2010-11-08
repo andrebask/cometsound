@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: cometsound\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-11-04 01:02+0100\n"
-"PO-Revision-Date: 2010-11-06 14:19+0000\n"
-"Last-Translator: Andrea Bernardini <Unknown>\n"
+"PO-Revision-Date: 2010-11-07 15:56+0000\n"
+"Last-Translator: zeugma <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-11-07 05:14+0000\n"
+"X-Launchpad-Export-Date: 2010-11-08 05:32+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:74
@@ -31,7 +31,7 @@ msgstr "Başlık"
 #: Programmazione/Python/workspace/CometSound/src/View.py:33
 #: Programmazione/Python/workspace/CometSound/src/View.py:254
 msgid "Artist"
-msgstr ""
+msgstr "Sanatçı"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:76
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:29
@@ -39,14 +39,14 @@ msgstr ""
 #: Programmazione/Python/workspace/CometSound/src/View.py:34
 #: Programmazione/Python/workspace/CometSound/src/View.py:256
 msgid "Album"
-msgstr ""
+msgstr "Albüm"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:77
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:29
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:139
 #: Programmazione/Python/workspace/CometSound/src/View.py:34
 msgid "Genre"
-msgstr ""
+msgstr "Tarz"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:78
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:29
@@ -54,7 +54,7 @@ msgstr ""
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:131
 #: Programmazione/Python/workspace/CometSound/src/View.py:34
 msgid "Year"
-msgstr ""
+msgstr "Yıl"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:79
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:101
@@ -183,7 +183,7 @@ msgstr "_Yardım"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:119
 msgid "About CometSound"
-msgstr ""
+msgstr "CometSound Hakkında"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:232
 msgid "Clear Playlist"
@@ -212,7 +212,7 @@ msgstr ""
 #: Programmazione/Python/workspace/CometSound/src/View.py:306
 #: Programmazione/Python/workspace/CometSound/src/View.py:359
 msgid "Play"
-msgstr ""
+msgstr "Oynat"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:322
 msgid "Quit"
