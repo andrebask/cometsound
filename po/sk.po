@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: cometsound\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-11-04 01:02+0100\n"
-"PO-Revision-Date: 2010-11-07 19:09+0000\n"
+"PO-Revision-Date: 2010-11-08 15:43+0000\n"
 "Last-Translator: Andrea Bernardini <Unknown>\n"
 "Language-Team: Slovak <sk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-11-08 05:32+0000\n"
+"X-Launchpad-Export-Date: 2010-11-09 05:16+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:74
@@ -23,7 +23,7 @@ msgstr ""
 #: Programmazione/Python/workspace/CometSound/src/View.py:33
 #: Programmazione/Python/workspace/CometSound/src/View.py:252
 msgid "Title"
-msgstr ""
+msgstr "Názov"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:75
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:28
@@ -31,7 +31,7 @@ msgstr ""
 #: Programmazione/Python/workspace/CometSound/src/View.py:33
 #: Programmazione/Python/workspace/CometSound/src/View.py:254
 msgid "Artist"
-msgstr ""
+msgstr "Interpret"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:76
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:29
@@ -39,14 +39,14 @@ msgstr ""
 #: Programmazione/Python/workspace/CometSound/src/View.py:34
 #: Programmazione/Python/workspace/CometSound/src/View.py:256
 msgid "Album"
-msgstr ""
+msgstr "Album"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:77
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:29
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:139
 #: Programmazione/Python/workspace/CometSound/src/View.py:34
 msgid "Genre"
-msgstr ""
+msgstr "Žáner"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:78
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:29
@@ -54,34 +54,34 @@ msgstr ""
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:131
 #: Programmazione/Python/workspace/CometSound/src/View.py:34
 msgid "Year"
-msgstr ""
+msgstr "Rok"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:79
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:101
 #: Programmazione/Python/workspace/CometSound/src/View.py:34
 msgid "Add"
-msgstr ""
+msgstr "Pridané"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:46
 #: Programmazione/Python/workspace/CometSound/src/View.py:246
 msgid "Save Playlist"
-msgstr ""
+msgstr "Uložiť playlist"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:48
 msgid "Insert playlist name:"
-msgstr ""
+msgstr "Vlož názov playlistu:"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:72
 msgid "CometSound preferences"
-msgstr ""
+msgstr "CometSound nastavenia"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:79
 msgid "<b>Audio output (Restart required)</b>"
-msgstr ""
+msgstr "<b>Zvukový výstup (Je potrebný reštart)</b>"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:88
 msgid "<b>Visible columns</b>"
-msgstr ""
+msgstr "<b>Viditeľné stĺpce</b>"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:99
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:133
@@ -89,39 +89,39 @@ msgstr ""
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:129
 #: Programmazione/Python/workspace/CometSound/src/View.py:33
 msgid "Name"
-msgstr ""
+msgstr "Názov"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:112
 msgid "<b>Status Icon</b>"
-msgstr ""
+msgstr "<b>Statusová ikona</b>"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:114
 msgid "Enable status icon with track's informations"
-msgstr ""
+msgstr "Povoliť statusovú ikonu s informáciami o skladbe"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:115
 msgid "Enable status icon"
-msgstr ""
+msgstr "Povoliť statusovú ikonu"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:116
 msgid "Disable status icon"
-msgstr ""
+msgstr "Zakázať statusovú ikonu"
 
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:168
 msgid "Add to playlist"
-msgstr ""
+msgstr "Pridať do playlistu"
 
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:173
 msgid "Edit tags"
-msgstr ""
+msgstr "Upraviť tagy"
 
 #: Programmazione/Python/workspace/CometSound/src/Playlist.py:59
 msgid "Playlist"
-msgstr ""
+msgstr "Playlist"
 
 #: Programmazione/Python/workspace/CometSound/src/TagsEditorDialog.py:33
 msgid "Edit Tags"
-msgstr ""
+msgstr "Upraviť tagy"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:108
 msgid "_Quit"
@@ -167,57 +167,57 @@ msgstr "Predchádzajúci"
 #: Programmazione/Python/workspace/CometSound/src/View.py:115
 #: Programmazione/Python/workspace/CometSound/src/View.py:312
 msgid "Next"
-msgstr ""
+msgstr "Ďalšia"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:116
 msgid "Playlists"
-msgstr ""
+msgstr "Playlisty"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:117
 msgid "Open folder..."
-msgstr ""
+msgstr "Otvoriť priečinok..._"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:118
 msgid "_Help"
-msgstr ""
+msgstr "_Nápoveda"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:119
 msgid "About CometSound"
-msgstr ""
+msgstr "O programe CometSound"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:232
 msgid "Clear Playlist"
-msgstr ""
+msgstr "Vyprázdniť playlist"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:233
 msgid "Select All"
-msgstr ""
+msgstr "Vybrať všetko"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:234
 msgid "Deselect All"
-msgstr ""
+msgstr "Zrušiť výber všetkého"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:235
 msgid "Refresh"
-msgstr ""
+msgstr "Obnoviť"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:236
 msgid "Remove Selection"
-msgstr ""
+msgstr "Odstrániť výber"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:244
 msgid "Shuffle"
-msgstr ""
+msgstr "Zamiešavať"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:306
 #: Programmazione/Python/workspace/CometSound/src/View.py:359
 msgid "Play"
-msgstr ""
+msgstr "Hrať"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:322
 msgid "Quit"
-msgstr ""
+msgstr "Ukončiť"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:364
 msgid "Pause"
-msgstr ""
+msgstr "Pozastaviť"
