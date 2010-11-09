@@ -44,13 +44,21 @@ except IOError:
     print 'CometSound is already running'
     sys.exit(0)
 
-            
+def getArg():
+    if len(sys.argv) > 1 and sys.argv[1] != '':
+        dir = sys.argv[1]
+        if dir[0] != '/':
+            dir = os.path.join(os.environ.get('HOME', None), dir)
+    else:
+        dir = ''
+    return dir
+        
 def main():
     gtk.main()
     return 0
 if __name__ == "__main__":
     registerClasses()
-    m = Model.Model('')
+    m = Model.Model(getArg())
     c = Controller.Controller(m)
     View.View(m, c)
     main()       

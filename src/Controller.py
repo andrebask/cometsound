@@ -38,6 +38,7 @@ class Controller:
         self.model = model
         self.playlist = []
         self.readSettings()
+        self.calculateSpaces()
         self.playerThread = PlayerThread(self.playlist, self)
         self.position = 0
         self.duration = 0
@@ -331,6 +332,17 @@ class Controller:
     def previousTrack(self, obj = None):
         """Handles the click on the Previous button"""
         self.playerThread.previous()
+    
+    def calculateSpaces(self):
+        lengths = [len(_('Title')), len(_('Artist')),
+                   len(_('Album')), len(_('Genre')),len( _('Year'))]
+        maxLenght = max(lengths) + 1
+        self.spaces = {'Title': maxLenght -len(_('Title')),
+                       'Artist': maxLenght -len(_('Artist')),
+                       'Album': maxLenght -len(_('Album')),
+                       'Genre': maxLenght -len(_('Genre')),
+                       'Year': maxLenght -len(_('Year')),
+                       'num': maxLenght -len('#')} 
         
     def updateLabel(self, completefilename, notify = True):
         """Updates the track label with the tags values"""
@@ -342,11 +354,17 @@ class Controller:
             self.view.set_title('CometSound')    
             return
         if t['title'] != '' and t['title'] != ' ':
-            label = "Title:\t\t%s\nAlbum:\t%s\nArtist:\t\t%s" % (t['title'][:50], t['album'][:50], t['artist'][:50])
+            label = "%s:%s\t%s\n%s:%s\t%s\n%s:%s\t%s" % (_('Title'), ' ' * self.spaces['Title'], t['title'][:50],
+                                                    _('Album'), ' ' * self.spaces['Album'], t['album'][:50],
+                                                     _('Artist'), ' ' * self.spaces['Artist'], t['artist'][:50])
+            
             winTitle = "%s - %s - %s" % (t['title'], t['album'], t['artist'])
             self.view.label.set_text(label)
             self.view.set_title(winTitle)
-            tooltip = label + "\nYear:\t\t%s\nGenre:\t\t%s\nNum:\t\t%s" % (t['year'], t['genre'], t['num'])
+            tooltip = label + "\n%s:%s\t%s\n%s:%s\t%s\n%s:%s\t\t%s" % (_('Year'), ' ' * self.spaces['Year'], t['year'],
+                                                                     _('Genre'), ' ' * self.spaces['Title'], t['genre'],
+                                                                       '#',      ' ' * self.spaces['num'],t['num'])
+            
             self.view.label.set_tooltip_text(tooltip)
             self.view.tray.set_tooltip_text(label)
             if notify:

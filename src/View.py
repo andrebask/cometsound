@@ -116,7 +116,7 @@ class View(gtk.Window):
                                  ('Previous', gtk.STOCK_MEDIA_PREVIOUS, None, None, _('Previous'), self.control.previousTrack),
                                  ('Next', gtk.STOCK_MEDIA_NEXT, None, None, _('Next'), self.control.nextTrack),
                                  ('Playlists', None, _('Playlists')),
-                                 ('PlaylistsFolder', None, _('Open folder...'), None, None,self.openPlaylistFolder),
+                                 ('PlaylistsFolder', None, _('Open folder...'), None, None, self.openPlaylistFolder),
                                  ('Help', None, _('_Help')),
                                  ('About', gtk.STOCK_ABOUT, _('About CometSound'), None, _('About CometSound'), self.showAboutDialog)
                                  ])
