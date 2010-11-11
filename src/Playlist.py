@@ -51,6 +51,7 @@ class PlaylistFrame(gtk.Frame):
         playCell = gtk.CellRendererPixbuf()
         tvcolumn = gtk.TreeViewColumn()
         self.treeview.append_column(tvcolumn)
+        tvcolumn.set_min_width(20)
         tvcolumn.pack_start(playCell, False)    
         tvcolumn.add_attribute(playCell, 'stock-id', 0)
         tvcolumn.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
@@ -71,8 +72,11 @@ class PlaylistFrame(gtk.Frame):
     def setupDnD(self):
         """Drag and drop inizialization"""
         self.TARGETS = [('TREE_MODEL_ROW', gtk.TARGET_SAME_WIDGET, 0)]  
-        self.treeview.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, self.TARGETS, gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
-        self.treeview.enable_model_drag_dest(self.TARGETS, gtk.gdk.ACTION_DEFAULT)     
+        self.treeview.drag_source_set(gtk.gdk.BUTTON1_MASK, self.TARGETS, gtk.gdk.ACTION_MOVE)
+        self.treeview.enable_model_drag_dest(self.TARGETS, gtk.gdk.ACTION_MOVE)
+        #self.treeview.drag_source_set_icon_stock(gtk.STOCK_DND)
+        self.treeview.connect("drag_begin", self.control.dragBegin, self.treeview.get_selection())     
         self.treeview.connect("drag_data_get", self.control.drag)
         self.treeview.connect("drag_data_received", self.control.drop)
+        self.treeview.connect("drag_end", self.control.dragEnd) 
         

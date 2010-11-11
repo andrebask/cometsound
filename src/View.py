@@ -51,10 +51,11 @@ class View(gtk.Window):
         minwidth = int(self.get_screen().get_width() / 2.5)
         minheight = int(self.get_screen().get_height() / 2.5)
         try:
-            self.width, self.height = self.control.readWinSize()
+            self.width, self.height, framepos = self.control.readWinSize()
         except:
             self.width = minwidth
             self.height = minheight
+            framepos = minwidth * 0.7
         self.set_size_request(minwidth, minheight)
         self.resize(self.width, self.height) 
         self.set_position(gtk.WIN_POS_CENTER)
@@ -79,6 +80,7 @@ class View(gtk.Window):
         
         self.framebox.pack1(self.filesTree)
         self.framebox.pack2(self.playlistFrame, False, False)
+        self.framebox.set_position(framepos)
         self.control.updatePlaylist()
         # Create a progress bar to show during the model creation
         self.progressBar = gtk.ProgressBar()
@@ -239,7 +241,6 @@ class View(gtk.Window):
 
         clearB = self.createButton(gtk.STOCK_CLEAR, _('Clear Playlist'), self.control.clearPlaylist)
         addAllB = self.createButton(gtk.STOCK_APPLY, _('Select All'), self.control.addAll, True)
-        removeAllB = self.createButton(gtk.STOCK_CANCEL, _('Deselect All'), self.control.addAll, False)
         refreshB = self.createButton(gtk.STOCK_REFRESH, _('Refresh'), self.control.refreshTree)
         removeSelectedB = self.createButton(gtk.STOCK_REMOVE, _('Remove Selection'), self.control.removeSelected)
         
@@ -274,8 +275,8 @@ class View(gtk.Window):
         self.searchBox.set_size_request(self.get_screen().get_width() / 6, 30) 
         
         self.buttons.pack_start(addAllB, False)
-        self.buttons.pack_start(removeAllB, False)
         self.buttons.pack_start(refreshB, False)
+        self.buttons.pack_start(gtk.Label(' %s: ' % _('Search')), False)
         self.buttons.pack_start(searchBox, True)
         self.buttons.pack_start(file, False)
         self.buttons.pack_start(title, False)
@@ -384,8 +385,8 @@ class View(gtk.Window):
         
     def destroy(self):
         self.control.saveCache()
-        print self.get_size()
-        self.control.saveWinSize(self.width, self.height)
+        pos = self.framebox.get_position()
+        self.control.saveWinSize(self.width, self.height, pos)
         self.control.playerThread.stop()
         if self.control.playerThread.isAlive():
             self.control.playerThread.terminate()    

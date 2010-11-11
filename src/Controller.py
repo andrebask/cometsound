@@ -136,14 +136,14 @@ class Controller:
         FILE.close()
         self.savePlaylist('lastplaylist', '')
     
-    def saveWinSize(self, width, height):
+    def saveWinSize(self, width, height, pos):
         try:
             dir = self.cacheDir
             if not os.path.exists(dir):
                 os.makedirs(dir)
             sizeFile = os.path.join(dir, 'size')
             FILE = open(sizeFile,'w')
-            for n in (width, height):
+            for n in (width, height, pos):
                 FILE.write(str(n) + '\n')
             FILE.close()
         except:
@@ -156,7 +156,7 @@ class Controller:
         for line in FILE:
             wh.append(line[:-1]) 
         FILE.close()
-        return int(wh[0]), int(wh[1])
+        return int(wh[0]), int(wh[1]), int(wh[2])
     
     def lastPlaylist(self):
         try:
@@ -183,7 +183,7 @@ class Controller:
     def toggle(self, cell, path, rowModel):
         """Adds or removes the selected files to the playlist and updates the treeview"""
         completeFilename = rowModel[path][8]
-        self.__addTrack(completeFilename)
+        self.__addTrack(True,completeFilename)
         self.__recursiveToggle(path, rowModel)
         self.updatePlaylist()
         
@@ -269,39 +269,58 @@ class Controller:
             path = path + sep + str(pathinfo[0][i])
         return path 
     
+    def dragBegin(self, widget, context, selection):
+        items = selection.get_selected_rows()
+        if len(items[1]) > 1:
+            icon = gtk.STOCK_DND_MULTIPLE
+        else:
+            icon = gtk.STOCK_DND
+        context.set_icon_stock(icon, 0, 0)
+    
     def drag(self, treeview, context, selection, target_id, etime):
         """Starts DnD removing the selected file from the playlist"""
         treeselection = treeview.get_selection()
-        model, iter = treeselection.get_selected()
-        path = model.get_path(iter)[0]
+        model, rows = treeselection.get_selected_rows()
         self.current = self.playlist[self.playerThread.trackNum]
-        self.movedTrack = self.playlist[path]
-        self.startIndex = self.playlist.index(self.movedTrack)
-        self.playlist.remove(self.playlist[path])       
+        self.startIndex = rows[0][0]
+        self.movedTracks = []
+        count = 0
+        print rows
+        for tuple in rows:
+            path = tuple[0] - count
+            self.movedTracks.append(self.playlist[path])
+            del self.playlist[path] 
+            count+=1
+                  
 
     def drop(self, treeview, context, x, y, selection, info, etime):
         """"Starts DnD inserting the selected file in the playlist"""
         drop_info = treeview.get_dest_row_at_pos(x, y)
-        if drop_info:
-            path, position = drop_info
-            if position == gtk.TREE_VIEW_DROP_BEFORE or position == gtk.TREE_VIEW_DROP_INTO_OR_BEFORE:
-                if self.startIndex > path[0]:
-                    i = 0
+        count = 0
+        for row in self.movedTracks:
+            if drop_info:
+                path, position = drop_info
+                if position == gtk.TREE_VIEW_DROP_BEFORE or position == gtk.TREE_VIEW_DROP_INTO_OR_BEFORE:
+                    if self.startIndex > path[0]:
+                        i = 0
+                    else:
+                        i = -1    
+                elif position == gtk.TREE_VIEW_DROP_AFTER or position == gtk.TREE_VIEW_DROP_INTO_OR_AFTER:
+                    if self.startIndex > path[0]:
+                        i = 1
+                    else:
+                        i = 0 
                 else:
-                    i = -1    
-            elif position == gtk.TREE_VIEW_DROP_AFTER or position == gtk.TREE_VIEW_DROP_INTO_OR_AFTER:
-                if self.startIndex > path[0]:
-                    i = 1
-                else:
-                    i = 0 
+                    i = 0    
+                index = path[0] + i + count
+                self.playlist.insert(index, row)
             else:
-                i = 0    
-            index = path[0] + i
-            self.playlist.insert(index, self.movedTrack)
-        else:
-            self.playlist.append(self.movedTrack)
+                self.playlist.append(row)
+            count += 1
         context.finish(True, True, etime)       
         self.playerThread.trackNum = self.playlist.index(self.current)     
+
+    def dragEnd(self, widget, context):
         self.updatePlaylist()
             
     def toggleMp3(self, data):
@@ -363,6 +382,7 @@ class Controller:
             label = "<b>%s</b>\n%s\n%s" % info
             
             winTitle = "%s - %s - %s" % (t['title'], t['album'], t['artist'])
+            label = label.replace('&', '&amp;')
             self.view.label.set_markup(label)
             self.view.set_title(winTitle)
             tooltip = "%s:   %s\n%s:   %s\n%s:   %s\n%s:   %s\n%s:   %s\n%s:      \t%s" % (
@@ -429,7 +449,8 @@ class Controller:
             info = (self.extractTags(track)['title'], 
                     self.extractTags(track)['album'],
                     self.extractTags(track)['artist'])
-            text = '<b>%s</b>\nfrom <i>%s</i> by <i>%s</i>' % info
+            text = '<b>%s</b>\n%s <i>%s</i> %s <i>%s</i>' % (info[0], _('from'), info[1], _('by'), info[2])
+            text = text.replace('&', '&amp;')
             if text != '' and text != ' ':
                 append([icon, text])             
             else:
@@ -473,14 +494,6 @@ class Controller:
         except:
             pass
             #print sys.exc_info()
-    
-#    def __delete(self, model, path, iter, cfnameList = None):
-#        value = model.get_value(iter, 8)
-#        toggled = model.get_value(iter, 7)
-#        if value in cfnameList:
-#            toggled = not toggled
-#            model.set_value(iter, 7, toggled)
-#            self.__addRemove(toggled, value)
             
     def shufflePlaylist(self, widget, data=None):
         """Mixes the songs in the playlist"""
