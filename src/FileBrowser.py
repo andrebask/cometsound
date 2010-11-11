@@ -45,7 +45,7 @@ class FilesFrame(gtk.Frame):
         self.scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         # create a treeStore with one string column to use as the model
         s = gobject.TYPE_STRING
-        g = gobject.TYPE_BOOLEAN
+        g = gobject.TYPE_STRING
         self.treeStore = gtk.TreeStore(s, s, s, s, s, s, s, g, s)
         self.listStore = gtk.ListStore(s, s, s, s, s, s, s, g, s)
 
@@ -73,14 +73,14 @@ class FilesFrame(gtk.Frame):
         for f in filelist:
             if type(f).__name__ == 'instance':
                 if self.formatDict[string.lower(f.getTagValues()[0][-4:])] == True:
-                    data = f.getTagValues() + [None] + [f.getDir() + f.getTagValues()[0]]
+                    data = f.getTagValues() + [gtk.STOCK_GO_FORWARD] + [f.getDir() + f.getTagValues()[0]]
                     self.treeStore.append(parent, data)
                     data[2] = data[2] + '\t(' + data[4] + ')'
                     data[4] = data[4] + '\t(' + data[3] + ')'
                     self.listStore.append(data)
             elif type(f).__name__ == 'list':
                 if not self.__isEmpty(f):
-                    parent2 = self.treeStore.append(parent, [f[0], '', '', '', '', '', '', '', ''])
+                    parent2 = self.treeStore.append(parent, [f[0], '', '', '', '', '', '', gtk.STOCK_DIRECTORY, ''])
                     self.createTree(parent2, f[1:])
     
     def __isEmpty(self, filelist):
@@ -99,15 +99,16 @@ class FilesFrame(gtk.Frame):
         i = 0
         for column in self.columns:
             if column == _('Add'):
-                cell = gtk.CellRendererToggle()
+                cell = gtk.CellRendererPixbuf()
                 tvcolumn = gtk.TreeViewColumn(column)
                 self.treeview.append_column(tvcolumn)
-                tvcolumn.pack_start(cell, False)
-                tvcolumn.add_attribute(cell, 'active', i)
+                tvcolumn.pack_start(cell, True)
+                tvcolumn.add_attribute(cell, 'stock-id', 7)
+                cell.set_property('stock-size', 1)
+                cell.set_fixed_size(5,22)
                 tvcolumn.set_resizable(False)
                 tvcolumn.set_fixed_width(gtk.TREE_VIEW_COLUMN_FIXED)
-                cell.set_property('active', False)
-                cell.connect('toggled', self.control.toggle, self.treeStore)          
+                #cell.connect('clicked', self.control.toggle, self.treeStore)          
             else:
                 cell = gtk.CellRendererText()
                 cell.set_padding(2, 0)

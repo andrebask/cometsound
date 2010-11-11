@@ -47,10 +47,19 @@ class View(gtk.Window):
         self.control.registerView(self)
         
         # Create the toplevel window
-        self.maximized = True
         self.connect('destroy', lambda w: self.destroy())
-        self.set_size_request(self.get_screen().get_width() / 2, self.get_screen().get_height() / 2) 
+        minwidth = int(self.get_screen().get_width() / 2.5)
+        minheight = int(self.get_screen().get_height() / 2.5)
+        try:
+            self.width, self.height = self.control.readWinSize()
+        except:
+            self.width = minwidth
+            self.height = minheight
+        self.set_size_request(minwidth, minheight)
+        self.resize(self.width, self.height) 
         self.set_position(gtk.WIN_POS_CENTER)
+        self.connect('expose-event', self.storeSize)
+        self.connect('window-state-event', self.fixFrameboxPos)
         self.icon = gtk.Image()
         self.icon.set_from_file("icon.svg")
         self.pix = self.icon.get_pixbuf().scale_simple(48, 48, gtk.gdk.INTERP_BILINEAR)
@@ -71,7 +80,7 @@ class View(gtk.Window):
         
         self.framebox.add(self.filesTree)
         self.framebox.add(self.playlistFrame)
-        
+        self.control.updatePlaylist()
         # Create a progress bar to show during the model creation
         self.progressBar = gtk.ProgressBar()
         self.progressBar.set_properties('min-horizontal-bar-height', 10)
@@ -92,8 +101,6 @@ class View(gtk.Window):
         
         self.hbox = gtk.HBox()
         self.framebox = gtk.HPaned()
-        #self.framebox.set_position(int(self.get_size()[1]*1.2))
-        self.connect('window-state-event', self.fixFrameboxPos)
         # Create a UIManager instance
         uimanager = gtk.UIManager()
 
@@ -265,7 +272,7 @@ class View(gtk.Window):
             b.set_mode(False)
             
         self.searchBox = searchBox
-        self.searchBox.set_size_request(self.get_screen().get_width() / 5, 30) 
+        self.searchBox.set_size_request(self.get_screen().get_width() / 6, 30) 
         
         self.buttons.pack_start(addAllB, False)
         self.buttons.pack_start(removeAllB, False)
@@ -364,15 +371,14 @@ class View(gtk.Window):
         """Sets the button to "pause" """
         self.actiongroup.get_action('Play/Stop').set_stock_id(gtk.STOCK_MEDIA_PAUSE)
         self.actiongroup.get_action('Play/Stop').set_tooltip(_('Pause'))
+    
+    def storeSize(self, widget, event):
+        all = widget.get_allocation()
+        self.width, self.height = all.width, all.height
         
-    def fixFrameboxPos(self, widget, event):
+    def fixFrameboxPos(self, widget, event = None):
         """Fixes the position of the HPaned separator when window's size changes"""
-        self.maximized = not self.maximized
-        size = self.get_size_request()
-        if self.maximized:
-            self.framebox.set_position(int(size[1] * 2.5))
-        else:
-            self.framebox.set_position(int(size[1] * 1.2))
+        self.framebox.set_position(int(self.width * 0.7))
     
     def showAboutDialog(self, o):
         ad = AboutDialog(self.icon, version)
@@ -383,6 +389,8 @@ class View(gtk.Window):
         
     def destroy(self):
         self.control.saveCache()
+        print self.get_size()
+        self.control.saveWinSize(self.width, self.height)
         self.control.playerThread.stop()
         if self.control.playerThread.isAlive():
             self.control.playerThread.terminate()    

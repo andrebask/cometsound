@@ -45,6 +45,7 @@ class PlaylistFrame(gtk.Frame):
         self.treeview = gtk.TreeView(self.listStore)
         self.treeview.set_rules_hint(True) 
         self.treeview.connect("button-press-event", self.control.doubleClickPlay)
+        self.treeview.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         self.setupDnD()
         
         playCell = gtk.CellRendererPixbuf()
@@ -59,7 +60,7 @@ class PlaylistFrame(gtk.Frame):
         tvcolumn = gtk.TreeViewColumn(_('Playlist'))
         self.treeview.append_column(tvcolumn)
         tvcolumn.pack_start(titleCell, False)    
-        tvcolumn.add_attribute(titleCell, 'text', 1)
+        tvcolumn.add_attribute(titleCell, 'markup', 1)
         tvcolumn.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         tvcolumn.set_resizable(True)
         

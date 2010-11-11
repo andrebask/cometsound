@@ -36,9 +36,8 @@ class Controller:
     
     def __init__(self, model):
         self.model = model
-        self.playlist = []
+        self.playlist = self.lastPlaylist()
         self.readSettings()
-        self.calculateSpaces()
         self.playerThread = PlayerThread(self.playlist, self)
         self.position = 0
         self.duration = 0
@@ -135,7 +134,43 @@ class Controller:
         FILE = open(cachefile,'w')
         cerealizer.dump(self.model.getAudioFileList(), FILE)
         FILE.close()
-        
+        self.savePlaylist('lastplaylist', '')
+    
+    def saveWinSize(self, width, height):
+        try:
+            dir = self.cacheDir
+            if not os.path.exists(dir):
+                os.makedirs(dir)
+            sizeFile = os.path.join(dir, 'size')
+            FILE = open(sizeFile,'w')
+            for n in (width, height):
+                FILE.write(str(n) + '\n')
+            FILE.close()
+        except:
+            return
+    
+    def readWinSize(self):
+        sizeFile = os.path.join(self.cacheDir, 'size')
+        FILE = open(sizeFile,'r')
+        wh = []
+        for line in FILE:
+            wh.append(line[:-1]) 
+        FILE.close()
+        return int(wh[0]), int(wh[1])
+    
+    def lastPlaylist(self):
+        try:
+            dir = self.cacheDir
+            playlistFile = os.path.join(dir, 'lastplaylist')
+            FILE = open(playlistFile,'r')
+            files = []
+            for line in FILE:
+                files.append(line[:-1]) 
+            FILE.close()
+            return files
+        except:
+            return []
+    
     def __refreshViewTree(self): 
         """Refreshes the treeview"""  
         self.view.filesTree.setModel(self.model)
@@ -148,9 +183,7 @@ class Controller:
     def toggle(self, cell, path, rowModel):
         """Adds or removes the selected files to the playlist and updates the treeview"""
         completeFilename = rowModel[path][8]
-        rowModel[path][7] = not rowModel[path][7]
-        toggled = rowModel[path][7]
-        self.__addRemove(toggled, completeFilename)
+        self.__addTrack(completeFilename)
         self.__recursiveToggle(path, rowModel)
         self.updatePlaylist()
         
@@ -160,9 +193,7 @@ class Controller:
         while True:
             try:
                 completeFilename = rowModel[path + (":%d" % (i))][8]
-                rowModel[path + (":%d" % (i))][7] = rowModel[path][7]
-                toggled = rowModel[path + (":%d" % (i))][7]
-                self.__addRemove(toggled, completeFilename)   
+                self.__addTrack(completeFilename)   
                 self.__recursiveToggle((path + (":%d" % (i))), rowModel)
                 i+=1
             except:
@@ -174,65 +205,50 @@ class Controller:
     def addAll(self, widget, add):
         """Adds to the playlist all the files of the current folder"""
         rowModel = self.view.filesTree.treeStore
-        rowModel.foreach(self.__add, add)
+        rowModel.foreach(self.__add)
         self.updatePlaylist()
         
     def __add(self, model, path, iter, add = None):
-        value = model.get_value(iter, 8)
-        toggled = model.get_value(iter, 7)
-        if value != '':
-            if add != toggled:
-                model.set_value(iter, 7, add)
-                self.__addRemove(add, value)
-        elif toggled != add:    
-            self.toggle(None, path, model)
+        self.toggle(None, path, model)
             
-    def __addRemove(self, toggled, cfname):
-        """Handles the addition and the removal of the files in the playlist"""
+    def __addTrack(self, addOrDel, cfname):
+        """Handles the addition of the files in the playlist"""
         pt = self.playerThread
-        if toggled and cfname != '':
+        if addOrDel and cfname != '':
             self.playlist.append(cfname)
             if len(self.playlist) == 1 and pt.trackNum != -1:
                 pt.trackNum = -1
                 pt.next()
                 pt.pause()
-        elif cfname != '':
-            try:
-                if pt.started:
-                    if self.playlist[pt.trackNum] == cfname:
-                        if pt.playing:
-                            pt.next()
-                            if len(self.playlist) == 1:
-                                pt.stop()
-                        else:
-                            pt.next()
-                            pt.pause()
-                if pt.trackNum > self.playlist.index(cfname):
-                    pt.trackNum -= 1    
-                self.playlist.remove(cfname)                                
-            except:
-                pass
-                #print sys.exc_info()
         
     def doubleClickSelect(self, tree, event):
         """Detects double click on the treeview and updates the selection"""
         if event.type == gtk.gdk._2BUTTON_PRESS:
             path = self.__detectPath(tree, event)
             self.toggle(None, path, tree.get_model())
-            
+            if self.playerThread.trackNum == -1:
+                self.view.slider.set_sensitive(True)
+            if self.playerThread.isAlive():
+                self.playerThread.trackNum = len(self.playlist) - 2    
+                self.playerThread.next()    
+            else:
+                self.playStopSelected(None)
             
         
     def doubleClickPlay(self, tree, event):
         """Detects double click on the playlist and play the selected track"""
-        if event.type == gtk.gdk._2BUTTON_PRESS:
-            path = self.__detectPath(tree, event) 
-            if self.playerThread.trackNum == -1:
-                self.view.slider.set_sensitive(True)
-            self.playerThread.trackNum = int(path) - 1
-            if self.playerThread.isAlive():    
-                self.playerThread.next()    
-            else:
-                self.playStopSelected(None)
+        try:
+            if event.type == gtk.gdk._2BUTTON_PRESS:
+                path = self.__detectPath(tree, event) 
+                if self.playerThread.trackNum == -1:
+                    self.view.slider.set_sensitive(True)
+                self.playerThread.trackNum = int(path) - 1
+                if self.playerThread.isAlive():    
+                    self.playerThread.next()    
+                else:
+                    self.playStopSelected(None)
+        except:
+            return
     
     def rightClick(self, tree, event, openMenu):
         if event.type == gtk.gdk.BUTTON_PRESS and event.button == 3:
@@ -332,17 +348,6 @@ class Controller:
     def previousTrack(self, obj = None):
         """Handles the click on the Previous button"""
         self.playerThread.previous()
-    
-    def calculateSpaces(self):
-        lengths = [len(_('Title')), len(_('Artist')),
-                   len(_('Album')), len(_('Genre')),len( _('Year'))]
-        maxLenght = max(lengths) + 1
-        self.spaces = {'Title': maxLenght -len(_('Title')),
-                       'Artist': maxLenght -len(_('Artist')),
-                       'Album': maxLenght -len(_('Album')),
-                       'Genre': maxLenght -len(_('Genre')),
-                       'Year': maxLenght -len(_('Year')),
-                       'num': maxLenght -len('#')} 
         
     def updateLabel(self, completefilename, notify = True):
         """Updates the track label with the tags values"""
@@ -354,19 +359,22 @@ class Controller:
             self.view.set_title('CometSound')    
             return
         if t['title'] != '' and t['title'] != ' ':
-            label = "%s:%s\t%s\n%s:%s\t%s\n%s:%s\t%s" % (_('Title'), ' ' * self.spaces['Title'], t['title'][:50],
-                                                    _('Album'), ' ' * self.spaces['Album'], t['album'][:50],
-                                                     _('Artist'), ' ' * self.spaces['Artist'], t['artist'][:50])
+            info = (t['title'][:50], t['album'][:50], t['artist'][:50])
+            label = "<b>%s</b>\n%s\n%s" % info
             
             winTitle = "%s - %s - %s" % (t['title'], t['album'], t['artist'])
-            self.view.label.set_text(label)
+            self.view.label.set_markup(label)
             self.view.set_title(winTitle)
-            tooltip = label + "\n%s:%s\t%s\n%s:%s\t%s\n%s:%s\t\t%s" % (_('Year'), ' ' * self.spaces['Year'], t['year'],
-                                                                     _('Genre'), ' ' * self.spaces['Title'], t['genre'],
-                                                                       '#',      ' ' * self.spaces['num'],t['num'])
+            tooltip = "%s:   %s\n%s:   %s\n%s:   %s\n%s:   %s\n%s:   %s\n%s:      \t%s" % (
+                            _('Title'), info[0],
+                            _('Album'), info[1],
+                            _('Artist'), info[2],
+                            _('Year'), t['year'],
+                            _('Genre'), t['genre'],
+                            '#', t['num'])
             
             self.view.label.set_tooltip_text(tooltip)
-            self.view.tray.set_tooltip_text(label)
+            self.view.tray.set_tooltip_text("%s\n%s\n%s" % info)
             if notify:
                 self.notification.update(t['title'], "%s\n%s" % (t['album'], t['artist']))
                 self.notification.show()
@@ -396,8 +404,8 @@ class Controller:
         FILE.close()
         self.updatePlaylist()
     
-    def savePlaylist(self, playlist):
-        dir = os.path.join(self.cacheDir, 'playlists')
+    def savePlaylist(self, playlist, dir = 'playlists'):
+        dir = os.path.join(self.cacheDir, dir)
         if not os.path.exists(dir):
             os.makedirs(dir)
         playlistFile = os.path.join(dir, playlist)
@@ -412,17 +420,22 @@ class Controller:
         self.view.playlistFrame.listStore.clear() 
         append = self.view.playlistFrame.listStore.append              
         playing = str(self.playerThread.playing)
+        i = 0
         for track in self.playlist:
-            if self.playlist.index(track) == self.playerThread.trackNum:
+            if i == self.playerThread.trackNum:
                 icon = icons[playing]
             else:
                 icon = None        
-            t = self.extractTags(track)['title']
-            if t != '' and t != ' ':
-                append([icon, t])             
+            info = (self.extractTags(track)['title'], 
+                    self.extractTags(track)['album'],
+                    self.extractTags(track)['artist'])
+            text = '<b>%s</b>\nfrom <i>%s</i> by <i>%s</i>' % info
+            if text != '' and text != ' ':
+                append([icon, text])             
             else:
                 f = self.extractTags(track)['filename']
                 append([icon, f]) 
+            i+=1
             
     def clearPlaylist(self, widget, data=None):
         """Removes all the files from the playlist"""
@@ -434,22 +447,40 @@ class Controller:
     def removeSelected(self, widget, data = None):
         """Removes only the selected files from the playlist"""
         rowList = self.view.playlistFrame.treeview.get_selection().get_selected_rows()[1]
-        cfnameList = []
+        i = 0
         for row in rowList:
-            cfname = self.playlist[row[0]]
-            cfnameList.append(cfname)
-            self.__addRemove(False, cfname)        
-        rowModel = self.view.filesTree.treeStore
-        rowModel.foreach(self.__delete, cfnameList)    
+            num = row[0]-i
+            self.__removeTrack(num) 
+            i+=1    
         self.updatePlaylist()    
+
+    def __removeTrack(self, num): 
+        """Handles the removal of the files in the playlist"""
+        pt = self.playerThread   
+        try:
+            if pt.started:
+                if pt.trackNum == num:
+                    if pt.playing:
+                        pt.next()
+                        if len(self.playlist) == 1:
+                            pt.stop()
+                    else:
+                        pt.next()
+                        pt.pause()
+            if pt.trackNum > num:
+                pt.trackNum -= 1    
+            del self.playlist[num]                               
+        except:
+            pass
+            #print sys.exc_info()
     
-    def __delete(self, model, path, iter, cfnameList = None):
-        value = model.get_value(iter, 8)
-        toggled = model.get_value(iter, 7)
-        if value in cfnameList:
-            toggled = not toggled
-            model.set_value(iter, 7, toggled)
-            self.__addRemove(toggled, value)
+#    def __delete(self, model, path, iter, cfnameList = None):
+#        value = model.get_value(iter, 8)
+#        toggled = model.get_value(iter, 7)
+#        if value in cfnameList:
+#            toggled = not toggled
+#            model.set_value(iter, 7, toggled)
+#            self.__addRemove(toggled, value)
             
     def shufflePlaylist(self, widget, data=None):
         """Mixes the songs in the playlist"""
