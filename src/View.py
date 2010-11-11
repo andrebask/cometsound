@@ -59,7 +59,6 @@ class View(gtk.Window):
         self.resize(self.width, self.height) 
         self.set_position(gtk.WIN_POS_CENTER)
         self.connect('expose-event', self.storeSize)
-        self.connect('window-state-event', self.fixFrameboxPos)
         self.icon = gtk.Image()
         self.icon.set_from_file("icon.svg")
         self.pix = self.icon.get_pixbuf().scale_simple(48, 48, gtk.gdk.INTERP_BILINEAR)
@@ -78,8 +77,8 @@ class View(gtk.Window):
         
         self.createSecondaryToolbar()
         
-        self.framebox.add(self.filesTree)
-        self.framebox.add(self.playlistFrame)
+        self.framebox.pack1(self.filesTree)
+        self.framebox.pack2(self.playlistFrame, False, False)
         self.control.updatePlaylist()
         # Create a progress bar to show during the model creation
         self.progressBar = gtk.ProgressBar()
@@ -375,10 +374,6 @@ class View(gtk.Window):
     def storeSize(self, widget, event):
         all = widget.get_allocation()
         self.width, self.height = all.width, all.height
-        
-    def fixFrameboxPos(self, widget, event = None):
-        """Fixes the position of the HPaned separator when window's size changes"""
-        self.framebox.set_position(int(self.width * 0.7))
     
     def showAboutDialog(self, o):
         ad = AboutDialog(self.icon, version)
