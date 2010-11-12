@@ -225,14 +225,22 @@ class Controller:
         """Detects double click on the treeview and updates the selection"""
         if event.type == gtk.gdk._2BUTTON_PRESS:
             path = self.__detectPath(tree, event)
-            self.toggle(None, path, tree.get_model())
-            if self.playerThread.trackNum == -1:
-                self.view.slider.set_sensitive(True)
-            if self.playerThread.isAlive():
-                self.playerThread.trackNum = len(self.playlist) - 2    
-                self.playerThread.next()    
+            model = tree.get_model()
+            iter = model.get_iter(path)
+            if model.get_value(iter, 8) != '':
+                self.toggle(None, path, model)
+                if self.playerThread.trackNum == -1:
+                    self.view.slider.set_sensitive(True)
+                if self.playerThread.isAlive():
+                    self.playerThread.trackNum = len(self.playlist) - 2    
+                    self.playerThread.next()    
+                else:
+                    self.playStopSelected(None)
             else:
-                self.playStopSelected(None)
+                if tree.row_expanded(path):
+                    tree.collapse_row(path)
+                else:
+                    tree.expand_row(path, False)
             
         
     def doubleClickPlay(self, tree, event):

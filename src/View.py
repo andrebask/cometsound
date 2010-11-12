@@ -276,7 +276,7 @@ class View(gtk.Window):
         
         self.buttons.pack_start(addAllB, False)
         self.buttons.pack_start(refreshB, False)
-        self.buttons.pack_start(gtk.Label(' %s: ' % _('Search')), False)
+        self.buttons.pack_start(gtk.Label('  %s: ' % _('Search')), False)
         self.buttons.pack_start(searchBox, True)
         self.buttons.pack_start(file, False)
         self.buttons.pack_start(title, False)
