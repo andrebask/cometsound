@@ -48,8 +48,8 @@ class View(gtk.Window):
         
         # Create the toplevel window
         self.connect('destroy', lambda w: self.destroy())
-        minwidth = int(self.get_screen().get_width() / 2.5)
-        minheight = int(self.get_screen().get_height() / 2.5)
+        minwidth = 696#int(self.get_screen().get_width() / 2.5)
+        minheight = 420#int(self.get_screen().get_height() / 2.5)
         try:
             self.width, self.height, framepos, self.volume = self.control.readWinSize()
         except:

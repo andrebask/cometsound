@@ -38,14 +38,24 @@ class FilesFrame(gtk.Frame):
         self.formatDict = formatDict
         self.control = control
         self.columns = columns
-        #self.set_label("Files selection:")
-        
+        #setting icons
+        try:
+            self.iconType = 'pixbuf'
+            icontheme = gtk.icon_theme_get_for_screen(self.get_screen())
+            self.rightPixbuf = icontheme.choose_icon(['stock_right'], 18, 0).load_icon()
+            self.dirPixbuf = icontheme.choose_icon(['stock_new-dir'], 18, 0).load_icon()
+            g = gobject.TYPE_OBJECT
+        except:
+            self.iconType = 'stock-id'
+            self.rightPixbuf = gtk.STOCK_GO_FORWARD
+            self.dirPixbuf = gtk.STOCK_DIRECTORY
+            g = gobject.TYPE_STRING
+            
         self.scroll = gtk.ScrolledWindow()
         self.scroll.set_border_width(0)
         self.scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         # create a treeStore with one string column to use as the model
         s = gobject.TYPE_STRING
-        g = gobject.TYPE_OBJECT
         self.treeStore = gtk.TreeStore(s, s, s, s, s, s, s, g, s)
         self.listStore = gtk.ListStore(s, s, s, s, s, s, s, g, s)
 
@@ -70,20 +80,17 @@ class FilesFrame(gtk.Frame):
         
     def createTree(self, parent, filelist):
         """Adds the files informations to the treeview"""
-        icontheme = gtk.icon_theme_get_for_screen(self.get_screen())
-        pixbuf = icontheme.choose_icon(['stock_right'], 18, 0).load_icon()
-        dirpixbuf = icontheme.choose_icon(['stock_new-dir'], 18, 0).load_icon()
         for f in filelist:
             if type(f).__name__ == 'instance':
                 if self.formatDict[string.lower(f.getTagValues()[0][-4:])] == True:
-                    data = f.getTagValues() + [pixbuf] + [f.getDir() + f.getTagValues()[0]]
+                    data = f.getTagValues() + [self.rightPixbuf] + [f.getDir() + f.getTagValues()[0]]
                     self.treeStore.append(parent, data)
                     data[2] = data[2] + '\t(' + data[4] + ')'
                     data[4] = data[4] + '\t(' + data[3] + ')'
                     self.listStore.append(data)
             elif type(f).__name__ == 'list':
                 if not self.__isEmpty(f):
-                    parent2 = self.treeStore.append(parent, [f[0], '', '', '', '', '', '', dirpixbuf, ''])
+                    parent2 = self.treeStore.append(parent, [f[0], '', '', '', '', '', '', self.dirPixbuf, ''])
                     self.createTree(parent2, f[1:])
     
     def __isEmpty(self, filelist):
@@ -106,12 +113,11 @@ class FilesFrame(gtk.Frame):
                 tvcolumn = gtk.TreeViewColumn(column)
                 self.treeview.append_column(tvcolumn)
                 tvcolumn.pack_start(cell, True)
-                tvcolumn.add_attribute(cell, 'pixbuf', 7)
-                #cell.set_property('pixbuf')
+                tvcolumn.add_attribute(cell, self.iconType, 7)
+                cell.set_property('stock-size', gtk.ICON_SIZE_SMALL_TOOLBAR)
                 cell.set_fixed_size(5,22)
                 tvcolumn.set_resizable(False)
-                tvcolumn.set_fixed_width(gtk.TREE_VIEW_COLUMN_FIXED)
-                #cell.connect('clicked', self.control.toggle, self.treeStore)          
+                tvcolumn.set_fixed_width(gtk.TREE_VIEW_COLUMN_FIXED)      
             else:
                 cell = gtk.CellRendererText()
                 cell.set_padding(2, 0)

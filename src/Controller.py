@@ -224,7 +224,7 @@ class Controller:
     def doubleClickSelect(self, tree, event):
         """Detects double click on the treeview and updates the selection"""
         if event.type == gtk.gdk._2BUTTON_PRESS:
-            path = self.__detectPath(tree, event)
+            path, x, y = self.__detectPath(tree, event)
             model = tree.get_model()
             iter = model.get_iter(path)
             if model.get_value(iter, 8) != '':
@@ -241,13 +241,20 @@ class Controller:
                     tree.collapse_row(path)
                 else:
                     tree.expand_row(path, False)
-            
+        elif event.type == gtk.gdk.BUTTON_PRESS and event.button == 1:
+            path, x, y = self.__detectPath(tree, event)
+            rectangle = tuple(tree.get_cell_area(path, tree.get_column(7)))
+            max, min = rectangle[0] + rectangle[2], rectangle[0]
+            if max > x > min:
+                model = tree.get_model()
+                iter = model.get_iter(path)    
+                self.toggle(None, path, model)
         
     def doubleClickPlay(self, tree, event):
         """Detects double click on the playlist and play the selected track"""
         try:
             if event.type == gtk.gdk._2BUTTON_PRESS:
-                path = self.__detectPath(tree, event) 
+                path, x, y = self.__detectPath(tree, event) 
                 if self.playerThread.trackNum == -1:
                     self.view.slider.set_sensitive(True)
                 self.playerThread.trackNum = int(path) - 1
@@ -260,7 +267,7 @@ class Controller:
     
     def rightClick(self, tree, event, openMenu):
         if event.type == gtk.gdk.BUTTON_PRESS and event.button == 3:
-            path = self.__detectPath(tree, event) 
+            path, x, y = self.__detectPath(tree, event) 
             openMenu(event.time, path)
                 
     def __detectPath(self, tree, event): 
@@ -275,7 +282,7 @@ class Controller:
             else:
                 sep = ':'    
             path = path + sep + str(pathinfo[0][i])
-        return path 
+        return path, x, y 
     
     def dragBegin(self, widget, context, selection):
         items = selection.get_selected_rows()
