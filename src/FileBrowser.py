@@ -45,7 +45,7 @@ class FilesFrame(gtk.Frame):
         self.scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         # create a treeStore with one string column to use as the model
         s = gobject.TYPE_STRING
-        g = gobject.TYPE_STRING
+        g = gobject.TYPE_OBJECT
         self.treeStore = gtk.TreeStore(s, s, s, s, s, s, s, g, s)
         self.listStore = gtk.ListStore(s, s, s, s, s, s, s, g, s)
 
@@ -70,17 +70,20 @@ class FilesFrame(gtk.Frame):
         
     def createTree(self, parent, filelist):
         """Adds the files informations to the treeview"""
+        icontheme = gtk.icon_theme_get_for_screen(self.get_screen())
+        pixbuf = icontheme.choose_icon(['stock_right'], 18, 0).load_icon()
+        dirpixbuf = icontheme.choose_icon(['stock_new-dir'], 18, 0).load_icon()
         for f in filelist:
             if type(f).__name__ == 'instance':
                 if self.formatDict[string.lower(f.getTagValues()[0][-4:])] == True:
-                    data = f.getTagValues() + [gtk.STOCK_GO_FORWARD] + [f.getDir() + f.getTagValues()[0]]
+                    data = f.getTagValues() + [pixbuf] + [f.getDir() + f.getTagValues()[0]]
                     self.treeStore.append(parent, data)
                     data[2] = data[2] + '\t(' + data[4] + ')'
                     data[4] = data[4] + '\t(' + data[3] + ')'
                     self.listStore.append(data)
             elif type(f).__name__ == 'list':
                 if not self.__isEmpty(f):
-                    parent2 = self.treeStore.append(parent, [f[0], '', '', '', '', '', '', gtk.STOCK_DIRECTORY, ''])
+                    parent2 = self.treeStore.append(parent, [f[0], '', '', '', '', '', '', dirpixbuf, ''])
                     self.createTree(parent2, f[1:])
     
     def __isEmpty(self, filelist):
@@ -103,8 +106,8 @@ class FilesFrame(gtk.Frame):
                 tvcolumn = gtk.TreeViewColumn(column)
                 self.treeview.append_column(tvcolumn)
                 tvcolumn.pack_start(cell, True)
-                tvcolumn.add_attribute(cell, 'stock-id', 7)
-                cell.set_property('stock-size', 1)
+                tvcolumn.add_attribute(cell, 'pixbuf', 7)
+                #cell.set_property('pixbuf')
                 cell.set_fixed_size(5,22)
                 tvcolumn.set_resizable(False)
                 tvcolumn.set_fixed_width(gtk.TREE_VIEW_COLUMN_FIXED)

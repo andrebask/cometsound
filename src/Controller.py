@@ -136,14 +136,14 @@ class Controller:
         FILE.close()
         self.savePlaylist('lastplaylist', '')
     
-    def saveWinSize(self, width, height, pos):
+    def saveWinSize(self, width, height, pos, volume):
         try:
             dir = self.cacheDir
             if not os.path.exists(dir):
                 os.makedirs(dir)
             sizeFile = os.path.join(dir, 'size')
             FILE = open(sizeFile,'w')
-            for n in (width, height, pos):
+            for n in (width, height, pos, volume):
                 FILE.write(str(n) + '\n')
             FILE.close()
         except:
@@ -156,7 +156,7 @@ class Controller:
         for line in FILE:
             wh.append(line[:-1]) 
         FILE.close()
-        return int(wh[0]), int(wh[1]), int(wh[2])
+        return int(wh[0]), int(wh[1]), int(wh[2]), float(wh[3])
     
     def lastPlaylist(self):
         try:
@@ -183,7 +183,7 @@ class Controller:
     def toggle(self, cell, path, rowModel):
         """Adds or removes the selected files to the playlist and updates the treeview"""
         completeFilename = rowModel[path][8]
-        self.__addTrack(True,completeFilename)
+        self.__addTrack(True, completeFilename)
         self.__recursiveToggle(path, rowModel)
         self.updatePlaylist()
         
@@ -193,7 +193,7 @@ class Controller:
         while True:
             try:
                 completeFilename = rowModel[path + (":%d" % (i))][8]
-                self.__addTrack(completeFilename)   
+                self.__addTrack(True, completeFilename)   
                 self.__recursiveToggle((path + (":%d" % (i))), rowModel)
                 i+=1
             except:
@@ -231,8 +231,8 @@ class Controller:
                 self.toggle(None, path, model)
                 if self.playerThread.trackNum == -1:
                     self.view.slider.set_sensitive(True)
-                if self.playerThread.isAlive():
-                    self.playerThread.trackNum = len(self.playlist) - 2    
+                self.playerThread.trackNum = len(self.playlist) - 2
+                if self.playerThread.isAlive():    
                     self.playerThread.next()    
                 else:
                     self.playStopSelected(None)

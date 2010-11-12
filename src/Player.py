@@ -140,6 +140,9 @@ class PlayerThread(threading.Thread):
                 self.player.set_property("uri", "file://" + self.playlist[self.trackNum])
                 self.play() 
                 self.control.updateLabel(self.playlist[self.trackNum], notify)  
+    
+    def getVolume(self):
+        return self.player.get_property('volume')
         
     def onSliderChange(self, slider):
         """Handles the position changes of the slider"""

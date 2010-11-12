@@ -51,11 +51,12 @@ class View(gtk.Window):
         minwidth = int(self.get_screen().get_width() / 2.5)
         minheight = int(self.get_screen().get_height() / 2.5)
         try:
-            self.width, self.height, framepos = self.control.readWinSize()
+            self.width, self.height, framepos, self.volume = self.control.readWinSize()
         except:
             self.width = minwidth
             self.height = minheight
-            framepos = minwidth * 0.7
+            framepos = int(minwidth * 0.7)
+            self.volume = 10
         self.set_size_request(minwidth, minheight)
         self.resize(self.width, self.height) 
         self.set_position(gtk.WIN_POS_CENTER)
@@ -199,11 +200,11 @@ class View(gtk.Window):
         toolbar.insert(tl, -1)
                 
         # Create a button to control player volume
-        self.volume = gtk.VolumeButton()
-        self.volume.set_value(10)
-        self.volume.connect('value-changed', self.control.playerThread.onVolumeChanged)
+        self.volumeButton = gtk.VolumeButton()
+        self.volumeButton.set_value(self.volume)
+        self.volumeButton.connect('value-changed', self.control.playerThread.onVolumeChanged)
         tv = gtk.ToolItem()
-        tv.add(self.volume)
+        tv.add(self.volumeButton)
         toolbar.insert(tv, -1)
         self.hbox.pack_start(toolbar, True)
     
@@ -245,8 +246,8 @@ class View(gtk.Window):
         removeSelectedB = self.createButton(gtk.STOCK_REMOVE, _('Remove Selection'), self.control.removeSelected)
         
         sIcon = gtk.Image()
-        theme = gtk.icon_theme_get_for_screen(self.get_screen())
-        pixbuf = theme.choose_icon(['stock_shuffle'], 18, 0).load_icon()
+        icontheme = gtk.icon_theme_get_for_screen(self.get_screen())
+        pixbuf = icontheme.choose_icon(['stock_shuffle'], 18, 0).load_icon()
         sIcon.set_from_pixbuf(pixbuf)
         shuffleB = gtk.Button()
         shuffleB.add(sIcon)
@@ -386,7 +387,8 @@ class View(gtk.Window):
     def destroy(self):
         self.control.saveCache()
         pos = self.framebox.get_position()
-        self.control.saveWinSize(self.width, self.height, pos)
+        volume = self.control.playerThread.getVolume()
+        self.control.saveWinSize(self.width, self.height, pos, volume)
         self.control.playerThread.stop()
         if self.control.playerThread.isAlive():
             self.control.playerThread.terminate()    

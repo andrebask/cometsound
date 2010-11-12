@@ -74,7 +74,6 @@ class PlaylistFrame(gtk.Frame):
         self.TARGETS = [('TREE_MODEL_ROW', gtk.TARGET_SAME_WIDGET, 0)]  
         self.treeview.drag_source_set(gtk.gdk.BUTTON1_MASK, self.TARGETS, gtk.gdk.ACTION_MOVE)
         self.treeview.enable_model_drag_dest(self.TARGETS, gtk.gdk.ACTION_MOVE)
-        #self.treeview.drag_source_set_icon_stock(gtk.STOCK_DND)
         self.treeview.connect("drag_begin", self.control.dragBegin, self.treeview.get_selection())     
         self.treeview.connect("drag_data_get", self.control.drag)
         self.treeview.connect("drag_data_received", self.control.drop)
