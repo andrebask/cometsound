@@ -7,63 +7,76 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cometsound\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-11-04 01:02+0100\n"
+"POT-Creation-Date: 2010-11-12 01:18+0100\n"
 "PO-Revision-Date: 2010-11-06 14:30+0000\n"
 "Last-Translator: Andrea Bernardini <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-11-11 05:17+0000\n"
+"X-Launchpad-Export-Date: 2010-11-12 05:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: Programmazione/Python/workspace/CometSound/src/Controller.py:74
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:82
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:397
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:28
-#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:133
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:134
 #: Programmazione/Python/workspace/CometSound/src/View.py:33
-#: Programmazione/Python/workspace/CometSound/src/View.py:252
+#: Programmazione/Python/workspace/CometSound/src/View.py:259
 msgid "Title"
 msgstr "Título"
 
-#: Programmazione/Python/workspace/CometSound/src/Controller.py:75
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:83
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:399
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:28
-#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:135
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:136
 #: Programmazione/Python/workspace/CometSound/src/View.py:33
-#: Programmazione/Python/workspace/CometSound/src/View.py:254
+#: Programmazione/Python/workspace/CometSound/src/View.py:263
 msgid "Artist"
 msgstr "Artista"
 
-#: Programmazione/Python/workspace/CometSound/src/Controller.py:76
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:84
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:398
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:29
-#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:137
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:138
 #: Programmazione/Python/workspace/CometSound/src/View.py:34
-#: Programmazione/Python/workspace/CometSound/src/View.py:256
+#: Programmazione/Python/workspace/CometSound/src/View.py:265
 msgid "Album"
 msgstr "Álbum"
 
-#: Programmazione/Python/workspace/CometSound/src/Controller.py:77
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:85
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:401
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:29
-#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:139
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:140
 #: Programmazione/Python/workspace/CometSound/src/View.py:34
 msgid "Genre"
 msgstr "Género"
 
-#: Programmazione/Python/workspace/CometSound/src/Controller.py:78
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:86
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:400
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:29
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:56
-#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:131
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:132
 #: Programmazione/Python/workspace/CometSound/src/View.py:34
 msgid "Year"
 msgstr "Año"
 
-#: Programmazione/Python/workspace/CometSound/src/Controller.py:79
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:87
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:101
 #: Programmazione/Python/workspace/CometSound/src/View.py:34
 msgid "Add"
 msgstr "Agregar"
 
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:460
+msgid "from"
+msgstr ""
+
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:460
+msgid "by"
+msgstr ""
+
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:46
-#: Programmazione/Python/workspace/CometSound/src/View.py:246
+#: Programmazione/Python/workspace/CometSound/src/View.py:255
 msgid "Save Playlist"
 msgstr "Guardar Lista de Reproducción"
 
@@ -86,7 +99,7 @@ msgstr "<b>Columnas visibles</b>"
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:99
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:133
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:54
-#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:129
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:130
 #: Programmazione/Python/workspace/CometSound/src/View.py:33
 msgid "Name"
 msgstr "Nombre"
@@ -115,7 +128,7 @@ msgstr "Agregar a lista de reproducción"
 msgid "Edit tags"
 msgstr "Editar tags"
 
-#: Programmazione/Python/workspace/CometSound/src/Playlist.py:59
+#: Programmazione/Python/workspace/CometSound/src/Playlist.py:61
 msgid "Playlist"
 msgstr "Lista de reproducción"
 
@@ -123,101 +136,104 @@ msgstr "Lista de reproducción"
 msgid "Edit Tags"
 msgstr "Editar Tags"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:108
+#: Programmazione/Python/workspace/CometSound/src/View.py:118
 msgid "_Quit"
 msgstr "_Cerrar"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:108
+#: Programmazione/Python/workspace/CometSound/src/View.py:118
 msgid "Quit the program"
 msgstr "Cerrar el programa"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:109
+#: Programmazione/Python/workspace/CometSound/src/View.py:119
 msgid "_Open folder..."
 msgstr "_Abrir carpeta"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:109
+#: Programmazione/Python/workspace/CometSound/src/View.py:119
 msgid "Open media folder"
 msgstr "Abrir carpeta con medios"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:110
+#: Programmazione/Python/workspace/CometSound/src/View.py:120
 msgid "Preferences"
 msgstr "Preferencias"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:110
+#: Programmazione/Python/workspace/CometSound/src/View.py:120
 msgid "Change settings"
 msgstr "Cambiar ajustes"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:111
+#: Programmazione/Python/workspace/CometSound/src/View.py:121
 msgid "_File"
 msgstr "_Archivo"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:112
+#: Programmazione/Python/workspace/CometSound/src/View.py:122
 msgid "Fil_ters"
 msgstr "Fil_tros"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:113
+#: Programmazione/Python/workspace/CometSound/src/View.py:123
 msgid "Play selection"
 msgstr "Reproducir selección"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:114
-#: Programmazione/Python/workspace/CometSound/src/View.py:317
+#: Programmazione/Python/workspace/CometSound/src/View.py:124
+#: Programmazione/Python/workspace/CometSound/src/View.py:326
 msgid "Previous"
 msgstr "Anterior"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:115
-#: Programmazione/Python/workspace/CometSound/src/View.py:312
+#: Programmazione/Python/workspace/CometSound/src/View.py:125
+#: Programmazione/Python/workspace/CometSound/src/View.py:321
 msgid "Next"
 msgstr "Siguiente"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:116
+#: Programmazione/Python/workspace/CometSound/src/View.py:126
 msgid "Playlists"
 msgstr "Listas de reproducción"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:117
+#: Programmazione/Python/workspace/CometSound/src/View.py:127
 msgid "Open folder..."
 msgstr "Abrir archivo..."
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:118
+#: Programmazione/Python/workspace/CometSound/src/View.py:128
 msgid "_Help"
 msgstr "_Ayuda"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:119
+#: Programmazione/Python/workspace/CometSound/src/View.py:129
 msgid "About CometSound"
 msgstr "Sobre CometSound"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:232
+#: Programmazione/Python/workspace/CometSound/src/View.py:242
 msgid "Clear Playlist"
 msgstr "Limpiar lista de reproducción"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:233
+#: Programmazione/Python/workspace/CometSound/src/View.py:243
 msgid "Select All"
 msgstr "Seleccionar todo"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:234
-msgid "Deselect All"
-msgstr "Deseleccionar todo"
-
-#: Programmazione/Python/workspace/CometSound/src/View.py:235
+#: Programmazione/Python/workspace/CometSound/src/View.py:244
 msgid "Refresh"
 msgstr "Actualizar"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:236
+#: Programmazione/Python/workspace/CometSound/src/View.py:245
 msgid "Remove Selection"
 msgstr "Borrar selección"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:244
+#: Programmazione/Python/workspace/CometSound/src/View.py:253
 msgid "Shuffle"
 msgstr "Aleatorio"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:306
-#: Programmazione/Python/workspace/CometSound/src/View.py:359
+#: Programmazione/Python/workspace/CometSound/src/View.py:279
+msgid "Search"
+msgstr ""
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:315
+#: Programmazione/Python/workspace/CometSound/src/View.py:368
 msgid "Play"
 msgstr "Reproducir"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:322
+#: Programmazione/Python/workspace/CometSound/src/View.py:331
 msgid "Quit"
 msgstr "Cerrar"
 
-#: Programmazione/Python/workspace/CometSound/src/View.py:364
+#: Programmazione/Python/workspace/CometSound/src/View.py:373
 msgid "Pause"
 msgstr "Pausa"
+
+#~ msgid "Deselect All"
+#~ msgstr "Deseleccionar todo"
