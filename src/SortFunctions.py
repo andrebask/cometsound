@@ -60,46 +60,9 @@ def sortNumFunc(model, iter1, iter2, data):
             row1 = int(model.get_value(iter1, data).split('/')[0])
             row2 = int(model.get_value(iter2, data).split('/')[0])     
         except:
-            row1 = model.get_value(iter1, 0) 
-            row2 = model.get_value(iter2, 0)
-            rowList = [row1, row2]
-            sortedRowList = [row1, row2]   
-            sortedRowList.sort()
-            if rowList == sortedRowList:
-                return -1
-            else:
-                return 1
+            return sortNameFunc(model, iter1, iter2, data)
     if row1 < row2:
         return -1
     elif row1 > row2:
         return 1
     return 0
-
-def sortArtistFunc(model, iter1, iter2, data):
-    """Sorting algorithm for treeview's rows"""
-    row1 = model.get_value(iter1, 4)
-    row2 = model.get_value(iter2, 4)
-    if row1 == '' and row2 !=  '':
-        return -1
-    elif row1 == '' and row2 ==  '':
-        row1 = model.get_value(iter1, 0) 
-        row2 = model.get_value(iter2, 0)
-        rowList = [row1, row2]
-        sortedRowList = [row1, row2]   
-        sortedRowList.sort()
-        if rowList == sortedRowList:
-            return -1
-        else:
-            return 1        
-    elif row1 != '' and row2 ==  '':
-        return 1
-    elif row1 == row2:
-        return sortNumFunc(model, iter1, iter2, 1)
-    else:
-        rowList = [row1, row2]
-        sortedRowList = [row1, row2]   
-        sortedRowList.sort()
-        if rowList == sortedRowList:
-            return -1
-        else:
-            return 1   

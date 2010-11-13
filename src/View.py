@@ -26,6 +26,7 @@ from Dialogs import AboutDialog, PreferencesDialog, SavePlaylistDialog
 from Playlist import PlaylistFrame
 from SearchBox import SearchBox
 from FileBrowser import FilesFrame
+from Model import audioTypes
 
 version = '0.2.1'
 _ = CometSound.t.getTranslationFunc()
@@ -139,15 +140,15 @@ class View(gtk.Window):
             uilist = uilist + '<menuitem action="%s"/>' % (act)
 
         # Create ToggleActions
-        actiongroup.add_toggle_actions([('Mp3', None, '_Mp3', '<Control>m',
-                                        'MPEG-1 Audio Layer 3', self.control.toggleMp3, self.formatDict["mp3"]),
-                                       ('Wma', None, '_Wma', '<Control>w',
-                                        'Windows Media Audio', self.control.toggleWma, self.formatDict["wma"]),
-                                       ('Ogg', None, 'O_gg', '<Control>g',
-                                        'Ogg Vorbis', self.control.toggleOgg, self.formatDict["ogg"]),
-                                       ('Flac', None, '_Flac', '<Control>f',
-                                        'Ogg Vorbis', self.control.toggleFlac, self.formatDict["flac"])
-                                       ], None)
+        list = []
+        for type in audioTypes:
+            label = type[1:].capitalize()
+            actiongroup.add_toggle_actions([(label, None, label, None, None,self.control.toggleFilter, True)], None)
+            list.append(label)
+        list.sort()
+        uitogglelist = ''
+        for label in list:
+            uitogglelist = uitogglelist + '<menuitem action="%s"/>' % (label)    
 
         # Add the actiongroup to the uimanager
         uimanager.insert_action_group(actiongroup, 0)
@@ -160,15 +161,12 @@ class View(gtk.Window):
                                             <menuitem action="Preferences"/>
                                             <menuitem action="Quit"/>
                                           </menu>
-                                          <menu action="RadioBand">
-                                            <menuitem action="Mp3"/>
-                                            <menuitem action="Wma"/>
-                                            <menuitem action="Ogg"/>
-                                            <menuitem action="Flac"/>
-                                          </menu>
+                                          <menu action="RadioBand">'''
+                                            + uitogglelist +
+                                       '''</menu>
                                           <menu action="Playlists">
                                             <menuitem action="PlaylistsFolder"/>'''
-                                           + uilist +
+                                            + uilist +
                                       ''' </menu>
                                           <menu action="Help">
                                             <menuitem action="About"/>

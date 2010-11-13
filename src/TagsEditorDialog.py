@@ -50,8 +50,14 @@ class TagsEditor(gtk.Dialog):
             l = gtk.Label(key + ':')
             l.set_size_request(5,5)
             l.set_alignment(0.1,0.5)
-            e = gtk.Entry()
-            e.set_text(file.getTagValue(colToKey[key]))
+            e = gtk.Entry()            
+            if file.supported:
+                text = file.getTagValue(colToKey[key])
+            else:
+                text = '***Not Supported***'
+            e.set_text(text)
+            e.set_editable(file.supported)
+            e.set_sensitive(file.supported)
             entries[key] = e
             hbox.pack_start(l)
             hbox.pack_start(e)
@@ -65,11 +71,12 @@ class TagsEditor(gtk.Dialog):
         if response == gtk.RESPONSE_CANCEL or response == gtk.RESPONSE_DELETE_EVENT:
             self.destroy()
         elif response == gtk.RESPONSE_APPLY:
-            for key in columns[1:7]:
-                val = entries[key].get_text()
-                file.writeTagValue(colToKey[key], val)  
-                n = columns.index(key)
-                treeModel.set_value(row, n, val)
+            if file.supported:
+                for key in columns[1:7]:
+                    val = entries[key].get_text()
+                    file.writeTagValue(colToKey[key], val)  
+                    n = columns.index(key)
+                    treeModel.set_value(row, n, val)
             newname = os.path.join(cfname[:i], entries['file'].get_text())
             os.rename(cfname, newname)
             treeModel.set_value(row, len(columns)-1, newname)

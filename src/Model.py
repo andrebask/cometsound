@@ -23,6 +23,10 @@
 import gtk, stat, os, string, commands, cerealizer, time, sys
 from AF import AudioFile
 
+audioTypes = ['.mp3', '.wma', '.ogg', '.flac', 
+            '.m4a', '.mp4', '.aac', '.wav',
+             '.ape', '.mpc', '.wv']
+
 class Model:
     """Data structure that represents the file system tree"""
     audioFileList = list()
@@ -135,5 +139,4 @@ class Model:
     def isAudio(self, fileName):
         i = fileName.rfind('.')
         ext = string.lower(fileName[i:])
-        return ext in ['.mp3', '.wma', '.ogg', '.flac', 
-                       '.m4a', '.mp4', '.aac', '.wav', '.ape', '.mpc', '.wv']                 
+        return ext in audioTypes                 

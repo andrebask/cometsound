@@ -61,10 +61,10 @@ class FilesFrame(gtk.Frame):
 
         self.createTree(None, self.listOfFiles)
         # create and sort the TreeView using treeStore
-        self.treeStore.set_sort_func(10, SF.sortNameFunc, self.columns.index(_('Name')))
-        self.treeStore.set_sort_func(11, SF.sortNumFunc, self.columns.index('#'))
-        self.treeStore.set_sort_func(12, SF.sortNumFunc, self.columns.index(_('Year')))
-        self.treeStore.set_sort_column_id(10, gtk.SORT_ASCENDING)
+        self.treeStore.set_sort_func(0, SF.sortNameFunc, self.columns.index(_('Name')))
+        self.treeStore.set_sort_func(1, SF.sortNumFunc, self.columns.index('#'))
+        self.treeStore.set_sort_func(6, SF.sortNumFunc, self.columns.index(_('Year')))
+        self.treeStore.set_sort_column_id(0, gtk.SORT_ASCENDING)
         self.treeview = gtk.TreeView(self.treeStore)
         self.treeview.set_rules_hint(True)
         self.treeview.connect("button-press-event", self.control.doubleClickSelect)
@@ -137,17 +137,17 @@ class FilesFrame(gtk.Frame):
                     tvcolumn.add_attribute(cell, 'text', i) 
                     tvcolumn.set_resizable(False)
                     tvcolumn.set_fixed_width(gtk.TREE_VIEW_COLUMN_FIXED)  
-                    tvcolumn.set_sort_column_id(11)        
+                    tvcolumn.set_sort_column_id(1)        
                 if column == _('Name'):
-                    tvcolumn.set_sort_column_id(10) 
+                    tvcolumn.set_sort_column_id(0) 
                 if column == _('Year'):
-                    tvcolumn.set_sort_column_id(12) 
+                    tvcolumn.set_sort_column_id(6) 
                 if column == _('Title'):
                     tvcolumn.set_sort_column_id(2)
                 if column == _('Artist'):
                     tvcolumn.set_sort_column_id(3)    
                 if column == _('Album'):
-                    tvcolumn.set_sort_column_id(6)
+                    tvcolumn.set_sort_column_id(4)
                 if column == _('Genre'):
                     tvcolumn.set_sort_column_id(5)                              
                 if column == '' :

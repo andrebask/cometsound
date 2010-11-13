@@ -24,7 +24,7 @@ import gtk, os, Model, gst, pynotify, cerealizer, random, time
 from AF import AudioFile
 from Player import PlayerThread
 from View import CometSound
-
+from Model import audioTypes
 _ = CometSound.t.getTranslationFunc()
 
 icons = {'True': gtk.STOCK_MEDIA_PLAY, 'False': gtk.STOCK_MEDIA_PAUSE}
@@ -340,27 +340,10 @@ class Controller:
     def dragEnd(self, widget, context):
         self.updatePlaylist()
             
-    def toggleMp3(self, data):
+    def toggleFilter(self, data):
         """Enables/disables mp3 filtering"""
-        self.view.getFormatDict()['.mp3'] = self.view.actiongroup.get_action('Mp3').get_active()
-        self.__refreshViewTree()
-        return
-    
-    def toggleWma(self, data):
-        """Enables/disables wma filtering"""
-        self.view.getFormatDict()['.wma'] = self.view.actiongroup.get_action('Wma').get_active()
-        self.__refreshViewTree()
-        return
-    
-    def toggleOgg(self, data):
-        """Enables/disables Ogg filtering"""
-        self.view.getFormatDict()['.ogg'] = self.view.actiongroup.get_action('Ogg').get_active()
-        self.__refreshViewTree()
-        return
-    
-    def toggleFlac(self, data):
-        """Enables/disables Ogg filtering"""
-        self.view.getFormatDict()['flac'] = self.view.actiongroup.get_action('Flac').get_active()
+        for type in audioTypes:
+            self.view.getFormatDict()[type[1:]] = self.view.actiongroup.get_action(type[1:].capitalize()).get_active()
         self.__refreshViewTree()
         return
     
@@ -478,8 +461,6 @@ class Controller:
             
     def clearPlaylist(self, widget, data=None):
         """Removes all the files from the playlist"""
-        #self.addAll(None, False) #slow
-        self.view.filesTree.setModel(self.model) #fast
         self.playerThread.clearPlaylist()
         self.updatePlaylist()
     
@@ -495,6 +476,7 @@ class Controller:
 
     def __removeTrack(self, num): 
         """Handles the removal of the files in the playlist"""
+        import sys
         pt = self.playerThread   
         try:
             if pt.started:
@@ -506,12 +488,16 @@ class Controller:
                     else:
                         pt.next()
                         pt.pause()
+                    if len(self.playlist)-1 == num:
+                        pt.trackNum = -1
+                        pt.next() 
+                        pt.stop()
             if pt.trackNum > num:
                 pt.trackNum -= 1    
             del self.playlist[num]                               
         except:
             pass
-            #print sys.exc_info()
+            print sys.exc_info()
             
     def shufflePlaylist(self, widget, data=None):
         """Mixes the songs in the playlist"""

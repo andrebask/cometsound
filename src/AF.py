@@ -67,9 +67,11 @@ class AudioFile:
 		"""Detects the file extension, reads and stores tags""" 
 		try:
 			tags, fileext = self.read(fileName)
+			self.supported = True
 		except:
 			for key in keyList:
 				self.tagsDict[key] = ''
+			self.supported = False
 			#print sys.exc_info()	
 		else:
 			list = [(key, keyTag) for key in keyList for keyTag in formatDict[string.lower(fileext)]
