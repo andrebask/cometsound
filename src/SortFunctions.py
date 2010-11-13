@@ -27,8 +27,8 @@ def sortNameFunc(model, iter1, iter2, data):
     if row1 == '' and row2 !=  '':
         return -1
     elif row1 == '' and row2 ==  '':
-        row1 = model.get_value(iter1, 0) 
-        row2 = model.get_value(iter2, 0)
+        row1 = model.get_value(iter1, 0).lower() 
+        row2 = model.get_value(iter2, 0).lower()
         rowList = [row1, row2]
         sortedRowList = [row1, row2]   
         sortedRowList.sort()
@@ -39,9 +39,12 @@ def sortNameFunc(model, iter1, iter2, data):
     elif row1 != '' and row2 ==  '':
         return 1
     else:
-        rowList = [row1, row2]
-        sortedRowList = [row1, row2]   
-        sortedRowList.sort()
+        try:
+            rowList = [row1.lower(), row2.lower()]
+            sortedRowList = [row1.lower(), row2.lower()]   
+            sortedRowList.sort()
+        except:
+            return -1
         if rowList == sortedRowList:
             return -1
         else:

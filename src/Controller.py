@@ -43,10 +43,8 @@ class Controller:
         self.duration = 0
         pynotify.init('label')
         self.notification = pynotify.Notification(' ',' ')
-        
-        try:
-            self.folder = self.model.getOldDir()
-        except:
+        self.folder = self.model.directory
+        if self.folder == '':
             self.folder = os.environ.get('HOME', None)
         
         try:
@@ -93,17 +91,12 @@ class Controller:
     
     def refreshStatusIcon(self):
         self.view.setStatusIcon()
-        
+
     def openFolder(self, o):
         """Creates the dialog window that permits to choose the folder to scan"""
         old = self.folder
-        self.__openDialog()
-        if old != self.folder:
-            if os.stat(self.folder).st_uid == os.getuid():
-                self.__reBuildViewTree()
-            
-    def __openDialog(self):
-        folderChooser = gtk.FileChooserDialog('Select Folder...', None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER, (gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+        folderChooser = gtk.FileChooserDialog('Select Folder...', None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
+                                               (gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
         folderChooser.set_current_folder(self.folder)
         folderChooser.set_default_response(gtk.RESPONSE_OK)
         response = folderChooser.run()
@@ -112,10 +105,16 @@ class Controller:
             self.view.show_all()
             self.folder = folderChooser.get_current_folder()
             folderChooser.hide()
+            if old != self.folder:
+                if os.stat(self.folder).st_uid == os.getuid():
+                    self.__reBuildViewTree()
+            else:
+                self.view.vbox.remove(self.view.progressBar)
+                self.refreshTree()
         else:
             folderChooser.hide()    
         while gtk.events_pending():
-            gtk.main_iteration()    
+            gtk.main_iteration()   
     
     def __reBuildViewTree(self):
         """Creates a new Model using the current folder"""
@@ -176,7 +175,7 @@ class Controller:
         self.view.filesTree.setModel(self.model)
         self.view.searchBox.setListStore(self.view.filesTree.listStore)
     
-    def refreshTree(self, widget, data = None):
+    def refreshTree(self, widget = None, data = None):
         self.model.updateModel()
         self.__refreshViewTree()
             
@@ -418,8 +417,8 @@ class Controller:
                 self.notification.show()
         else:
             winTitle = t['filename']
-            label = "File:\t" + winTitle + "\n\n"
-            self.view.label.set_text(label[:50])
+            label = "File:\t<b>" + winTitle[:50] + "</b>\n\n"
+            self.view.label.set_markup(label)
             self.view.set_title(winTitle)    
     
     def readPlaylists(self):
@@ -470,10 +469,10 @@ class Controller:
                     self.extractTags(track)['artist'])
             text = '<b>%s</b>\n%s <i>%s</i> %s <i>%s</i>' % (info[0], _('from'), info[1], _('by'), info[2])
             text = text.replace('&', '&amp;')
-            if text != '' and text != ' ':
+            if info[0] != '' and info[0] != ' ':
                 append([icon, text])             
             else:
-                f = self.extractTags(track)['filename']
+                f = '<b>%s</b>\n' % self.extractTags(track)['filename']
                 append([icon, f]) 
             i+=1
             

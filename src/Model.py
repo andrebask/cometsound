@@ -20,7 +20,7 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, stat, os, string, commands, cerealizer, time
+import gtk, stat, os, string, commands, cerealizer, time, sys
 from AF import AudioFile
 
 class Model:
@@ -52,9 +52,10 @@ class Model:
                 FILE = open(self.cachefname, 'rb')
                 self.audioFileList = cerealizer.load(FILE)
                 FILE.close()
-                self.directory = self.getOldDir()
+                self.directory = self.audioFileList[0]
             except:
-                self.directory = ''    
+                self.directory = ''
+                print sys.exc_info()    
             return
         else:
             try:
@@ -63,21 +64,10 @@ class Model:
             except:
                 self.directory = ''    
         self.audioFileList = self.__searchFiles(self.directory) 
-    
-    def getOldDir(self):
-        """Extracts the name of the current directory"""
-        f = self.audioFileList[0]
-        if type(f).__name__ == 'instance':
-            dirname = f.getDir()[:-1]
-        elif type(f).__name__ == 'list':
-            subdir = f[1].getDir()
-            i = subdir[:-1].rfind('/')
-            dirname = subdir[:i]
-        return dirname
             
     def __searchFiles(self, directory):
         """Recursively scans the file system to find audio files and add them to the tree"""
-        list = []
+        list = [self.directory]
         try:
             fileList = os.listdir(directory)
         except:
@@ -108,58 +98,39 @@ class Model:
             self.count+=1
             while gtk.events_pending():
                 gtk.main_iteration() 
-                
+    
     def updateModel(self):
-        fileTree = self.getAudioFileList()
-        self.curDir = ''    
-        self.__searchChanged(fileTree, self.directory[1:])
+        self.__updateModel(self.getAudioFileList(), self.directory)
         self.lastUpdate = time.time()
-
-    def __searchChanged(self, fileTree, dir = ''):
-        self.curDir += '/' + dir
-        loopDir = self.curDir
-        for file in fileTree:
-            if type(file).__name__ == 'list':
-                dir = file[0]
-                path = os.path.join(self.curDir, dir)
-                if os.path.getmtime(path) > self.lastUpdate:
-                    print 'updating ' + dir 
-                    fileTree[fileTree.index(file)] = [dir] + self.__searchFiles(path)
-                if self.__isChanged(path):
-                    self.__searchChanged(file, dir)
-            elif type(file).__name__ == 'instance': 
-                path = os.path.join(self.curDir, file.getTagValue('fileName'))
-                try:
-                    if stat.S_ISREG(os.stat(path).st_mode):
-                        if os.path.getmtime(path) > self.lastUpdate:
-                            print 'deleting ' + file.getTagValue('fileName')
-                            fileTree.remove(file)
-                except OSError:
-                    print 'deleting ' + file.getTagValue('fileName')
-                    fileTree.remove(file)                                
-            self.curDir = loopDir
-        for file in os.listdir(self.curDir):
-            path = os.path.join(self.curDir, file)
-            if stat.S_ISREG(os.stat(path).st_mode):
-                if os.path.getmtime(path) > self.lastUpdate and self.isAudio(file):
-                    print 'adding ' + file
-                    fileTree.append(AudioFile(self.curDir, file))
-            
-            
-    def __isChanged(self, dir):
-        """Recursively checks if in the directory 
-            is there any recently modified audio file"""
-        filelist = os.listdir(dir)
-        for f in filelist:
-            path = os.path.join(dir, f)
-            mtime = os.path.getmtime(path)
-            fstat = os.stat(path)
-            if mtime > self.lastUpdate and self.isAudio(f):
-                return True
-            if stat.S_ISDIR(fstat.st_mode):   
-                if self.__isChanged(path):
-                    return True           
-        return False  
+        
+    def __updateModel(self, fileTree, dir):
+        fileList = os.listdir(dir)
+        for element in fileTree:
+            if type(element).__name__ == 'list':
+                if element[0] in fileList:
+                    fileList.remove(element[0])
+                    self.__updateModel(element, os.path.join(dir, element[0]))
+                else:
+                    fileTree.remove(element)
+            elif type(element).__name__ == 'instance':
+                fname = element.getTagValue('fileName')
+                if fname in fileList:
+                    fileList.remove(fname)
+                    path = os.path.join(dir, fname)
+                    if os.path.getmtime(path) > self.lastUpdate:
+                        print 'updating file %s ' % file.getTagValue('fileName')
+                        fileTree[fileTree.index(element)] = AudioFile(dir, fname)
+                else:
+                    fileTree.remove(element)
+        for element in fileList:
+            path = os.path.join(dir, element)
+            if stat.S_ISDIR(os.stat(path).st_mode):
+                print 'adding new dir ' + element
+                newdir = self.__searchFiles(path)
+                fileTree.append([element] + newdir[1:])
+            elif stat.S_ISREG(os.stat(path).st_mode) and self.isAudio(element):
+                print 'adding new file ' + element
+                fileTree.append(AudioFile(dir, element))
      
     def isAudio(self, fileName):
         i = fileName.rfind('.')
