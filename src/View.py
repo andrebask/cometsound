@@ -36,7 +36,9 @@ columns = [_('Name'), '#', _('Title'), _('Artist'),
 class View(gtk.Window):
     
     
-    formatDict = {'.mp3': True, '.wma': True, '.ogg': True, 'flac': True}
+    formatDict = {'mp3': True, 'wma': True, 'ogg': True, 'flac': True, 
+                  'm4a': True, 'mp4': True, 'aac': True, 'wav': True,
+                  'ape': True, 'mpc': True, 'wv': True}
         
     def __init__(self, model, control):
         
@@ -48,8 +50,8 @@ class View(gtk.Window):
         
         # Create the toplevel window
         self.connect('destroy', lambda w: self.destroy())
-        minwidth = 696#int(self.get_screen().get_width() / 2.5)
-        minheight = 420#int(self.get_screen().get_height() / 2.5)
+        minwidth = 700 #int(self.get_screen().get_width() / 2.5)
+        minheight = 420 #int(self.get_screen().get_height() / 2.5)
         try:
             self.width, self.height, framepos, self.volume = self.control.readWinSize()
         except:
@@ -138,11 +140,11 @@ class View(gtk.Window):
 
         # Create ToggleActions
         actiongroup.add_toggle_actions([('Mp3', None, '_Mp3', '<Control>m',
-                                        'MPEG-1 Audio Layer 3', self.control.toggleMp3, self.formatDict[".mp3"]),
+                                        'MPEG-1 Audio Layer 3', self.control.toggleMp3, self.formatDict["mp3"]),
                                        ('Wma', None, '_Wma', '<Control>w',
-                                        'Windows Media Audio', self.control.toggleWma, self.formatDict[".wma"]),
+                                        'Windows Media Audio', self.control.toggleWma, self.formatDict["wma"]),
                                        ('Ogg', None, 'O_gg', '<Control>g',
-                                        'Ogg Vorbis', self.control.toggleOgg, self.formatDict[".ogg"]),
+                                        'Ogg Vorbis', self.control.toggleOgg, self.formatDict["ogg"]),
                                        ('Flac', None, '_Flac', '<Control>f',
                                         'Ogg Vorbis', self.control.toggleFlac, self.formatDict["flac"])
                                        ], None)
@@ -355,7 +357,10 @@ class View(gtk.Window):
     
     def openPlaylistFolder(self, widget, data=None):
         cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")
-        os.system('xdg-open %s' % os.path.join(cacheDir, 'playlists'))
+        dir = os.path.join(cacheDir, 'playlists')
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        os.system('xdg-open %s' % dir)
     
     def savePlaylistDialog(self, widget, data=None):
         d = SavePlaylistDialog(self.control)

@@ -82,7 +82,8 @@ class FilesFrame(gtk.Frame):
         """Adds the files informations to the treeview"""
         for f in filelist:
             if type(f).__name__ == 'instance':
-                if self.formatDict[string.lower(f.getTagValues()[0][-4:])] == True:
+                ext = f.getTagValues()[0].split('.')[-1]
+                if self.formatDict[string.lower(ext)] == True:
                     data = f.getTagValues() + [self.rightPixbuf] + [f.getDir() + f.getTagValues()[0]]
                     self.treeStore.append(parent, data)
                     data[2] = data[2] + '\t(' + data[4] + ')'
@@ -97,7 +98,8 @@ class FilesFrame(gtk.Frame):
         """Recursively checks if in the folder is there any audio file"""
         for f in filelist:
             if type(f).__name__ == 'instance':
-                if self.formatDict[string.lower(f.getTagValues()[0][-4:])] == True: 
+                ext = f.getTagValues()[0].split('.')[-1]
+                if self.formatDict[string.lower(ext)] == True: 
                     return False
             elif type(f).__name__ == 'list':   
                 if not self.__isEmpty(f):

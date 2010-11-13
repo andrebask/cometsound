@@ -20,7 +20,7 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, CometSound
+import gtk, gobject, CometSound
 
 _ = CometSound.t.getTranslationFunc()
 
@@ -59,7 +59,7 @@ class SavePlaylistDialog(gtk.Dialog):
             control.savePlaylist(e.get_text())
             self.destroy()
         if response == gtk.RESPONSE_CANCEL or response == gtk.RESPONSE_DELETE_EVENT:
-            self.destroy()    
+            self.destroy()
                 
 class PreferencesDialog(gtk.Dialog):
     

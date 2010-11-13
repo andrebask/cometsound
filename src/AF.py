@@ -26,9 +26,13 @@ from mutagen.oggvorbis import OggVorbis
 from mutagen.flac import FLAC
 from mutagen.oggflac import OggFLAC
 from mutagen.oggspeex import OggSpeex
+from mutagen.easymp4 import EasyMP4
+from mutagen.wavpack import WavPack
+from mutagen.monkeysaudio import MonkeysAudio
+from mutagen.musepack import Musepack
 from mutagen.ogg import error as OggError
 
-import string, os
+import string, os, sys
 
 
 fname = "fileName"	
@@ -38,6 +42,13 @@ formatDict['mp3'] = ["title", "artist", "album", "genre", "date", "tracknumber"]
 formatDict['ogg'] = ["title", "artist", "album", "genre", "year", "tracknumber"]
 formatDict['wma'] = ["Title", "Author", "WM/AlbumTitle", "WM/Genre", "WM/Year", "WM/TrackNumber"]
 formatDict['flac'] = ["title", "artist", "album", "genre", "date", "tracknumber"]
+formatDict['m4a'] = ["title", "artist", "album", "genre", "date", "tracknumber"]
+formatDict['aac'] = ["title", "artist", "album", "genre", "date", "tracknumber"]
+formatDict['mp4'] = ["title", "artist", "album", "genre", "date", "tracknumber"]
+formatDict['wav'] = ["title", "artist", "album", "genre", "date", "tracknumber"]
+formatDict['ape'] = ["title", "artist", "album", "genre", "date", "tracknumber"]
+formatDict['mpc'] = ["title", "artist", "album", "genre", "year", "track"]
+formatDict['wv'] = ["title", "artist", "album", "genre", "date", "tracknumber"]
 
 class AudioFile:
 	"""Data structure that represents an audio file,
@@ -72,22 +83,32 @@ class AudioFile:
 	
 	def read(self, fileName):		
 		fileext = fileName.split('.')[-1:][0]
-		if(fileext == ('mp3' or 'MP3')):
-			tags = EasyID3(fileName)
-			
-		elif(fileext == ('wma' or 'WMA')):
-			tags = ASF(fileName)
-			
-		elif(fileext == ('ogg' or 'OGG')):
+		fileext = fileext.lower()
+		if fileext == 'mp3':
+			tags = EasyID3(fileName)			
+		elif fileext == 'wma':
+			tags = ASF(fileName)			
+		elif fileext == 'ogg':
 			try:
 				tags = OggVorbis(fileName)
 			except OggError:	
 				tags = OggFLAC(fileName)
 			except:
-				tags = OggSpeex(fileName)
-					
-		elif(fileext == ('flac' or 'FLAC')):
+				tags = OggSpeex(fileName)					
+		elif fileext == 'flac':
 			tags = FLAC(fileName)
+		elif fileext in ['wav', 'wv']:
+			tags = WavPack(fileName)
+			#print tags.keys()
+		elif fileext == 'ape':
+			tags = MonkeysAudio(fileName)
+			#print tags.keys()
+		elif fileext == 'mpc':
+			tags = Musepack(fileName)
+			#print tags.keys()
+		elif fileext in ['m4a', 'mp4', 'aac']:
+			tags = EasyMP4(fileName)
+			#print tags.keys()
 		return tags, fileext
 				
 	def getTagValues(self):

@@ -164,4 +164,5 @@ class Model:
     def isAudio(self, fileName):
         i = fileName.rfind('.')
         ext = string.lower(fileName[i:])
-        return ext in ['.mp3', '.wma', '.ogg', '.flac']                 
+        return ext in ['.mp3', '.wma', '.ogg', '.flac', 
+                       '.m4a', '.mp4', '.aac', '.wav', '.ape', '.mpc', '.wv']                 

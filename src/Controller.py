@@ -223,32 +223,35 @@ class Controller:
         
     def doubleClickSelect(self, tree, event):
         """Detects double click on the treeview and updates the selection"""
-        if event.type == gtk.gdk._2BUTTON_PRESS:
-            path, x, y = self.__detectPath(tree, event)
-            model = tree.get_model()
-            iter = model.get_iter(path)
-            if model.get_value(iter, 8) != '':
-                self.toggle(None, path, model)
-                if self.playerThread.trackNum == -1:
-                    self.view.slider.set_sensitive(True)
-                self.playerThread.trackNum = len(self.playlist) - 2
-                if self.playerThread.isAlive():    
-                    self.playerThread.next()    
-                else:
-                    self.playStopSelected(None)
-            else:
-                if tree.row_expanded(path):
-                    tree.collapse_row(path)
-                else:
-                    tree.expand_row(path, False)
-        elif event.type == gtk.gdk.BUTTON_PRESS and event.button == 1:
-            path, x, y = self.__detectPath(tree, event)
-            rectangle = tuple(tree.get_cell_area(path, tree.get_column(7)))
-            max, min = rectangle[0] + rectangle[2], rectangle[0]
-            if max > x > min:
+        try:
+            if event.type == gtk.gdk._2BUTTON_PRESS:
+                path, x, y = self.__detectPath(tree, event)
                 model = tree.get_model()
-                iter = model.get_iter(path)    
-                self.toggle(None, path, model)
+                iter = model.get_iter(path)
+                if model.get_value(iter, 8) != '':
+                    self.toggle(None, path, model)
+                    if self.playerThread.trackNum == -1:
+                        self.view.slider.set_sensitive(True)
+                    self.playerThread.trackNum = len(self.playlist) - 2
+                    if self.playerThread.isAlive():    
+                        self.playerThread.next()    
+                    else:
+                        self.playStopSelected(None)
+                else:
+                    if tree.row_expanded(path):
+                        tree.collapse_row(path)
+                    else:
+                        tree.expand_row(path, False)
+            elif event.type == gtk.gdk.BUTTON_PRESS and event.button == 1:
+                path, x, y = self.__detectPath(tree, event)
+                rectangle = tuple(tree.get_cell_area(path, tree.get_column(7)))
+                max, min = rectangle[0] + rectangle[2], rectangle[0]
+                if max > x > min:
+                    model = tree.get_model()
+                    iter = model.get_iter(path)    
+                    self.toggle(None, path, model)
+        except:
+            return
         
     def doubleClickPlay(self, tree, event):
         """Detects double click on the playlist and play the selected track"""
@@ -448,7 +451,8 @@ class Controller:
         for track in self.playlist:
             FILE.write(track + '\n')
         FILE.close()
-        self.view.updatePlaylistsMenu(playlist)
+        if dir == 'playlists':
+            self.view.updatePlaylistsMenu(playlist)
     
     def updatePlaylist(self):
         """Refreshes playlist view"""
