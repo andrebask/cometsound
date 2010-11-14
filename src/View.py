@@ -28,7 +28,7 @@ from SearchBox import SearchBox
 from FileBrowser import FilesFrame
 from Model import audioTypes
 
-version = '0.2.1'
+version = '0.3'
 _ = CometSound.t.getTranslationFunc()
 
 columns = [_('Name'), '#', _('Title'), _('Artist'),
@@ -99,6 +99,7 @@ class View(gtk.Window):
         self.show_all()
         self.filesTree.setModel(self.model)
         self.searchBox.grab_focus()
+        self.control.refreshTree()
         
     def createPrimaryToolbar(self):
         self.vbox = gtk.VBox()

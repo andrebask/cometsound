@@ -20,49 +20,59 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-def sortNameFunc(model, iter1, iter2, data):
+swap = 1
+ok = -1
+equal = 0
+
+def sortNameFunc(model, iter1, iter2):
     """Sorting algorithm for treeview's rows"""
-    row1 = model.get_value(iter1, 8)
-    row2 = model.get_value(iter2, 8)
-    if row1 == '' and row2 !=  '':
-        return -1
-    elif row1 == '' and row2 ==  '':
-        row1 = model.get_value(iter1, 0).lower() 
-        row2 = model.get_value(iter2, 0).lower()
-        rowList = [row1, row2]
-        sortedRowList = [row1, row2]   
-        sortedRowList.sort()
-        if rowList == sortedRowList:
-            return -1
+    value1 = model.get_value(iter1, 0).lower()
+    value2 = model.get_value(iter2, 0).lower()
+    row1Isfile = model.get_value(iter1, 8) != ''
+    row2Isfile = model.get_value(iter2, 8) != ''
+    if value1 == value2:
+        return equal
+    if not row1Isfile and row2Isfile:
+        return ok
+    elif not row1Isfile and not row2Isfile:
+        sortedRowList = [value1, value2]
+        sortedRowList.sort()   
+        if sortedRowList == [value1, value2]:
+            return ok
         else:
-            return 1        
-    elif row1 != '' and row2 ==  '':
-        return 1
-    else:
-        try:
-            rowList = [row1.lower(), row2.lower()]
-            sortedRowList = [row1.lower(), row2.lower()]   
-            sortedRowList.sort()
-        except:
-            return -1
-        if rowList == sortedRowList:
-            return -1
+            return swap 
+    elif row1Isfile and not row2Isfile:
+        return swap
+    elif row1Isfile and row2Isfile:
+        sortedRowList = [value1, value2]
+        sortedRowList.sort()   
+        if sortedRowList == [value1, value2]:
+            return ok
         else:
-            return 1     
+            return swap
     
 def sortNumFunc(model, iter1, iter2, data):
     """Sorting algorithm for Num column's rows"""
-    try:
-        row1 = int(model.get_value(iter1, data))
-        row2 = int(model.get_value(iter2, data))
-    except:
+    value1 = model.get_value(iter1, data)
+    value2 = model.get_value(iter2, data)
+    if type(value1).__name__ == 'str' and value1 != '':
         try:
-            row1 = int(model.get_value(iter1, data).split('/')[0])
-            row2 = int(model.get_value(iter2, data).split('/')[0])     
+            row1 = int(value1.split('/')[0])
         except:
-            return sortNameFunc(model, iter1, iter2, data)
+            row1 = 0
+    else:
+        row1 = 0
+    if type(value2).__name__ == 'str'and value2 != '':
+        try:
+            row2 = int(value2.split('/')[0])
+        except:
+            row2 = 0
+    else:
+        row2 = 0       
+    if row1 == row2:
+        return equal
     if row1 < row2:
-        return -1
+        return ok
     elif row1 > row2:
-        return 1
-    return 0
+        return swap
+    return equal

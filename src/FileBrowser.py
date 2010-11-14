@@ -61,7 +61,7 @@ class FilesFrame(gtk.Frame):
 
         self.createTree(None, self.listOfFiles)
         # create and sort the TreeView using treeStore
-        self.treeStore.set_sort_func(0, SF.sortNameFunc, self.columns.index(_('Name')))
+        self.treeStore.set_sort_func(0, SF.sortNameFunc)
         self.treeStore.set_sort_func(1, SF.sortNumFunc, self.columns.index('#'))
         self.treeStore.set_sort_func(6, SF.sortNumFunc, self.columns.index(_('Year')))
         self.treeStore.set_sort_column_id(0, gtk.SORT_ASCENDING)

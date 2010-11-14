@@ -50,7 +50,7 @@ class Model:
     def setDir(self, directory):
         """Sets the directory to scan, calculates the number of files,
            and builds the file system tree (using __searchFiles method)"""
-        self.directory = directory   
+        self.directory = directory  
         if self.directory == '':  
             try: 
                 FILE = open(self.cachefname, 'rb')
@@ -71,6 +71,7 @@ class Model:
             
     def __searchFiles(self, directory):
         """Recursively scans the file system to find audio files and add them to the tree"""
+        #print directory
         list = [self.directory]
         try:
             fileList = os.listdir(directory)
@@ -78,17 +79,18 @@ class Model:
             return list
         for fileName in fileList:
             self.__updateProgressBar()
-            if os.access((directory + '/' + fileName), os.R_OK) and fileName[0] != '.':
+            if os.access((os.path.join(directory, fileName)), os.R_OK) and fileName[0] != '.':
                 try:
-                    filestat = os.stat(directory + '/' + fileName)
+                    filestat = os.stat(os.path.join(directory, fileName))
                 except:
                     print "error reading " + directory + '/' + fileName
                     continue
+                #print 'processing ' + fileName
                 if self.isAudio(fileName):
                     list.append(AudioFile(directory, fileName))   
                 elif stat.S_ISDIR(filestat.st_mode):
                     #print filestat.st_mtime
-                    l = self.__searchFiles(directory + '/' + fileName)
+                    l = self.__searchFiles(os.path.join(directory, fileName))
                     if len(l) != 0:
                         l.insert(0, fileName)
                         list.append(l)
@@ -108,6 +110,8 @@ class Model:
         self.lastUpdate = time.time()
         
     def __updateModel(self, fileTree, dir):
+        if not os.path.exists(dir):
+            return
         fileList = os.listdir(dir)
         for element in fileTree:
             if type(element).__name__ == 'list':
