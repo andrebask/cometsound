@@ -246,6 +246,7 @@ class Controller:
             
     def doubleClickSelect(self, tree, event):
         """Detects double click on the treeview and updates the selection"""
+        pt = self.playerThread
         try:
             if event.type == gtk.gdk._2BUTTON_PRESS:
                 path, x, y = self.__detectPath(tree, event)
@@ -253,11 +254,15 @@ class Controller:
                 iter = model.get_iter(path)
                 if model.get_value(iter, 8) != '':
                     self.toggle(None, path, model)
-                    if self.playerThread.trackNum == -1:
+                    if pt.trackNum == -1:
                         self.view.slider.set_sensitive(True)
-                    self.playerThread.trackNum = len(self.playlist) - 2
-                    if self.playerThread.isAlive():    
-                        self.playerThread.next()    
+                    if pt.shuffle:
+                        i = pt.shuffleList.index(len(self.playlist)-1)
+                        pt.trackNum = i - 1
+                    else:
+                        pt.trackNum = len(self.playlist) - 2
+                    if pt.isAlive():  
+                        pt.next()  
                     else:
                         self.playStopSelected(None)
                 else:
@@ -326,7 +331,6 @@ class Controller:
         self.startIndex = rows[0][0]
         self.movedTracks = []
         count = 0
-        print rows
         for tuple in rows:
             path = tuple[0] - count
             self.movedTracks.append(self.playlist[path])
@@ -462,20 +466,21 @@ class Controller:
 
     def updatePlaylist(self):
         """Refreshes playlist view"""
-        lstore = self.view.playlistFrame.listStore             
-        playing = str(self.playerThread.playing)
+        lstore = self.view.playlistFrame.listStore     
+        pt = self.playerThread        
+        playing = str(pt.playing)
         i = 0
         for track in self.playlist:
-            if i == self.playerThread.getNum():
+            if i == pt.getNum():
                 iter = lstore.get_iter(str(i))
                 lstore.set_value(iter, 0, icons[playing])
             iter = lstore.get_iter(str(i))
             val = lstore.get_value(iter, 0)
-            if (i != self.playerThread.getNum() 
-                and (val == icons[playing] or val == icons[str(not playing)])):
+            if (i != pt.getNum() 
+                and (val in [icons[playing], icons[str(not playing)]])):
                 lstore.set_value(iter, 0, None)
             i+=1
-    
+            
     def createPlaylist(self):
         """Refreshes playlist view"""
         self.view.playlistFrame.listStore.clear()  
@@ -542,7 +547,7 @@ class Controller:
             self.__updateShuffleList(pt, num)                               
         except:
             pass
-            print sys.exc_info()
+            #print sys.exc_info()
     
     def __updateShuffleList(self, pt, num):
         pt.shuffleList.remove(num)
@@ -557,8 +562,7 @@ class Controller:
             pt.shuffle = True
             pt.setRand()
         else:
-            num = pt.getNum()
-            pt.trackNum = num
+            pt.trackNum = pt.getNum()
             pt.shuffle = False
             
     def setRepeat(self, widget, data=None): 
