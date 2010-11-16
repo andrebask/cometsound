@@ -560,16 +560,13 @@ class Controller:
             num = pt.getNum()
             pt.trackNum = num
             pt.shuffle = False
-#        """Mixes the songs in the playlist"""
-#        if self.playerThread.trackNum > -1:
-#            current = self.playlist[self.playerThread.trackNum]
-#            random.shuffle(self.playlist)
-#            self.playlist.remove(current)
-#            self.playlist.insert(0, current)
-#            self.playerThread.trackNum = 0
-#        else:
-#            random.shuffle(self.playlist)    
-#        self.updatePlaylist()
+            
+    def setRepeat(self, widget, data=None): 
+        pt = self.playerThread
+        if widget.get_active():
+            pt.repeat = True
+        else:
+            pt.repeat = False
     
     def extractTags(self, completefilename):
         """Extracts tags from a given filename.

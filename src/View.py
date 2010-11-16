@@ -245,6 +245,7 @@ class View(gtk.Window):
         addAllB = self.createButton(gtk.STOCK_APPLY, _('Select All'), self.control.addAll, True)
         refreshB = self.createButton(gtk.STOCK_REFRESH, _('Refresh'), self.control.refreshTree)
         removeSelectedB = self.createButton(gtk.STOCK_REMOVE, _('Remove Selection'), self.control.removeSelected)
+        saveB = self.createButton(gtk.STOCK_SAVE, _('Save Playlist'), self.savePlaylistDialog)
         
         sIcon = gtk.Image()
         icontheme = gtk.icon_theme_get_for_screen(self.get_screen())
@@ -254,7 +255,15 @@ class View(gtk.Window):
         shuffleB.add(sIcon)
         shuffleB.set_tooltip_text(_('Shuffle'))
         shuffleB.connect("toggled", self.control.shufflePlaylist)
-        saveB = self.createButton(gtk.STOCK_SAVE, _('Save Playlist'), self.savePlaylistDialog)
+        
+        sIcon = gtk.Image()
+        icontheme = gtk.icon_theme_get_for_screen(self.get_screen())
+        pixbuf = icontheme.choose_icon(['stock_repeat'], 18, 0).load_icon()
+        sIcon.set_from_pixbuf(pixbuf)
+        repeatB = gtk.ToggleButton()
+        repeatB.add(sIcon)
+        repeatB.set_tooltip_text(_('Shuffle'))
+        repeatB.connect("toggled", self.control.setRepeat)
         
         searchBox = SearchBox(self.filesTree.listStore, self.control)
                         
@@ -285,6 +294,7 @@ class View(gtk.Window):
         self.buttons.pack_start(artist, False)
         self.buttons.pack_start(album, False)
         self.buttons.pack_start(gtk.Label(), True)
+        self.buttons.pack_start(repeatB, False)
         self.buttons.pack_start(shuffleB, False)
         self.buttons.pack_start(saveB, False)
         self.buttons.pack_start(clearB, False)

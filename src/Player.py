@@ -30,6 +30,7 @@ class PlayerThread(threading.Thread):
         self.playlist = playlist
         self.control = control
         self.shuffle = False  
+        self.repeat = False
         self.shuffleList = []
         self.player = None
         self.playing = False
@@ -158,8 +159,10 @@ class PlayerThread(threading.Thread):
                 self.trackNum = -1             
             return self.shuffleList[num]
         else:
+            if self.repeat and self.trackNum == len(self.playlist)-1:
+                self.trackNum = -1
             return self.trackNum
-    
+        
     def setRand(self):
         self.trackNum = -1
         options = range(len(self.playlist))
