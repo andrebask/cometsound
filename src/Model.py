@@ -113,23 +113,28 @@ class Model:
         if not os.path.exists(dir):
             return
         fileList = os.listdir(dir)
+        toDelete = []
         for element in fileTree:
             if type(element).__name__ == 'list':
                 if element[0] in fileList:
                     fileList.remove(element[0])
                     self.__updateModel(element, os.path.join(dir, element[0]))
                 else:
-                    fileTree.remove(element)
+                    print 'deleting dir %s ' % element
+                    toDelete.append(element)
             elif type(element).__name__ == 'instance':
                 fname = element.getTagValue('fileName')
                 if fname in fileList:
                     fileList.remove(fname)
                     path = os.path.join(dir, fname)
                     if os.path.getmtime(path) > self.lastUpdate:
-                        print 'updating file %s ' % file.getTagValue('fileName')
+                        print 'updating file %s ' % element.getTagValue('fileName')
                         fileTree[fileTree.index(element)] = AudioFile(dir, fname)
                 else:
-                    fileTree.remove(element)
+                    print 'deleting file %s ' % element.getTagValue('fileName')
+                    toDelete.append(element)
+        for old in toDelete:
+            fileTree.remove(old)
         for element in fileList:
             path = os.path.join(dir, element)
             if stat.S_ISDIR(os.stat(path).st_mode):

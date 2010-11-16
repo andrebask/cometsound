@@ -38,10 +38,10 @@ class TagsEditor(gtk.Dialog):
         l1 = gtk.Label('File:')
         l1.set_size_request(5,5)
         l1.set_alignment(0.1,0.5)
+        self.entries = dict()
         e = gtk.Entry()
         e.set_text(cfname[i+1:])
-        entries = {}
-        entries['file'] = e
+        e.connect('changed', self.changed, 'file')
         hbox.pack_start(l1)
         hbox.pack_start(e)
         vbox.pack_start(hbox)
@@ -58,7 +58,7 @@ class TagsEditor(gtk.Dialog):
             e.set_text(text)
             e.set_editable(file.supported)
             e.set_sensitive(file.supported)
-            entries[key] = e
+            e.connect('changed', self.changed, key)
             hbox.pack_start(l)
             hbox.pack_start(e)
             vbox.pack_start(hbox)
@@ -72,17 +72,21 @@ class TagsEditor(gtk.Dialog):
             self.destroy()
         elif response == gtk.RESPONSE_APPLY:
             if file.supported:
-                for key in columns[1:7]:
-                    val = entries[key].get_text()
-                    file.writeTagValue(colToKey[key], val)  
-                    n = columns.index(key)
-                    treeModel.set_value(row, n, val)
-            newname = os.path.join(cfname[:i], entries['file'].get_text())
-            os.rename(cfname, newname)
-            treeModel.set_value(row, len(columns)-1, newname)
-            treeModel.set_value(row, 0, entries['file'].get_text())    
+                for key in self.entries.keys():
+                    if key != 'file':
+                        val = self.entries[key].get_text()
+                        file.writeTagValue(colToKey[key], val)  
+                        n = columns.index(key)
+                        treeModel.set_value(row, n, val)
+            if 'file' in self.entries.keys():
+                newname = os.path.join(cfname[:i], self.entries['file'].get_text())
+                os.rename(cfname, newname)
+                treeModel.set_value(row, len(columns)-1, newname)
+                treeModel.set_value(row, 0, self.entries['file'].get_text())    
             self.destroy()
             
+    def changed(self, editable, key):
+        self.entries[key] = editable
         
         
         

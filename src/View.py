@@ -85,7 +85,7 @@ class View(gtk.Window):
         self.framebox.pack1(self.filesTree)
         self.framebox.pack2(self.playlistFrame, False, False)
         self.framebox.set_position(framepos)
-        self.control.updatePlaylist()
+        self.control.createPlaylist()
         # Create a progress bar to show during the model creation
         self.progressBar = gtk.ProgressBar()
         self.progressBar.set_properties('min-horizontal-bar-height', 10)
@@ -250,10 +250,10 @@ class View(gtk.Window):
         icontheme = gtk.icon_theme_get_for_screen(self.get_screen())
         pixbuf = icontheme.choose_icon(['stock_shuffle'], 18, 0).load_icon()
         sIcon.set_from_pixbuf(pixbuf)
-        shuffleB = gtk.Button()
+        shuffleB = gtk.ToggleButton()
         shuffleB.add(sIcon)
         shuffleB.set_tooltip_text(_('Shuffle'))
-        shuffleB.connect("clicked", self.control.shufflePlaylist)
+        shuffleB.connect("toggled", self.control.shufflePlaylist)
         saveB = self.createButton(gtk.STOCK_SAVE, _('Save Playlist'), self.savePlaylistDialog)
         
         searchBox = SearchBox(self.filesTree.listStore, self.control)
@@ -285,8 +285,8 @@ class View(gtk.Window):
         self.buttons.pack_start(artist, False)
         self.buttons.pack_start(album, False)
         self.buttons.pack_start(gtk.Label(), True)
-        self.buttons.pack_start(saveB, False)
         self.buttons.pack_start(shuffleB, False)
+        self.buttons.pack_start(saveB, False)
         self.buttons.pack_start(clearB, False)
         self.buttons.pack_start(removeSelectedB, False)  
     

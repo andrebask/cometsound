@@ -20,7 +20,7 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import threading, os, gst, gtk, gobject
+import threading, os, gst, gtk, gobject, random
 
 class PlayerThread(threading.Thread):
     """Thread that manages all the player's operations"""
@@ -29,6 +29,8 @@ class PlayerThread(threading.Thread):
         threading.Thread.__init__(self)
         self.playlist = playlist
         self.control = control
+        self.shuffle = False  
+        self.shuffleList = []
         self.player = None
         self.playing = False
         self.started = False
@@ -59,9 +61,14 @@ class PlayerThread(threading.Thread):
         
     def clearPlaylist(self):
         """Removes all the files from the playlist"""
-        self.playlist = []
+        if self.started:
+            self.playlist = [self.playlist[self.getNum()]]
+            self.trackNum = 0
+#            self.shuffleList.remove(0)
+#            self.shuffleList = [0] + self.shuffleList
+        if self.control.view.slider.get_value() == 0:
+            self.playlist = []
         self.control.playlist = self.playlist
-        self.stop()
             
     def run(self):
         """Starts the thread"""
@@ -79,7 +86,7 @@ class PlayerThread(threading.Thread):
         t = message.type
         if t == gst.MESSAGE_ELEMENT and self.playing:
             if self.trackNum > -1 and self.started:
-                self.control.updateLabel(self.playlist[self.trackNum], self.playing)
+                self.control.updateLabel(self.playlist[self.getNum()], self.playing)
             self.control.updatePlaylist()
         elif t == gst.MESSAGE_EOS:
             self.trackNum = 0 
@@ -90,14 +97,15 @@ class PlayerThread(threading.Thread):
             err, debug = message.parse_error()
             print "Error: %s" % err, debug
         elif t == gst.MESSAGE_NEW_CLOCK and self.trackNum == 0:
-            self.control.updateLabel(self.playlist[self.trackNum], self.playing)
+            self.control.updateLabel(self.playlist[self.getNum()], self.playing)
 
     def onFinish(self, player):
         """Handles the end of a stream, 
            preparing the player to play an other track"""
-        if self.trackNum < len(self.playlist)-1:
+        if self.trackNum < len(self.playlist)-1 or self.shuffle:
             self.trackNum += 1
-            player.set_property("uri", "file://" + self.playlist[self.trackNum])    
+            num = self.getNum()
+            player.set_property("uri", "file://" + self.playlist[num])    
             
     def pause(self, widget = None, event = None):
         """Pauses playing"""
@@ -126,20 +134,37 @@ class PlayerThread(threading.Thread):
         """Starts playing of the next track in the playlist"""
         if self.trackNum < len(self.playlist)-1:
             self.trackNum += 1
+            num = self.getNum()
             self.stop()
-            if os.path.isfile(self.playlist[self.trackNum]):
-                self.player.set_property("uri", "file://" + self.playlist[self.trackNum])
+            if os.path.isfile(self.playlist[num]):
+                self.player.set_property("uri", "file://" + self.playlist[num])
                 self.play()
+            
         
     def previous(self, notify = True):
         """Starts playing of the previous track in the playlist"""
         if self.trackNum > 0:
             self.trackNum -= 1
+            num = self.getNum()
             self.stop()  
-            if os.path.isfile(self.playlist[self.trackNum]):
-                self.player.set_property("uri", "file://" + self.playlist[self.trackNum])
-                self.play() 
-                self.control.updateLabel(self.playlist[self.trackNum], notify)  
+            if os.path.isfile(self.playlist[num]):
+                self.player.set_property("uri", "file://" + self.playlist[num])
+                self.play()   
+    
+    def getNum(self):
+        if self.shuffle:
+            num = self.trackNum
+            if self.trackNum == len(self.playlist)-1:
+                self.trackNum = -1             
+            return self.shuffleList[num]
+        else:
+            return self.trackNum
+    
+    def setRand(self):
+        self.trackNum = -1
+        options = range(len(self.playlist))
+        random.shuffle(options)
+        self.shuffleList = options
     
     def getVolume(self):
         return self.player.get_property('volume')

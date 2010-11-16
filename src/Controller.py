@@ -20,7 +20,7 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, os, Model, gst, pynotify, cerealizer, random, time
+import gtk, os, Model, gst, pynotify, cerealizer, random, time, sys
 from AF import AudioFile
 from Player import PlayerThread
 from View import CometSound
@@ -180,9 +180,9 @@ class Controller:
         self.__refreshViewTree()
             
     def toggle(self, cell, path, rowModel):
-        """Adds or removes the selected files to the playlist and updates the treeview"""
+        """Adds the selected files to the playlist and updates the treeview"""
         completeFilename = rowModel[path][8]
-        self.__addTrack(True, completeFilename)
+        self.__addTrack(completeFilename)
         self.__recursiveToggle(path, rowModel)
         self.updatePlaylist()
         
@@ -192,7 +192,7 @@ class Controller:
         while True:
             try:
                 completeFilename = rowModel[path + (":%d" % (i))][8]
-                self.__addTrack(True, completeFilename)   
+                self.__addTrack(completeFilename)
                 self.__recursiveToggle((path + (":%d" % (i))), rowModel)
                 i+=1
             except:
@@ -208,18 +208,42 @@ class Controller:
         self.updatePlaylist()
         
     def __add(self, model, path, iter, add = None):
-        self.toggle(None, path, model)
+        completeFilename = model[path][8]
+        self.__addTrack(completeFilename)
             
-    def __addTrack(self, addOrDel, cfname):
+    def __addTrack(self, cfname):
         """Handles the addition of the files in the playlist"""
         pt = self.playerThread
-        if addOrDel and cfname != '':
+        lstore = self.view.playlistFrame.listStore
+        append = lstore.append
+        if cfname != '':
             self.playlist.append(cfname)
+            tags = self.extractTags(cfname)
+            icon = None        
+            info = (tags['title'], 
+                    tags['album'],
+                    tags['artist'])
+            text = '<b>%s</b>\n%s <i>%s</i> %s <i>%s</i>' % (info[0], _('from'), info[1], _('by'), info[2])
+            text = text.replace('&', '&amp;')
+            if info[0] != '' and info[0] != ' ':
+                append([icon, text])             
+            else:
+                f = '<b>%s</b>\n' % tags['filename']
+                append([icon, f])
             if len(self.playlist) == 1 and pt.trackNum != -1:
                 pt.trackNum = -1
                 pt.next()
                 pt.pause()
-        
+            self.__extendShuffleList(len(self.playlist)-1)
+    
+    def __extendShuffleList(self, num):
+        r = range(self.playerThread.trackNum+1,num)
+        if len(r) > 0:
+            i = random.choice(r)
+            self.playerThread.shuffleList.insert(i, num)
+        else:
+            self.playerThread.shuffleList.append(num)
+            
     def doubleClickSelect(self, tree, event):
         """Detects double click on the treeview and updates the selection"""
         try:
@@ -338,7 +362,7 @@ class Controller:
         self.playerThread.trackNum = self.playlist.index(self.current)     
 
     def dragEnd(self, widget, context):
-        self.updatePlaylist()
+        self.createPlaylist()
             
     def toggleFilter(self, data):
         """Enables/disables mp3 filtering"""
@@ -435,34 +459,51 @@ class Controller:
         FILE.close()
         if dir == 'playlists':
             self.view.updatePlaylistsMenu(playlist)
-    
+
     def updatePlaylist(self):
         """Refreshes playlist view"""
-        self.view.playlistFrame.listStore.clear() 
+        lstore = self.view.playlistFrame.listStore             
+        playing = str(self.playerThread.playing)
+        i = 0
+        for track in self.playlist:
+            if i == self.playerThread.getNum():
+                iter = lstore.get_iter(str(i))
+                lstore.set_value(iter, 0, icons[playing])
+            iter = lstore.get_iter(str(i))
+            val = lstore.get_value(iter, 0)
+            if (i != self.playerThread.getNum() 
+                and (val == icons[playing] or val == icons[str(not playing)])):
+                lstore.set_value(iter, 0, None)
+            i+=1
+    
+    def createPlaylist(self):
+        """Refreshes playlist view"""
+        self.view.playlistFrame.listStore.clear()  
         append = self.view.playlistFrame.listStore.append              
         playing = str(self.playerThread.playing)
         i = 0
         for track in self.playlist:
+            tags = self.extractTags(track)
             if i == self.playerThread.trackNum:
                 icon = icons[playing]
             else:
                 icon = None        
-            info = (self.extractTags(track)['title'], 
-                    self.extractTags(track)['album'],
-                    self.extractTags(track)['artist'])
+            info = (tags['title'], 
+                    tags['album'],
+                    tags['artist'])
             text = '<b>%s</b>\n%s <i>%s</i> %s <i>%s</i>' % (info[0], _('from'), info[1], _('by'), info[2])
             text = text.replace('&', '&amp;')
             if info[0] != '' and info[0] != ' ':
                 append([icon, text])             
             else:
-                f = '<b>%s</b>\n' % self.extractTags(track)['filename']
+                f = '<b>%s</b>\n' % tags['filename']
                 append([icon, f]) 
             i+=1
-            
+
     def clearPlaylist(self, widget, data=None):
         """Removes all the files from the playlist"""
         self.playerThread.clearPlaylist()
-        self.updatePlaylist()
+        self.createPlaylist()
     
     def removeSelected(self, widget, data = None):
         """Removes only the selected files from the playlist"""
@@ -476,8 +517,10 @@ class Controller:
 
     def __removeTrack(self, num): 
         """Handles the removal of the files in the playlist"""
-        import sys
         pt = self.playerThread   
+        lstore = self.view.playlistFrame.listStore
+        row = lstore.get_iter(str(num))
+        remove = lstore.remove
         try:
             if pt.started:
                 if pt.trackNum == num:
@@ -494,22 +537,39 @@ class Controller:
                         pt.stop()
             if pt.trackNum > num:
                 pt.trackNum -= 1    
-            del self.playlist[num]                               
+            del self.playlist[num]
+            remove(row)
+            self.__updateShuffleList(pt, num)                               
         except:
             pass
             print sys.exc_info()
+    
+    def __updateShuffleList(self, pt, num):
+        pt.shuffleList.remove(num)
+        for n in pt.shuffleList:
+            if n > num:
+                pt.shuffleList[pt.shuffleList.index(n)] = n-1
             
     def shufflePlaylist(self, widget, data=None):
-        """Mixes the songs in the playlist"""
-        if self.playerThread.trackNum > -1:
-            current = self.playlist[self.playerThread.trackNum]
-            random.shuffle(self.playlist)
-            self.playlist.remove(current)
-            self.playlist.insert(0, current)
-            self.playerThread.trackNum = 0
+        """Randomizes the playback"""
+        pt = self.playerThread
+        if widget.get_active():
+            pt.shuffle = True
+            pt.setRand()
         else:
-            random.shuffle(self.playlist)    
-        self.updatePlaylist()
+            num = pt.getNum()
+            pt.trackNum = num
+            pt.shuffle = False
+#        """Mixes the songs in the playlist"""
+#        if self.playerThread.trackNum > -1:
+#            current = self.playlist[self.playerThread.trackNum]
+#            random.shuffle(self.playlist)
+#            self.playlist.remove(current)
+#            self.playlist.insert(0, current)
+#            self.playerThread.trackNum = 0
+#        else:
+#            random.shuffle(self.playlist)    
+#        self.updatePlaylist()
     
     def extractTags(self, completefilename):
         """Extracts tags from a given filename.
