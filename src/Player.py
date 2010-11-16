@@ -97,7 +97,7 @@ class PlayerThread(threading.Thread):
             self.stop()
             err, debug = message.parse_error()
             print "Error: %s" % err, debug
-        elif t == gst.MESSAGE_NEW_CLOCK and self.trackNum == 0:
+        elif t == gst.MESSAGE_NEW_CLOCK:
             self.control.updateLabel(self.playlist[self.getNum()], self.playing)
 
     def onFinish(self, player):
