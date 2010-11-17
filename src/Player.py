@@ -140,7 +140,9 @@ class PlayerThread(threading.Thread):
             if os.path.isfile(self.playlist[num]):
                 self.player.set_property("uri", "file://" + self.playlist[num])
                 self.play()
-            
+        elif self.repeat:
+            self.trackNum = -1
+            self.next()   
         
     def previous(self, notify = True):
         """Starts playing of the previous track in the playlist"""
@@ -164,8 +166,6 @@ class PlayerThread(threading.Thread):
                 self.trackNum = -1             
             return self.shuffleList[num]
         else:
-            if self.repeat and self.trackNum == len(self.playlist)-1:
-                self.trackNum = -1
             return self.trackNum
         
     def setRand(self):
