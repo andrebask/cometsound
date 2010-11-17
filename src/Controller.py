@@ -182,7 +182,7 @@ class Controller:
     def toggle(self, cell, path, rowModel):
         """Adds the selected files to the playlist and updates the treeview"""
         completeFilename = rowModel[path][8]
-        self.__addTrack(completeFilename)
+        self.addTrack(completeFilename)
         self.__recursiveToggle(path, rowModel)
         self.updatePlaylist()
         
@@ -192,7 +192,7 @@ class Controller:
         while True:
             try:
                 completeFilename = rowModel[path + (":%d" % (i))][8]
-                self.__addTrack(completeFilename)
+                self.addTrack(completeFilename)
                 self.__recursiveToggle((path + (":%d" % (i))), rowModel)
                 i+=1
             except:
@@ -209,9 +209,9 @@ class Controller:
         
     def __add(self, model, path, iter, add = None):
         completeFilename = model[path][8]
-        self.__addTrack(completeFilename)
+        self.addTrack(completeFilename)
             
-    def __addTrack(self, cfname):
+    def addTrack(self, cfname):
         """Handles the addition of the files in the playlist"""
         pt = self.playerThread
         lstore = self.view.playlistFrame.listStore
@@ -450,7 +450,7 @@ class Controller:
             files.append(line[:-1]) 
         self.playerThread.setPlaylist(files)
         FILE.close()
-        self.updatePlaylist()
+        self.createPlaylist()
     
     def savePlaylist(self, playlist, dir = 'playlists'):
         dir = os.path.join(self.cacheDir, dir)
@@ -461,7 +461,7 @@ class Controller:
         for track in self.playlist:
             FILE.write(track + '\n')
         FILE.close()
-        if dir == 'playlists':
+        if dir.split('/')[-1] == 'playlists':
             self.view.updatePlaylistsMenu(playlist)
 
     def updatePlaylist(self):

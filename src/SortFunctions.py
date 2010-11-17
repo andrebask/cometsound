@@ -24,10 +24,10 @@ swap = 1
 ok = -1
 equal = 0
 
-def sortNameFunc(model, iter1, iter2):
+def sortNameFunc(model, iter1, iter2, data = 0):
     """Sorting algorithm for treeview's rows"""
-    value1 = model.get_value(iter1, 0).lower()
-    value2 = model.get_value(iter2, 0).lower()
+    value1 = model.get_value(iter1, data).lower()
+    value2 = model.get_value(iter2, data).lower()
     row1Isfile = model.get_value(iter1, 8) != ''
     row2Isfile = model.get_value(iter2, 8) != ''
     if value1 == value2:

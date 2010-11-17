@@ -95,10 +95,10 @@ class SearchBox(gtk.Entry):
         self.connect('changed', self.clear)
         if column == 0 or column == 2:
             fileName = model.get_value(iter, 8)
-            self.control.playlist.append(fileName)
+            self.control.addTrack(fileName)
         else:
             if column == 3:
-                self.listStore.set_sort_func(13, SF.sortArtistFunc, 4)
+                self.listStore.set_sort_func(13, SF.sortNameFunc, 4)
                 self.listStore.set_sort_column_id(13, gtk.SORT_ASCENDING)
             elif column == 4:
                 self.listStore.set_sort_func(13, SF.sortNumFunc, 1)
@@ -111,4 +111,4 @@ class SearchBox(gtk.Entry):
         v = model.get_value(iter, column)
         if v == value:
             fileName = model.get_value(iter, 8)
-            self.control.playlist.append(fileName)
+            self.control.addTrack(fileName)
