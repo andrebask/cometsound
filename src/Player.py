@@ -65,8 +65,6 @@ class PlayerThread(threading.Thread):
         if self.started:
             self.playlist = [self.playlist[self.getNum()]]
             self.trackNum = 0
-#            self.shuffleList.remove(0)
-#            self.shuffleList = [0] + self.shuffleList
         if self.control.view.slider.get_value() == 0:
             self.playlist = []
         self.control.playlist = self.playlist
@@ -91,8 +89,9 @@ class PlayerThread(threading.Thread):
             self.control.updatePlaylist()
         elif t == gst.MESSAGE_EOS:
             self.trackNum = 0 
-            self.stop()
             self.control.updatePlaylist()
+            self.stop()
+            self.player.set_property("uri", "file://" + self.playlist[0])
         elif t == gst.MESSAGE_ERROR:
             self.stop()
             err, debug = message.parse_error()
@@ -106,7 +105,11 @@ class PlayerThread(threading.Thread):
         if self.trackNum < len(self.playlist)-1 or self.shuffle:
             self.trackNum += 1
             num = self.getNum()
-            player.set_property("uri", "file://" + self.playlist[num])    
+            player.set_property("uri", "file://" + self.playlist[num])   
+        elif self.repeat:
+            self.trackNum = 0
+            num = self.getNum()
+            player.set_property("uri", "file://" + self.playlist[num])  
             
     def pause(self, widget = None, event = None):
         """Pauses playing"""
