@@ -28,6 +28,17 @@ from Model import audioTypes
 _ = CometSound.t.getTranslationFunc()
 
 icons = {'True': gtk.STOCK_MEDIA_PLAY, 'False': gtk.STOCK_MEDIA_PAUSE}
+defaultSettings = {'audiosink': 'autoaudiosink',
+                    'statusicon': 0,    
+                    '#': True,
+                     _('Title'): True,
+                     _('Artist'): True,
+                      _('Album'): True,
+                       _('Genre'): True,
+                        _('Year'): True,
+                        'lastplaylist': True,
+                        'foldercache': True 
+                         }
 
 class Controller:
     """This Class Handles the interactions between the GUI(View) and the Model"""
@@ -74,18 +85,7 @@ class Controller:
             FILE.close()
         except:
             #print sys.exc_info()
-            self.settings = {'audiosink': 'autoaudiosink',
-                    'statusicon': 0,    
-                    '#': True,
-                     _('Title'): True,
-                     _('Artist'): True,
-                      _('Album'): True,
-                       _('Genre'): True,
-                        _('Year'): True,
-                        'lastplaylist': True,
-                        'foldercache': True 
-                         }      
-        
+            self.settings = defaultSettings
     
     def refreshColumnsVisibility(self):
         self.view.filesTree.setColumnsVisibility()

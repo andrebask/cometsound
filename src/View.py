@@ -27,6 +27,7 @@ from Playlist import PlaylistFrame
 from SearchBox import SearchBox
 from FileBrowser import FilesFrame
 from Model import audioTypes
+from Controller import defaultSettings
 
 version = '0.3'
 _ = CometSound.t.getTranslationFunc()
@@ -365,8 +366,12 @@ class View(gtk.Window):
             self.show()
         
     def openPreferences(self, obj = None):
-        p = PreferencesDialog(self.columns, self.control)
-    
+        try:
+            p = PreferencesDialog(self.columns, self.control)
+        except:
+            self.control.settings = defaultSettings
+            p = PreferencesDialog(self.columns, self.control)
+            
     def openPlaylistFolder(self, widget, data=None):
         cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")
         dir = os.path.join(cacheDir, 'playlists')
