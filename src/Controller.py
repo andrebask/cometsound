@@ -248,7 +248,10 @@ class Controller:
         """Detects double click on the treeview and updates the selection"""
         pt = self.playerThread
         try:
-            if event.type == gtk.gdk._2BUTTON_PRESS:
+            path, x, y = self.__detectPath(tree, event)
+            rectangle = tuple(tree.get_cell_area(path, tree.get_column(7)))
+            max, min = rectangle[0] + rectangle[2], rectangle[0]
+            if event.type == gtk.gdk._2BUTTON_PRESS and x < min:
                 path, x, y = self.__detectPath(tree, event)
                 model = tree.get_model()
                 iter = model.get_iter(path)
@@ -271,9 +274,6 @@ class Controller:
                     else:
                         tree.expand_row(path, False)
             elif event.type == gtk.gdk.BUTTON_PRESS and event.button == 1:
-                path, x, y = self.__detectPath(tree, event)
-                rectangle = tuple(tree.get_cell_area(path, tree.get_column(7)))
-                max, min = rectangle[0] + rectangle[2], rectangle[0]
                 if max > x > min:
                     model = tree.get_model()
                     iter = model.get_iter(path)    
