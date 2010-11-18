@@ -325,45 +325,51 @@ class Controller:
     
     def drag(self, treeview, context, selection, target_id, etime):
         """Starts DnD removing the selected file from the playlist"""
-        treeselection = treeview.get_selection()
-        model, rows = treeselection.get_selected_rows()
-        self.current = self.playlist[self.playerThread.trackNum]
-        self.startIndex = rows[0][0]
-        self.movedTracks = []
-        count = 0
-        for tuple in rows:
-            path = tuple[0] - count
-            self.movedTracks.append(self.playlist[path])
-            del self.playlist[path] 
-            count+=1
+        try:
+            treeselection = treeview.get_selection()
+            model, rows = treeselection.get_selected_rows()
+            self.current = self.playlist[self.playerThread.trackNum]
+            self.startIndex = rows[0][0]
+            self.movedTracks = []
+            count = 0
+            for tuple in rows:
+                path = tuple[0] - count
+                self.movedTracks.append(self.playlist[path])
+                del self.playlist[path] 
+                count+=1
+        except:
+            return
                   
 
     def drop(self, treeview, context, x, y, selection, info, etime):
         """"Starts DnD inserting the selected file in the playlist"""
-        drop_info = treeview.get_dest_row_at_pos(x, y)
-        count = 0
-        for row in self.movedTracks:
-            if drop_info:
-                path, position = drop_info
-                if position == gtk.TREE_VIEW_DROP_BEFORE or position == gtk.TREE_VIEW_DROP_INTO_OR_BEFORE:
-                    if self.startIndex > path[0]:
-                        i = 0
+        try:
+            drop_info = treeview.get_dest_row_at_pos(x, y)
+            count = 0
+            for row in self.movedTracks:
+                if drop_info:
+                    path, position = drop_info
+                    if position == gtk.TREE_VIEW_DROP_BEFORE or position == gtk.TREE_VIEW_DROP_INTO_OR_BEFORE:
+                        if self.startIndex > path[0]:
+                            i = 0
+                        else:
+                            i = -1    
+                    elif position == gtk.TREE_VIEW_DROP_AFTER or position == gtk.TREE_VIEW_DROP_INTO_OR_AFTER:
+                        if self.startIndex > path[0]:
+                            i = 1
+                        else:
+                            i = 0 
                     else:
-                        i = -1    
-                elif position == gtk.TREE_VIEW_DROP_AFTER or position == gtk.TREE_VIEW_DROP_INTO_OR_AFTER:
-                    if self.startIndex > path[0]:
-                        i = 1
-                    else:
-                        i = 0 
+                        i = 0    
+                    index = path[0] + i + count
+                    self.playlist.insert(index, row)
                 else:
-                    i = 0    
-                index = path[0] + i + count
-                self.playlist.insert(index, row)
-            else:
-                self.playlist.append(row)
-            count += 1
-        context.finish(True, True, etime)       
-        self.playerThread.trackNum = self.playlist.index(self.current)     
+                    self.playlist.append(row)
+                count += 1
+            context.finish(True, True, etime)       
+            self.playerThread.trackNum = self.playlist.index(self.current)    
+        except:
+            return 
 
     def dragEnd(self, widget, context):
         self.createPlaylist()

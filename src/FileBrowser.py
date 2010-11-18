@@ -121,39 +121,36 @@ class FilesFrame(gtk.Frame):
                 tvcolumn.set_resizable(False)
                 tvcolumn.set_fixed_width(gtk.TREE_VIEW_COLUMN_FIXED)      
             else:
-                cell = gtk.CellRendererText()
-                cell.set_padding(2, 0)
-                tvcolumn = gtk.TreeViewColumn(column)
-                self.treeview.append_column(tvcolumn)  
-                if column != '#':
-                    tvcolumn.pack_start(cell, True)    
-                    tvcolumn.add_attribute(cell, 'text', i)
-                    tvcolumn.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-                    tvcolumn.set_min_width(5)
-                    tvcolumn.set_resizable(True)
-                    tvcolumn.set_expand(True)
-                else:
-                    tvcolumn.pack_start(cell, False) 
-                    tvcolumn.add_attribute(cell, 'text', i) 
-                    tvcolumn.set_resizable(False)
-                    tvcolumn.set_fixed_width(gtk.TREE_VIEW_COLUMN_FIXED)  
-                    tvcolumn.set_sort_column_id(1)        
-                if column == _('Name'):
-                    tvcolumn.set_sort_column_id(0) 
-                if column == _('Year'):
-                    tvcolumn.set_sort_column_id(6) 
-                if column == _('Title'):
-                    tvcolumn.set_sort_column_id(2)
-                if column == _('Artist'):
-                    tvcolumn.set_sort_column_id(3)    
-                if column == _('Album'):
-                    tvcolumn.set_sort_column_id(4)
-                if column == _('Genre'):
-                    tvcolumn.set_sort_column_id(5)                              
-                if column == '' :
-                    tvcolumn.set_expand(False)
-                    tvcolumn.set_max_width(0)
-                    tvcolumn.set_visible(False)
+                if column != '' : 
+                    cell = gtk.CellRendererText()
+                    cell.set_padding(2, 0)
+                    tvcolumn = gtk.TreeViewColumn(column)
+                    self.treeview.append_column(tvcolumn)  
+                    if column != '#':
+                        tvcolumn.pack_start(cell, True)    
+                        tvcolumn.add_attribute(cell, 'text', i)
+                        tvcolumn.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+                        tvcolumn.set_min_width(5)
+                        tvcolumn.set_resizable(True)
+                        tvcolumn.set_expand(True)
+                    else:
+                        tvcolumn.pack_start(cell, False) 
+                        tvcolumn.add_attribute(cell, 'text', i) 
+                        tvcolumn.set_resizable(False)
+                        tvcolumn.set_fixed_width(gtk.TREE_VIEW_COLUMN_FIXED)  
+                        tvcolumn.set_sort_column_id(1)        
+                    if column == _('Name'):
+                        tvcolumn.set_sort_column_id(0) 
+                    if column == _('Year'):
+                        tvcolumn.set_sort_column_id(6) 
+                    if column == _('Title'):
+                        tvcolumn.set_sort_column_id(2)
+                    if column == _('Artist'):
+                        tvcolumn.set_sort_column_id(3)    
+                    if column == _('Album'):
+                        tvcolumn.set_sort_column_id(4)
+                    if column == _('Genre'):
+                        tvcolumn.set_sort_column_id(5)                              
             i = i + 1
         self.setColumnsVisibility()
         

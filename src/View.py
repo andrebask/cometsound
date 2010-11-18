@@ -32,7 +32,7 @@ version = '0.3'
 _ = CometSound.t.getTranslationFunc()
 
 columns = [_('Name'), '#', _('Title'), _('Artist'),
-            _('Album'), _('Genre'), _('Year'), _('Add'), '']
+            _('Album'), _('Genre'), _('Year'), _('Add')]
 
 class View(gtk.Window):
     
@@ -49,9 +49,10 @@ class View(gtk.Window):
         self.set_title('CometSound')
         self.control.registerView(self)
         
+        
         # Create the toplevel window
         self.connect('destroy', lambda w: self.destroy())
-        minwidth = 700 #int(self.get_screen().get_width() / 2.5)
+        minwidth = 733 #int(self.get_screen().get_width() / 2.5)
         minheight = 420 #int(self.get_screen().get_height() / 2.5)
         try:
             self.width, self.height, framepos, self.volume = self.control.readWinSize()
@@ -89,13 +90,15 @@ class View(gtk.Window):
         # Create a progress bar to show during the model creation
         self.progressBar = gtk.ProgressBar()
         self.progressBar.set_properties('min-horizontal-bar-height', 10)
-        
+        sbar = gtk.Statusbar()
+        sbar.set_size_request(0,14)
                                      
         self.vbox.pack_start(self.menubar, False)
         self.vbox.pack_start(self.hbox, False)
         self.vbox.pack_start(self.slider, False)
         self.vbox.pack_start(self.buttons, False)
         self.vbox.pack_start(self.framebox, True)
+        self.vbox.pack_start(sbar, False)
         self.show_all()
         self.filesTree.setModel(self.model)
         self.searchBox.grab_focus()
