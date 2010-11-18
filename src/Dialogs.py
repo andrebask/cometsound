@@ -96,7 +96,7 @@ class PreferencesDialog(gtk.Dialog):
         hbox.pack_start(cbox2)
         count = 0
         for c in columns:
-            if c != '' and c != _('Name'):
+            if c != '' and c != _('Name') and c != _('Add'):
                 cb = gtk.CheckButton(c)
                 labels[c] = cb
                 cb.set_active(settings[c])
@@ -130,7 +130,7 @@ class PreferencesDialog(gtk.Dialog):
             newsettings = {'audiosink': gstSinks[audioCombo.get_active()]}
             newsettings['statusicon'] = statusCombo.get_active()
             for c in columns:
-                if c != '' and c != _('Name'):
+                if c != '' and c != _('Name') and c != _('Add'):
                     newsettings[c] = labels[c].get_active()
             self.control.writeSettings(newsettings)
             self.control.refreshColumnsVisibility()
