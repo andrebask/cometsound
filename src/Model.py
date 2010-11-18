@@ -59,7 +59,7 @@ class Model:
                 self.directory = self.audioFileList[0]
             except:
                 self.directory = ''
-                print sys.exc_info()    
+                #print sys.exc_info()    
             return
         else:
             try:

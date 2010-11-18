@@ -27,13 +27,24 @@ from Playlist import PlaylistFrame
 from SearchBox import SearchBox
 from FileBrowser import FilesFrame
 from Model import audioTypes
-from Controller import defaultSettings
 
 version = '0.3'
 _ = CometSound.t.getTranslationFunc()
 
 columns = [_('Name'), '#', _('Title'), _('Artist'),
             _('Album'), _('Genre'), _('Year'), _('Add')]
+
+defaultSettings = {'audiosink': 'autoaudiosink',
+                    'statusicon': 0,    
+                    '#': True,
+                     _('Title'): True,
+                     _('Artist'): True,
+                      _('Album'): True,
+                       _('Genre'): True,
+                        _('Year'): True,
+                        'lastplaylist': True,
+                        'foldercache': True 
+                         }
 
 class View(gtk.Window):
     

@@ -23,22 +23,11 @@
 import gtk, os, Model, gst, pynotify, cerealizer, random, time, sys
 from AF import AudioFile
 from Player import PlayerThread
-from View import CometSound
+from View import CometSound, defaultSettings
 from Model import audioTypes
 _ = CometSound.t.getTranslationFunc()
 
 icons = {'True': gtk.STOCK_MEDIA_PLAY, 'False': gtk.STOCK_MEDIA_PAUSE}
-defaultSettings = {'audiosink': 'autoaudiosink',
-                    'statusicon': 0,    
-                    '#': True,
-                     _('Title'): True,
-                     _('Artist'): True,
-                      _('Album'): True,
-                       _('Genre'): True,
-                        _('Year'): True,
-                        'lastplaylist': True,
-                        'foldercache': True 
-                         }
 
 class Controller:
     """This Class Handles the interactions between the GUI(View) and the Model"""
