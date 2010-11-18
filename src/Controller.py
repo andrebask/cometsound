@@ -36,8 +36,8 @@ class Controller:
     
     def __init__(self, model):
         self.model = model
-        self.playlist = self.lastPlaylist()
         self.readSettings()
+        self.playlist = self.lastPlaylist()
         self.playerThread = PlayerThread(self.playlist, self)
         self.position = 0
         self.duration = 0
@@ -82,7 +82,8 @@ class Controller:
                       _('Album'): True,
                        _('Genre'): True,
                         _('Year'): True,
-                         _('Add'): True
+                        'lastplaylist': True,
+                        'foldercache': True 
                          }      
         
     
@@ -101,18 +102,19 @@ class Controller:
         folderChooser.set_default_response(gtk.RESPONSE_OK)
         response = folderChooser.run()
         if response == gtk.RESPONSE_OK:
+            folderChooser.hide()
             self.view.vbox.pack_start(self.view.progressBar, False)
             self.view.show_all()
             self.folder = folderChooser.get_current_folder()
-            folderChooser.hide()
             if old != self.folder:
                 if os.stat(self.folder).st_uid == os.getuid():
                     self.__reBuildViewTree()
             else:
                 self.view.vbox.remove(self.view.progressBar)
                 self.refreshTree()
+            folderChooser.hide()
         else:
-            folderChooser.hide()    
+            folderChooser.destroy()    
         while gtk.events_pending():
             gtk.main_iteration()   
     
@@ -131,7 +133,10 @@ class Controller:
             os.makedirs(dir)
         cachefile = os.path.join(dir, "cache")
         FILE = open(cachefile,'w')
-        cerealizer.dump(self.model.getAudioFileList(), FILE)
+        if self.settings['foldercache']:
+            cerealizer.dump(self.model.getAudioFileList(), FILE)
+        else:
+            cerealizer.dump([], FILE)
         FILE.close()
         self.savePlaylist('lastplaylist', '')
     
@@ -159,14 +164,17 @@ class Controller:
     
     def lastPlaylist(self):
         try:
-            dir = self.cacheDir
-            playlistFile = os.path.join(dir, 'lastplaylist')
-            FILE = open(playlistFile,'r')
-            files = []
-            for line in FILE:
-                files.append(line[:-1]) 
-            FILE.close()
-            return files
+            if self.settings['lastplaylist']:
+                dir = self.cacheDir
+                playlistFile = os.path.join(dir, 'lastplaylist')
+                FILE = open(playlistFile,'r')
+                files = []
+                for line in FILE:
+                    files.append(line[:-1]) 
+                FILE.close()
+                return files
+            else:
+                return []
         except:
             return []
     

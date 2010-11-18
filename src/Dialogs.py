@@ -65,7 +65,7 @@ class PreferencesDialog(gtk.Dialog):
     
     def __init__(self, columns, control):
         gtk.Dialog.__init__(self)
-        self.set_size_request(300,320)
+        self.set_size_request(300,350)
         self.control = control
         self.control.readSettings()
         settings = self.control.settings            
@@ -115,6 +115,19 @@ class PreferencesDialog(gtk.Dialog):
         statusCombo.append_text(_('Enable status icon'))
         statusCombo.append_text(_('Disable status icon'))
         statusCombo.set_active(settings['statusicon'])
+        
+        startupLabel = gtk.Label()
+        startupLabel.set_alignment(0,0)
+        startupLabel.set_padding(0,6)
+        startupLabel.set_markup(_('<b>Startup settings</b>'))
+        startbox = gtk.VButtonBox() 
+        startbox.set_layout(gtk.BUTTONBOX_START)
+        playcb = gtk.CheckButton('Reload last play queue')
+        playcb.set_active(settings['lastplaylist'])
+        cachecb = gtk.CheckButton('Reload last folder')
+        cachecb.set_active(settings['foldercache'])
+        startbox.pack_start(playcb)
+        startbox.pack_start(cachecb)
                 
         vbox.pack_start(audioLabel)
         vbox.pack_start(audioCombo)
@@ -122,6 +135,8 @@ class PreferencesDialog(gtk.Dialog):
         vbox.pack_start(hbox) 
         vbox.pack_start(statusLabel)
         vbox.pack_start(statusCombo)
+        vbox.pack_start(startupLabel)
+        vbox.pack_start(startbox)
         self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)   
         self.show_all()
         
@@ -132,6 +147,8 @@ class PreferencesDialog(gtk.Dialog):
             for c in columns:
                 if c != '' and c != _('Name') and c != _('Add'):
                     newsettings[c] = labels[c].get_active()
+            newsettings['lastplaylist'] = playcb.get_active()
+            newsettings['foldercache'] = cachecb.get_active()
             self.control.writeSettings(newsettings)
             self.control.refreshColumnsVisibility()
             self.control.refreshStatusIcon()
