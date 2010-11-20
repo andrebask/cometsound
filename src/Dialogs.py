@@ -63,12 +63,12 @@ class SavePlaylistDialog(gtk.Dialog):
                 
 class PreferencesDialog(gtk.Dialog):
     
-    def __init__(self, columns, control):
+    def __init__(self, columns, control, settings):
         gtk.Dialog.__init__(self)
         self.set_size_request(300,350)
         self.control = control
         self.control.readSettings()
-        settings = self.control.settings            
+        #settings = self.control.settings            
         self.set_title(_('CometSound preferences'))
         sinks = ['Auto', 'ALSA', 'PulseAudio', 'OSS', 'Jack']
         gstSinks = ['autoaudiosink', 'alsasink', 'pulsesink', 'osssink', 'jackaudiosink']
@@ -95,6 +95,7 @@ class PreferencesDialog(gtk.Dialog):
         hbox.pack_start(cbox1)
         hbox.pack_start(cbox2)
         count = 0
+        print settings.keys()
         for c in columns:
             if c != '' and c != _('Name') and c != _('Add'):
                 cb = gtk.CheckButton(c)
