@@ -286,7 +286,11 @@ class Controller:
                 path, x, y = self.__detectPath(tree, event) 
                 if self.playerThread.trackNum == -1:
                     self.view.slider.set_sensitive(True)
-                self.playerThread.trackNum = int(path) - 1
+                i = int(path)
+                if self.playerThread.shuffle:
+                    num = int(path)
+                    i = self.playerThread.shuffleList.index(int(path))
+                self.playerThread.trackNum = i - 1
                 self.playerThread.next()    
         except:
             return
