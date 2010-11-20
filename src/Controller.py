@@ -531,19 +531,18 @@ class Controller:
         row = lstore.get_iter(str(num))
         remove = lstore.remove
         try:
-            if pt.started:
-                if pt.trackNum == num:
-                    if pt.playing:
-                        pt.next()
-                        if len(self.playlist) == 1:
-                            pt.stop()
-                    else:
-                        pt.next()
-                        pt.pause()
-                    if len(self.playlist)-1 == num:
-                        pt.trackNum = -1
-                        pt.next() 
+            if pt.trackNum == num:
+                if pt.playing:
+                    pt.next()
+                    if len(self.playlist) == 1:
                         pt.stop()
+                else:
+                    pt.next()
+                    pt.pause()
+                if len(self.playlist)-1 == num:
+                    pt.trackNum = -1
+                    pt.next() 
+                    pt.stop()
             if pt.trackNum > num:
                 pt.trackNum -= 1    
             del self.playlist[num]
@@ -594,10 +593,10 @@ class Controller:
         return {'filename':filename, 'title':title, 'album':album, 'artist':artist, 'genre':genre, 'year':year, 'num':num }
 
     def sliderClickPress(self, slider, event):
-        self.playerThread.pause(False)
-        value = self.getSliderValue(slider, event)
+        #self.playerThread.pause(False)
         gobject.source_remove(self.playerThread.timeoutID)    
         slider.handler_block_by_func(self.playerThread.onSliderChange)
+        value = self.getSliderValue(slider, event)
         slider.get_adjustment().set_value(value)
         
     def sliderClickRelease(self, slider, event):
@@ -605,7 +604,7 @@ class Controller:
         slider.handler_unblock_by_func(self.playerThread.onSliderChange)
         value = self.getSliderValue(slider, event)
         slider.set_value(value)
-        self.playerThread.play()
+        #self.playerThread.play()
         
     def getSliderValue(self, slider, event):   
         rectangle = tuple(slider.get_allocation())

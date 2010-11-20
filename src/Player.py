@@ -121,7 +121,7 @@ class PlayerThread(threading.Thread):
         self.player.set_state(gst.STATE_PAUSED)
         if button:
             self.control.view.setButtonPlay()
-        self.control.updatePlaylist()
+            self.control.updatePlaylist()
             
     def play(self):
         """Starts playing"""
