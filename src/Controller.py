@@ -286,10 +286,7 @@ class Controller:
                 if self.playerThread.trackNum == -1:
                     self.view.slider.set_sensitive(True)
                 self.playerThread.trackNum = int(path) - 1
-                if self.playerThread.isAlive():    
-                    self.playerThread.next()    
-                else:
-                    self.playStopSelected(None)
+                self.playerThread.next()    
         except:
             return
     
@@ -311,6 +308,14 @@ class Controller:
                 sep = ':'    
             path = path + sep + str(pathinfo[0][i])
         return path, x, y 
+        
+    def sliderClickRelease(self, widget = None, event = None):
+        rectangle = tuple(widget.get_allocation())
+        max = rectangle[0] + rectangle[2]
+        pos = int(event.get_coords()[0])
+        value = (pos * self.duration) / (max - 87)
+        widget.set_value(value)
+        self.playerThread.play()
     
     def dragBegin(self, widget, context, selection):
         items = selection.get_selected_rows()

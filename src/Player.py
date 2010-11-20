@@ -183,7 +183,8 @@ class PlayerThread(threading.Thread):
     def onSliderChange(self, slider):
         """Handles the position changes of the slider"""
         seekTimeSecs = slider.get_value()
-        self.player.seek_simple(gst.FORMAT_TIME, gst.SEEK_FLAG_FLUSH | gst.SEEK_FLAG_KEY_UNIT, seekTimeSecs * gst.SECOND)
+        self.player.seek_simple(gst.FORMAT_TIME, gst.SEEK_FLAG_FLUSH | 
+                                gst.SEEK_FLAG_KEY_UNIT, seekTimeSecs * gst.SECOND)
     
     def onVolumeChanged(self, widget, value=0.5):
         """Handles the position changes of the volume control"""

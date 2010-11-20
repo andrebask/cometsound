@@ -57,6 +57,9 @@ class Model:
                 self.audioFileList = cerealizer.load(FILE)
                 FILE.close()
                 self.directory = self.audioFileList[0]
+                if type(self.directory).__name__ == 'list':
+                    self.audioFileList = []
+                    raise Exception
             except:
                 self.directory = ''
                 #print sys.exc_info()    

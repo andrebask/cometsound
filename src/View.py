@@ -238,7 +238,7 @@ class View(gtk.Window):
         hscale.set_value_pos(gtk.POS_RIGHT)
         hscale.connect('value-changed', self.control.playerThread.onSliderChange)
         hscale.connect('button-press-event', self.control.playerThread.pause)
-        hscale.connect('button-release-event', self.control.playerThread.play)
+        hscale.connect('button-release-event', self.control.sliderClickRelease)
         hscale.connect('format-value', self.control.sliderFormat)
         self.slider = hscale
         self.slider.set_sensitive(False)
@@ -277,7 +277,7 @@ class View(gtk.Window):
         sIcon.set_from_pixbuf(pixbuf)
         repeatB = gtk.ToggleButton()
         repeatB.add(sIcon)
-        repeatB.set_tooltip_text(_('Shuffle'))
+        repeatB.set_tooltip_text(_('Repeat'))
         repeatB.connect("toggled", self.control.setRepeat)
         
         searchBox = SearchBox(self.filesTree.listStore, self.control)
