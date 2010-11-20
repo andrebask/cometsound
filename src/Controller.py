@@ -256,16 +256,14 @@ class Controller:
                 if model.get_value(iter, 8) != '':
                     self.toggle(None, path, model)
                     if pt.trackNum == -1:
+                        self.playerThread.setTimeout()
                         self.view.slider.set_sensitive(True)
                     if pt.shuffle:
                         i = pt.shuffleList.index(len(self.playlist)-1)
                         pt.trackNum = i - 1
                     else:
                         pt.trackNum = len(self.playlist) - 2
-                    if pt.isAlive():  
-                        pt.next()  
-                    else:
-                        self.playStopSelected(None)
+                    pt.next()  
                 else:
                     if tree.row_expanded(path):
                         tree.collapse_row(path)
@@ -285,6 +283,7 @@ class Controller:
             if event.type == gtk.gdk._2BUTTON_PRESS:
                 path, x, y = self.__detectPath(tree, event) 
                 if self.playerThread.trackNum == -1:
+                    self.playerThread.setTimeout()
                     self.view.slider.set_sensitive(True)
                 i = int(path)
                 if self.playerThread.shuffle:
@@ -595,7 +594,7 @@ class Controller:
         return {'filename':filename, 'title':title, 'album':album, 'artist':artist, 'genre':genre, 'year':year, 'num':num }
 
     def sliderClickPress(self, slider, event):
-        self.playerThread.pause()
+        self.playerThread.pause(False)
         value = self.getSliderValue(slider, event)
         gobject.source_remove(self.playerThread.timeoutID)    
         slider.handler_block_by_func(self.playerThread.onSliderChange)

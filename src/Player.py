@@ -115,14 +115,15 @@ class PlayerThread(threading.Thread):
             num = self.getNum()
             player.set_property("uri", "file://" + self.playlist[num])  
             
-    def pause(self, widget = None, event = None):
+    def pause(self, button = True):
         """Pauses playing"""
         self.playing = False
         self.player.set_state(gst.STATE_PAUSED)
-        self.control.view.setButtonPlay()
+        if button:
+            self.control.view.setButtonPlay()
         self.control.updatePlaylist()
             
-    def play(self, widget = None, event = None):
+    def play(self):
         """Starts playing"""
         self.playing = True
         self.player.set_state(gst.STATE_PLAYING)
