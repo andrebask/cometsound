@@ -7,27 +7,27 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cometsound\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-11-18 19:13+0100\n"
+"POT-Creation-Date: 2010-11-20 02:01+0100\n"
 "PO-Revision-Date: 2010-11-08 08:21+0000\n"
 "Last-Translator: Andrea Bernardini <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-11-19 05:25+0000\n"
+"X-Launchpad-Export-Date: 2010-11-20 05:35+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:223
-#: Programmazione/Python/workspace/CometSound/src/Controller.py:502
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:507
 msgid "from"
 msgstr ""
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:223
-#: Programmazione/Python/workspace/CometSound/src/Controller.py:502
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:507
 msgid "by"
 msgstr ""
 
-#: Programmazione/Python/workspace/CometSound/src/Controller.py:420
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:425
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:28
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:146
 #: Programmazione/Python/workspace/CometSound/src/View.py:34
@@ -36,7 +36,7 @@ msgstr ""
 msgid "Title"
 msgstr "Başlık"
 
-#: Programmazione/Python/workspace/CometSound/src/Controller.py:421
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:426
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:29
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:150
 #: Programmazione/Python/workspace/CometSound/src/View.py:35
@@ -45,7 +45,7 @@ msgstr "Başlık"
 msgid "Album"
 msgstr "Albüm"
 
-#: Programmazione/Python/workspace/CometSound/src/Controller.py:422
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:427
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:28
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:148
 #: Programmazione/Python/workspace/CometSound/src/View.py:34
@@ -54,7 +54,7 @@ msgstr "Albüm"
 msgid "Artist"
 msgstr "Sanatçı"
 
-#: Programmazione/Python/workspace/CometSound/src/Controller.py:423
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:428
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:29
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:66
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:144
@@ -63,7 +63,7 @@ msgstr "Sanatçı"
 msgid "Year"
 msgstr "Yıl"
 
-#: Programmazione/Python/workspace/CometSound/src/Controller.py:424
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:429
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:29
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:152
 #: Programmazione/Python/workspace/CometSound/src/View.py:35
@@ -229,8 +229,11 @@ msgid "Remove Selection"
 msgstr ""
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:271
-#: Programmazione/Python/workspace/CometSound/src/View.py:280
 msgid "Shuffle"
+msgstr ""
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:280
+msgid "Repeat"
 msgstr ""
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:305
