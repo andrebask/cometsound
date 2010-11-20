@@ -237,7 +237,7 @@ class View(gtk.Window):
         hscale.set_update_policy(gtk.UPDATE_CONTINUOUS)
         hscale.set_value_pos(gtk.POS_RIGHT)
         hscale.connect('value-changed', self.control.playerThread.onSliderChange)
-        hscale.connect('button-press-event', self.control.playerThread.pause)
+        hscale.connect('button-press-event', self.control.sliderClickPress)
         hscale.connect('button-release-event', self.control.sliderClickRelease)
         hscale.connect('format-value', self.control.sliderFormat)
         self.slider = hscale

@@ -20,11 +20,12 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, os, Model, gst, pynotify, cerealizer, random, time, sys
+import gtk, os, Model, gst, pynotify, cerealizer, random, time, gobject
 from AF import AudioFile
 from Player import PlayerThread
 from View import CometSound, defaultSettings
 from Model import audioTypes
+
 _ = CometSound.t.getTranslationFunc()
 
 icons = {'True': gtk.STOCK_MEDIA_PLAY, 'False': gtk.STOCK_MEDIA_PAUSE}
@@ -308,14 +309,6 @@ class Controller:
                 sep = ':'    
             path = path + sep + str(pathinfo[0][i])
         return path, x, y 
-        
-    def sliderClickRelease(self, widget = None, event = None):
-        rectangle = tuple(widget.get_allocation())
-        max = rectangle[0] + rectangle[2]
-        pos = int(event.get_coords()[0])
-        value = (pos * self.duration) / (max - 87)
-        widget.set_value(value)
-        self.playerThread.play()
     
     def dragBegin(self, widget, context, selection):
         items = selection.get_selected_rows()
@@ -596,9 +589,31 @@ class Controller:
         num = af.getTagValue('num')
         
         return {'filename':filename, 'title':title, 'album':album, 'artist':artist, 'genre':genre, 'year':year, 'num':num }
+
+    def sliderClickPress(self, slider, event):
+        self.playerThread.pause()
+        value = self.getSliderValue(slider, event)
+        gobject.source_remove(self.playerThread.timeoutID)    
+        slider.handler_block_by_func(self.playerThread.onSliderChange)
+        slider.get_adjustment().set_value(value)
         
+    def sliderClickRelease(self, slider, event):
+        self.playerThread.setTimeout()
+        slider.handler_unblock_by_func(self.playerThread.onSliderChange)
+        value = self.getSliderValue(slider, event)
+        slider.set_value(value)
+        self.playerThread.play()
+        
+    def getSliderValue(self, slider, event):   
+        rectangle = tuple(slider.get_allocation())
+        width = rectangle[2] - 87
+        start = rectangle[0] + 5
+        pos = int(event.get_coords()[0]) - start
+        value = (pos * self.duration) / (width)
+        return value
+     
     def updateSlider(self):
-        """Updates the slider position on the current playing time"""    
+        """Updates the slider position on the current playing time""" 
         try:
             positionNanosecs, format = self.playerThread.player.query_position(gst.FORMAT_TIME)
             durationNanosecs, format = self.playerThread.player.query_duration(gst.FORMAT_TIME)

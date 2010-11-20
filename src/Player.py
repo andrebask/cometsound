@@ -72,11 +72,15 @@ class PlayerThread(threading.Thread):
     def run(self):
         """Starts the thread"""
         self.started = True
+        self.setTimeout()
         self.control.view.slider.set_sensitive(True)
         self.next()
         while not self.stopevent.isSet():    
             self.stopevent.wait(2)
         gtk.main_quit()
+    
+    def setTimeout(self):
+        self.timeoutID = gobject.timeout_add(100, self.control.updateSlider)
                 
     def onMessage(self, bus, message):
         """Handles the change of streaming, 
@@ -123,7 +127,6 @@ class PlayerThread(threading.Thread):
         self.playing = True
         self.player.set_state(gst.STATE_PLAYING)
         self.control.view.setButtonPause()
-        gobject.timeout_add(100, self.control.updateSlider)
         self.control.updatePlaylist()
         
     def stop(self):
