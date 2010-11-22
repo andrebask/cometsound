@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: cometsound\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-11-20 02:01+0100\n"
-"PO-Revision-Date: 2010-11-14 07:56+0000\n"
-"Last-Translator: Andrea Bernardini <Unknown>\n"
+"PO-Revision-Date: 2010-11-21 20:34+0000\n"
+"Last-Translator: aldeano <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-11-21 05:16+0000\n"
+"X-Launchpad-Export-Date: 2010-11-22 05:22+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:223
@@ -124,15 +124,15 @@ msgstr "Deshabilitar ícono de status"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:122
 msgid "<b>Startup settings</b>"
-msgstr ""
+msgstr "<b>Ajustes del inicio</b>"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:125
 msgid "Reload last play queue"
-msgstr ""
+msgstr "Actualizar último listado de temas"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:127
 msgid "Reload last folder"
-msgstr ""
+msgstr "Actualizar última carpeta"
 
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:175
 msgid "Add to playlist"
@@ -234,7 +234,7 @@ msgstr "Aleatorio"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:280
 msgid "Repeat"
-msgstr ""
+msgstr "Repetir"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:305
 msgid "Search"
