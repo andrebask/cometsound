@@ -24,9 +24,9 @@ import gtk, pygtk, os, CometSound
 pygtk.require('2.0')
 from Dialogs import AboutDialog, PreferencesDialog, SavePlaylistDialog
 from Playlist import PlaylistFrame
-from SearchBox import SearchBox
 from FileBrowser import FilesFrame
 from Model import audioTypes
+from AlbumCover import AlbumImage
 
 version = '0.3.1'
 _ = CometSound.t.getTranslationFunc()
@@ -83,17 +83,15 @@ class View(gtk.Window):
         self.set_icon(self.pix)
         self.tray = None
         
+        self.createSlider()
+        
         self.createPrimaryToolbar()
         
         self.setStatusIcon()
         
-        self.createSlider()
-        
         self.columns = columns
         self.filesTree = FilesFrame(self.model, self.control, self.formatDict, self.columns)
         self.playlistFrame = PlaylistFrame(self.control, [])
-        
-        self.createSecondaryToolbar()
         
         self.framebox.pack1(self.filesTree)
         self.framebox.pack2(self.playlistFrame, False, False)
@@ -104,16 +102,17 @@ class View(gtk.Window):
         self.progressBar.set_properties('min-horizontal-bar-height', 10)
         sbar = gtk.Statusbar()
         sbar.set_size_request(0,14)
-                                     
+        
+        self.vbox.set_spacing(0)                             
         self.vbox.pack_start(self.menubar, False)
+        self.vbox.pack_start(self.imageToolbar, False)
         self.vbox.pack_start(self.hbox, False)
-        self.vbox.pack_start(self.slider, False)
-        self.vbox.pack_start(self.buttons, False)
+        #self.vbox.pack_start(self.slider, False)
         self.vbox.pack_start(self.framebox, True)
         self.vbox.pack_start(sbar, False)
         self.show_all()
         self.filesTree.setModel(self.model)
-        self.searchBox.grab_focus()
+        self.filesTree.searchBox.grab_focus()
         self.control.refreshTree()
         
     def createPrimaryToolbar(self):
@@ -188,12 +187,14 @@ class View(gtk.Window):
                                             <menuitem action="About"/>
                                           </menu>
                                         </menubar>
+                                        <toolbar name="ImageToolBar">
+                                            <toolitem action="Open"/>
+                                        </toolbar>
                                         <toolbar name="ToolBar">
                                             <toolitem action="Play/Stop"/>
                                             <toolitem action="Previous"/>
                                             <toolitem action="Next"/>
                                             <separator/>
-                                            <toolitem action="Open"/>
                                             <separator name="sep1"/>
                                         </toolbar>
                                         </ui>''')
@@ -203,17 +204,28 @@ class View(gtk.Window):
         # Create a MenuBar
         self.menubar = uimanager.get_widget('/MenuBar')
         toolbar = uimanager.get_widget('/ToolBar')
+        imageToolbar = uimanager.get_widget('/ImageToolBar')
         #toolbar.set_size_request(170, 50)
         
+        # Create an Image to show the album's cover
+        self.image = AlbumImage()
+        tv = gtk.ToolItem()
+        tv.add(self.image)
+        imageToolbar.insert(tv, 0)
+        
         # Create a Label to show track info
-        self.label = gtk.Label('\n\n')
-        self.label.set_justify(gtk.JUSTIFY_LEFT)
-        self.label.set_padding(0, 5)
+        self.label = gtk.Label()
+        self.label.set_justify(gtk.JUSTIFY_CENTER)
+        #self.label.set_alignment(0, 0)
+        #self.label.set_padding(15, 10)
         self.label.set_line_wrap(True)
+        box = gtk.HBox()
+        box.pack_start(self.label, True)
+        box.pack_start(gtk.Label(), False)
         tl = gtk.ToolItem()
-        tl.add(self.label)
+        tl.add(box)
         tl.set_expand(True)
-        toolbar.insert(tl, -1)
+        imageToolbar.insert(tl, 1)
                 
         # Create a button to control player volume
         self.volumeButton = gtk.VolumeButton()
@@ -221,7 +233,14 @@ class View(gtk.Window):
         self.volumeButton.connect('value-changed', self.control.playerThread.onVolumeChanged)
         tv = gtk.ToolItem()
         tv.add(self.volumeButton)
-        toolbar.insert(tv, -1)
+        imageToolbar.insert(tv, 3)
+        
+        tl = gtk.ToolItem()
+        tl.add(self.slider)
+        tl.set_expand(True)
+        toolbar.insert(tl, -1)
+        
+        self.imageToolbar = imageToolbar
         self.hbox.pack_start(toolbar, True)
     
     def updatePlaylistsMenu(self, newPlaylist):
@@ -251,69 +270,6 @@ class View(gtk.Window):
         B.set_tooltip_text(tooltip)
         B.connect("clicked", func, data)        
         return B
-    
-    def createSecondaryToolbar(self):
-        
-        self.buttons = gtk.HBox()
-
-        clearB = self.createButton(gtk.STOCK_CLEAR, _('Clear Playlist'), self.control.clearPlaylist)
-        addAllB = self.createButton(gtk.STOCK_APPLY, _('Select All'), self.control.addAll, True)
-        refreshB = self.createButton(gtk.STOCK_REFRESH, _('Refresh'), self.control.refreshTree)
-        removeSelectedB = self.createButton(gtk.STOCK_REMOVE, _('Remove Selection'), self.control.removeSelected)
-        saveB = self.createButton(gtk.STOCK_SAVE, _('Save Playlist'), self.savePlaylistDialog)
-        
-        sIcon = gtk.Image()
-        icontheme = gtk.icon_theme_get_for_screen(self.get_screen())
-        pixbuf = icontheme.choose_icon(['stock_shuffle'], 18, 0).load_icon()
-        sIcon.set_from_pixbuf(pixbuf)
-        shuffleB = gtk.ToggleButton()
-        shuffleB.add(sIcon)
-        shuffleB.set_tooltip_text(_('Shuffle'))
-        shuffleB.connect("toggled", self.control.shufflePlaylist)
-        
-        sIcon = gtk.Image()
-        icontheme = gtk.icon_theme_get_for_screen(self.get_screen())
-        pixbuf = icontheme.choose_icon(['stock_repeat'], 18, 0).load_icon()
-        sIcon.set_from_pixbuf(pixbuf)
-        repeatB = gtk.ToggleButton()
-        repeatB.add(sIcon)
-        repeatB.set_tooltip_text(_('Repeat'))
-        repeatB.connect("toggled", self.control.setRepeat)
-        
-        searchBox = SearchBox(self.filesTree.listStore, self.control)
-                        
-        title = gtk.RadioButton(None, _('Title'))
-        title.connect('toggled', searchBox.changeSearchColumn, 2)
-        file = gtk.RadioButton(title, 'File')
-        file.connect('toggled', searchBox.changeSearchColumn, 0)
-        artist = gtk.RadioButton(file, _('Artist'))
-        artist.connect('toggled', searchBox.changeSearchColumn, 3)
-        album = gtk.RadioButton(artist, _('Album'))
-        album.connect('toggled', searchBox.changeSearchColumn, 4)
-
-        self.searchButtons = [file, title, artist, album]
-        
-        for b in self.searchButtons:
-            b.set_relief(gtk.RELIEF_NONE)
-            b.set_mode(False)
-            
-        self.searchBox = searchBox
-        self.searchBox.set_size_request(self.get_screen().get_width() / 6, 30) 
-        
-        self.buttons.pack_start(addAllB, False)
-        self.buttons.pack_start(refreshB, False)
-        self.buttons.pack_start(gtk.Label('  %s: ' % _('Search')), False)
-        self.buttons.pack_start(searchBox, True)
-        self.buttons.pack_start(file, False)
-        self.buttons.pack_start(title, False)
-        self.buttons.pack_start(artist, False)
-        self.buttons.pack_start(album, False)
-        self.buttons.pack_start(gtk.Label(), True)
-        self.buttons.pack_start(repeatB, False)
-        self.buttons.pack_start(shuffleB, False)
-        self.buttons.pack_start(saveB, False)
-        self.buttons.pack_start(clearB, False)
-        self.buttons.pack_start(removeSelectedB, False)  
     
     def setStatusIcon(self):
         pix = self.pix

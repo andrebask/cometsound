@@ -22,6 +22,7 @@
 
 import gtk, string, gobject, SortFunctions as SF, CometSound
 from TagsEditorDialog import TagsEditor
+from SearchBox import SearchBox
 
 _ = CometSound.t.getTranslationFunc()
 
@@ -72,11 +73,50 @@ class FilesFrame(gtk.Frame):
         # create the TreeViewColumns to display the data
         self.__createColumns()    
         
-        
+        self.createSearchToolbar()
         self.scroll.add(self.treeview)
-        self.add(self.scroll)
+        vbox = gtk.VBox()
+        vbox.pack_start(self.scroll)
+        vbox.pack_start(self.buttons, False)
+        self.add(vbox)
 
         self.show_all()
+    
+    def createSearchToolbar(self):
+        
+        self.buttons = gtk.HBox()
+
+        addAllB = self.control.view.createButton(gtk.STOCK_APPLY, _('Select All'), self.control.addAll, True)
+        refreshB = self.control.view.createButton(gtk.STOCK_REFRESH, _('Refresh'), self.control.refreshTree)
+        
+        searchBox = SearchBox(self.listStore, self.control)
+                        
+        title = gtk.RadioButton(None, _('Title'))
+        title.connect('toggled', searchBox.changeSearchColumn, 2)
+        file = gtk.RadioButton(title, 'File')
+        file.connect('toggled', searchBox.changeSearchColumn, 0)
+        artist = gtk.RadioButton(file, _('Artist'))
+        artist.connect('toggled', searchBox.changeSearchColumn, 3)
+        album = gtk.RadioButton(artist, _('Album'))
+        album.connect('toggled', searchBox.changeSearchColumn, 4)
+
+        self.searchButtons = [file, title, artist, album]
+        
+        for b in self.searchButtons:
+            b.set_relief(gtk.RELIEF_NONE)
+            b.set_mode(False)
+            
+        self.searchBox = searchBox
+        self.searchBox.set_size_request(self.get_screen().get_width() / 6, 30) 
+        
+        self.buttons.pack_start(addAllB, False)
+        self.buttons.pack_start(refreshB, False)
+        self.buttons.pack_start(gtk.Label('  %s: ' % _('Search')), False)
+        self.buttons.pack_start(searchBox, True)
+        self.buttons.pack_start(file, False)
+        self.buttons.pack_start(title, False)
+        self.buttons.pack_start(artist, False)
+        self.buttons.pack_start(album, False)
         
     def createTree(self, parent, filelist):
         """Adds the files informations to the treeview"""

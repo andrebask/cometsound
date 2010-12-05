@@ -23,8 +23,10 @@
 import gtk, os, Model, gst, pynotify, cerealizer, random, time, gobject
 from AF import AudioFile
 from Player import PlayerThread
-from View import CometSound, defaultSettings
+from View import defaultSettings
+from Dialogs import CometSound
 from Model import audioTypes
+from CometSound import cacheDir
 
 _ = CometSound.t.getTranslationFunc()
 
@@ -33,7 +35,7 @@ icons = {'True': gtk.STOCK_MEDIA_PLAY, 'False': gtk.STOCK_MEDIA_PAUSE}
 class Controller:
     """This Class Handles the interactions between the GUI(View) and the Model"""
     folder = ''
-    cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound") 
+    cacheDir = cacheDir
     
     def __init__(self, model):
         self.model = model
@@ -171,7 +173,7 @@ class Controller:
     def __refreshViewTree(self): 
         """Refreshes the treeview"""  
         self.view.filesTree.setModel(self.model)
-        self.view.searchBox.setListStore(self.view.filesTree.listStore)
+        self.view.filesTree.searchBox.setListStore(self.view.filesTree.listStore)
     
     def refreshTree(self, widget = None, data = None):
         self.model.updateModel()
@@ -409,11 +411,13 @@ class Controller:
         except:
             label = '\n\n'
             self.view.label.set_text(label)
+            self.view.label.set_tooltip_text(label)
+            self.view.tray.set_tooltip_text(label)
             self.view.set_title('CometSound')    
             return
         if t['title'] != '' and t['title'] != ' ':
             info = (t['title'][:50], t['album'][:50], t['artist'][:50])
-            label = "<b>%s</b>\n%s\n%s" % info
+            label = "<span font_desc='18'><b>%s</b>\n%s\n%s</span>" % info
             
             winTitle = "%s - %s - %s" % (t['title'], t['album'], t['artist'])
             label = label.replace('&', '&amp;')
@@ -429,9 +433,14 @@ class Controller:
             
             self.view.label.set_tooltip_text(tooltip)
             self.view.tray.set_tooltip_text("%s\n%s\n%s" % info)
+            self.view.image.artist = t['artist']
+            self.view.image.album = t['album']
             if notify:
                 self.notification.update(t['title'], "%s\n%s" % (t['album'], t['artist']))
                 self.notification.show()
+            while gtk.events_pending():
+                gtk.main_iteration()
+            self.view.image.update(t['artist'], t['album'])
         else:
             winTitle = t['filename']
             label = "File:\t<b>" + winTitle[:50] + "</b>\n\n"
