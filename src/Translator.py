@@ -50,3 +50,5 @@ class Translator:
         
     def getTranslationFunc(self):
         return self._
+    
+t = Translator()

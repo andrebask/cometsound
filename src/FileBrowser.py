@@ -20,11 +20,12 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, string, gobject, SortFunctions as SF, CometSound
+import gtk, string, gobject, SortFunctions as SF
+from Translator import t
 from TagsEditorDialog import TagsEditor
 from SearchBox import SearchBox
 
-_ = CometSound.t.getTranslationFunc()
+_ = t.getTranslationFunc()
 
 colToKey  = {'#': 'num', _('Title'): 'title', _('Artist'): 'artist',
                 _('Album'): 'album', _('Genre'): 'genre', _('Year'): 'year'}
@@ -109,14 +110,14 @@ class FilesFrame(gtk.Frame):
         self.searchBox = searchBox
         self.searchBox.set_size_request(self.get_screen().get_width() / 6, 30) 
         
-        self.buttons.pack_start(addAllB, False)
-        self.buttons.pack_start(refreshB, False)
         self.buttons.pack_start(gtk.Label('  %s: ' % _('Search')), False)
         self.buttons.pack_start(searchBox, True)
         self.buttons.pack_start(file, False)
         self.buttons.pack_start(title, False)
         self.buttons.pack_start(artist, False)
         self.buttons.pack_start(album, False)
+        self.buttons.pack_start(addAllB, False)
+        self.buttons.pack_start(refreshB, False)
         
     def createTree(self, parent, filelist):
         """Adds the files informations to the treeview"""

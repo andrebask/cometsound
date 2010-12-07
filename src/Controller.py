@@ -21,14 +21,14 @@
 ##
 
 import gtk, os, Model, gst, pynotify, cerealizer, random, time, gobject
+from Translator import t
 from AF import AudioFile
 from Player import PlayerThread
 from View import defaultSettings
-from Dialogs import CometSound
 from Model import audioTypes
-from CometSound import cacheDir
+cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")
 
-_ = CometSound.t.getTranslationFunc()
+_ = t.getTranslationFunc()
 
 icons = {'True': gtk.STOCK_MEDIA_PLAY, 'False': gtk.STOCK_MEDIA_PAUSE}
 
@@ -417,7 +417,7 @@ class Controller:
             return
         if t['title'] != '' and t['title'] != ' ':
             info = (t['title'][:50], t['album'][:50], t['artist'][:50])
-            label = "<span font_desc='18'><b>%s</b>\n%s\n%s</span>" % info
+            label = "<span font_desc='18'><b>%s</b></span>\n<span font_desc='14'>%s\n%s</span>" % info
             
             winTitle = "%s - %s - %s" % (t['title'], t['album'], t['artist'])
             label = label.replace('&', '&amp;')
@@ -433,14 +433,10 @@ class Controller:
             
             self.view.label.set_tooltip_text(tooltip)
             self.view.tray.set_tooltip_text("%s\n%s\n%s" % info)
-            self.view.image.artist = t['artist']
-            self.view.image.album = t['album']
-            if notify:
-                self.notification.update(t['title'], "%s\n%s" % (t['album'], t['artist']))
-                self.notification.show()
-            while gtk.events_pending():
-                gtk.main_iteration()
-            self.view.image.update(t['artist'], t['album'])
+            self.view.label.queue_draw()
+#            if notify:
+#                self.notification.update(t['title'], "%s\n%s" % (t['album'], t['artist']))
+#                self.notification.show()
         else:
             winTitle = t['filename']
             label = "File:\t<b>" + winTitle[:50] + "</b>\n\n"
@@ -617,8 +613,8 @@ class Controller:
         
     def getSliderValue(self, slider, event):   
         rectangle = tuple(slider.get_allocation())
-        width = rectangle[2] - 87
-        start = rectangle[0] + 5
+        width = rectangle[2] - 100
+        start = rectangle[0] - 100
         pos = int(event.get_coords()[0]) - start
         value = (pos * self.duration) / (width)
         return value

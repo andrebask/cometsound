@@ -20,9 +20,10 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, gobject, CometSound
+import gtk, gobject
+from Translator import t
 
-_ = CometSound.t.getTranslationFunc()
+_ = t.getTranslationFunc()
 
 class PlaylistFrame(gtk.Frame):
     """Gtk Frame modified to store a treeview that shows the playlist"""

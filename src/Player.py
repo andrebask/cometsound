@@ -21,6 +21,7 @@
 ##
 
 import threading, os, gst, gtk, gobject, random
+from AlbumCover import CoverDownloader
 
 class PlayerThread(threading.Thread):
     """Thread that manages all the player's operations"""
@@ -35,6 +36,7 @@ class PlayerThread(threading.Thread):
         self.player = None
         self.playing = False
         self.started = False
+        self.labelUpdated = False
         self.trackNum = -1        
         self.__createPlayer()
         self.stopevent = threading.Event()
@@ -90,6 +92,8 @@ class PlayerThread(threading.Thread):
         if t == gst.MESSAGE_ELEMENT and self.playing:
             if self.trackNum > -1 and self.started:
                 self.control.updateLabel(self.playlist[self.getNum()], self.playing)
+                CoverDownloader(self.playlist[self.getNum()])
+                self.labelUpdated = True
             self.control.updatePlaylist()
         elif t == gst.MESSAGE_EOS:
             self.trackNum = 0 
@@ -101,7 +105,10 @@ class PlayerThread(threading.Thread):
             err, debug = message.parse_error()
             print "Error: %s" % err, debug
         elif t == gst.MESSAGE_NEW_CLOCK:
-            self.control.updateLabel(self.playlist[self.getNum()], self.playing)
+            if not self.labelUpdated:
+                self.control.updateLabel(self.playlist[self.getNum()], self.playing)
+                CoverDownloader(self.playlist[self.getNum()])
+                self.labelUpdated = False
 
     def onFinish(self, player):
         """Handles the end of a stream, 

@@ -20,9 +20,10 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, gobject, CometSound
+import gtk
+from Translator import t
 
-_ = CometSound.t.getTranslationFunc()
+_ = t.getTranslationFunc()
 
 class AboutDialog(gtk.AboutDialog):
     

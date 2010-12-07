@@ -22,27 +22,24 @@
 
 import AF, cerealizer, gtk, fcntl, sys, os
 import mutagen.asf as mtgasf
-import Model
-import Controller
-import View
-from Translator import Translator
 cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")  
+from Model import Model
+from View import View
+from Controller import Controller
     
 def registerClasses():
     cerealizer.register(AF.AudioFile)            
-          
-t = Translator()
 
-#dir = os.path.join(os.environ.get('HOME', None), '.CometSound')
-#pidFile = os.path.join(dir, 'program.pid') 
-#if not os.path.exists(dir):
-#    os.makedirs(dir)
-#fp = open(pidFile, 'w')
-#try:
-#    fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
-#except IOError:
-#    print 'CometSound is already running'
-#    sys.exit(0)
+dir = os.path.join(os.environ.get('HOME', None), '.CometSound')
+pidFile = os.path.join(dir, 'program.pid') 
+if not os.path.exists(dir):
+    os.makedirs(dir)
+fp = open(pidFile, 'w')
+try:
+    fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
+except IOError:
+    print 'CometSound is already running'
+    sys.exit(0)
 
 def getArg():
     if len(sys.argv) > 1 and sys.argv[1] != '':
@@ -58,7 +55,7 @@ def main():
     return 0
 if __name__ == "__main__":
     registerClasses()
-    m = Model.Model(getArg())
-    c = Controller.Controller(m)
-    View.View(m, c)
+    m = Model(getArg())
+    c = Controller(m)
+    View(m, c)
     main()       

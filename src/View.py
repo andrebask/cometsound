@@ -20,16 +20,17 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, pygtk, os, CometSound
+import gtk, pygtk, os
 pygtk.require('2.0')
+from Translator import t
 from Dialogs import AboutDialog, PreferencesDialog, SavePlaylistDialog
 from Playlist import PlaylistFrame
 from FileBrowser import FilesFrame
 from Model import audioTypes
 from AlbumCover import AlbumImage
 
-version = '0.3.1'
-_ = CometSound.t.getTranslationFunc()
+version = '0.3.2'
+_ = t.getTranslationFunc()
 
 columns = [_('Name'), '#', _('Title'), _('Artist'),
             _('Album'), _('Genre'), _('Year'), _('Add')]
@@ -191,8 +192,8 @@ class View(gtk.Window):
                                             <toolitem action="Open"/>
                                         </toolbar>
                                         <toolbar name="ToolBar">
-                                            <toolitem action="Play/Stop"/>
                                             <toolitem action="Previous"/>
+                                            <toolitem action="Play/Stop"/>
                                             <toolitem action="Next"/>
                                             <separator/>
                                             <separator name="sep1"/>
@@ -215,13 +216,14 @@ class View(gtk.Window):
         
         # Create a Label to show track info
         self.label = gtk.Label()
-        self.label.set_justify(gtk.JUSTIFY_CENTER)
-        #self.label.set_alignment(0, 0)
-        #self.label.set_padding(15, 10)
-        self.label.set_line_wrap(True)
+        self.label.set_justify(gtk.JUSTIFY_LEFT)
+        self.label.set_alignment(0, 0)
+        self.label.set_padding(15, 10)
+        #self.label.set_line_wrap(True)
+        self.slider.connect('expose-event', self.image.updateImage)
         box = gtk.HBox()
         box.pack_start(self.label, True)
-        box.pack_start(gtk.Label(), False)
+        #box.pack_start(gtk.Label(), False)
         tl = gtk.ToolItem()
         tl.add(box)
         tl.set_expand(True)
@@ -380,6 +382,6 @@ class View(gtk.Window):
         self.control.saveWinSize(self.width, self.height, pos, volume)
         self.control.playerThread.stop()
         if self.control.playerThread.isAlive():
-            self.control.playerThread.terminate()    
+            self.control.playerThread.terminate()
         gtk.main_quit()
         
