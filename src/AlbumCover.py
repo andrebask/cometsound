@@ -21,26 +21,27 @@
 ##
 
 import gtk, urllib , os, time, pynotify
-from multiprocessing import Process
+from multiprocessing import Process, Manager
 from HTMLParser import HTMLParser
 from AF import AudioFile
 
 cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")
+
+manager = Manager()
+Global = manager.Namespace()
+Global.cover = None
+Global.stop = False
+Global.coverChanged = False
+Global.filename = ''
 
 class AlbumImage(gtk.Image):
     
     def __init__(self):
         gtk.Image.__init__(self)
         self.setDefaultCover()
-    
+        
     def updateImage(self, widget = None, event = None):
-        pathFile = os.path.join(cacheDir, 'tmp', 'coverpath')
-        FILE = open(pathFile,'r')
-        lines = []
-        for line in FILE:
-            lines.append(line[:-1]) 
-        FILE.close()
-        coverFile = lines[0]
+        coverFile = Global.cover
         tmpImage = gtk.Image()
         tmpImage.set_from_file(coverFile)
         try:
@@ -64,46 +65,67 @@ class CoverParser(HTMLParser):
                     if att == 'content':
                         self.image = val
 
-
-notification = pynotify.Notification(' ',' ')                        
-class CoverDownloader(Process):
-    def __init__(self, filename):
+class NotifyUpdate(Process):
+    def __init__(self):
         Process.__init__(self)
-        self.cover = None
+        self.notify = pynotify.Notification(' ',' ')
+        self.start()
+        
+    def run(self):
+        try:
+            while not Global.stop:
+                time.sleep(0.5)
+                if Global.coverChanged:
+                    self.update()
+                    Global.coverChanged = False
+        except:
+            return
+           
+    def update(self):
+        filename = Global.filename
         index = filename.rfind("/")    
         directory = filename[:index]
         filename = filename[index+1:]
         af = AudioFile(directory, filename)
         self.directory = directory
-        self.title = af.getTagValue('title')
-        self.album = af.getTagValue('album')
-        self.artist = af.getTagValue('artist')
+        title = af.getTagValue('title')
+        album = af.getTagValue('album')
+        artist = af.getTagValue('artist')
+        self.notify.update(title, "%s\n%s" % (album, artist), Global.cover)
+        self.notify.show()
+
+class CoverUpdater(Process):
+    def __init__(self, filename):
+        Process.__init__(self)
+        self.stop = False
+        self.filename = filename
         self.start()
         
     def run(self):
+        filename = self.filename
+        index = filename.rfind("/")    
+        directory = filename[:index]
+        filename = filename[index+1:]
+        af = AudioFile(directory, filename)
+        self.directory = directory
+        self.album = af.getTagValue('album')
+        self.artist = af.getTagValue('artist')
         if not self.getLocalCover():
-            self.downloadCover(self.artist, self.album)
-        notification.update(self.title, "%s\n%s" % (self.album, self.artist), self.cover)
-        notification.show()
-                
-    def write(self, cover):
-        dir = os.path.join(cacheDir, 'tmp')
-        if not os.path.exists(dir):
-            os.makedirs(dir)
-        pathFile = os.path.join(dir, 'coverpath')
-        FILE = open(pathFile,'w')
-        FILE.write(cover + '\n')
-        FILE.close()
-    
+            self.downloadCover(self.artist, self.album)  
+        try:
+            Global.filename = self.filename
+            Global.coverChanged = True
+        except:
+            return
+        
+        
     def getLocalCover(self):            
         images = [file for file in os.listdir(self.directory) if file.split('.')[-1].lower() in ['jpg', 'jpeg', 'png']]
         if len(images) > 0:
-            self.cover = os.path.join(self.directory, images[0])
-            self.write(self.cover)
+            Global.cover = os.path.join(self.directory, images[0])
             return True
         else:
-            self.cover = os.path.join(cacheDir, 'tmp', 'cover.jpg')
-            self.write(self.cover)
+            Global.cover = os.path.join(cacheDir, 'tmp', 'cover.jpg')
             return False
                             
     def downloadCover(self, artist, album):
@@ -119,11 +141,11 @@ class CoverDownloader(Process):
         except:
             pass
         if parser.image == None:
-            self.write(os.path.join(cacheDir, 'tmp', 'default.jpg'))
+            Global.cover = os.path.join(cacheDir, 'tmp', 'default.jpg')
             return
         tmpPath = os.path.join(cacheDir, 'tmp')
         if not os.path.exists(tmpPath):
             os.makedirs(tmpPath)
-        cover = os.path.join(tmpPath,'cover.jpg')
-        urllib.urlretrieve(parser.image, cover)
-        self.cover = cover
+        Global.cover = os.path.join(tmpPath,'cover.jpg')
+        urllib.urlretrieve(parser.image, Global.cover)
+        

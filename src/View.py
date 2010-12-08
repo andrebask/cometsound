@@ -27,7 +27,7 @@ from Dialogs import AboutDialog, PreferencesDialog, SavePlaylistDialog
 from Playlist import PlaylistFrame
 from FileBrowser import FilesFrame
 from Model import audioTypes
-from AlbumCover import AlbumImage
+from AlbumCover import AlbumImage, Global
 
 version = '0.3.2'
 _ = t.getTranslationFunc()
@@ -376,6 +376,7 @@ class View(gtk.Window):
         self.destroy()
         
     def destroy(self):
+        Global.stop = True
         self.control.saveCache()
         pos = self.framebox.get_position()
         volume = self.control.playerThread.getVolume()

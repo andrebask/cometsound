@@ -20,8 +20,8 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import threading, os, gst, gtk, gobject, random
-from AlbumCover import CoverDownloader
+import threading, os, gst, gtk, gobject, random, pynotify
+from AlbumCover import CoverUpdater, NotifyUpdate
 
 class PlayerThread(threading.Thread):
     """Thread that manages all the player's operations"""
@@ -37,6 +37,7 @@ class PlayerThread(threading.Thread):
         self.playing = False
         self.started = False
         self.labelUpdated = False
+        self.notify = NotifyUpdate()
         self.trackNum = -1        
         self.__createPlayer()
         self.stopevent = threading.Event()
@@ -92,7 +93,7 @@ class PlayerThread(threading.Thread):
         if t == gst.MESSAGE_ELEMENT and self.playing:
             if self.trackNum > -1 and self.started:
                 self.control.updateLabel(self.playlist[self.getNum()], self.playing)
-                CoverDownloader(self.playlist[self.getNum()])
+                CoverUpdater(self.playlist[self.getNum()])
                 self.labelUpdated = True
             self.control.updatePlaylist()
         elif t == gst.MESSAGE_EOS:
@@ -107,7 +108,7 @@ class PlayerThread(threading.Thread):
         elif t == gst.MESSAGE_NEW_CLOCK:
             if not self.labelUpdated:
                 self.control.updateLabel(self.playlist[self.getNum()], self.playing)
-                CoverDownloader(self.playlist[self.getNum()])
+                CoverUpdater(self.playlist[self.getNum()])
                 self.labelUpdated = False
 
     def onFinish(self, player):
