@@ -41,14 +41,15 @@ class AlbumImage(gtk.Image):
         self.setDefaultCover()
         
     def updateImage(self, widget = None, event = None):
-        coverFile = Global.cover
-        tmpImage = gtk.Image()
-        tmpImage.set_from_file(coverFile)
-        try:
-            pix = tmpImage.get_pixbuf().scale_simple(115, 115, gtk.gdk.INTERP_BILINEAR)
-            self.set_from_pixbuf(pix)
-        except:
-            return
+        if Global.coverChanged:
+            coverFile = Global.cover
+            tmpImage = gtk.Image()
+            tmpImage.set_from_file(coverFile)
+            try:
+                pix = tmpImage.get_pixbuf().scale_simple(115, 115, gtk.gdk.INTERP_BILINEAR)
+                self.set_from_pixbuf(pix)
+            except:
+                return
         
     def setDefaultCover(self):
         self.set_from_file(os.path.join(cacheDir, 'tmp', 'default.jpg'))
