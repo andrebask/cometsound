@@ -206,6 +206,8 @@ class View(gtk.Window):
         self.menubar = uimanager.get_widget('/MenuBar')
         toolbar = uimanager.get_widget('/ToolBar')
         imageToolbar = uimanager.get_widget('/ImageToolBar')
+        #toolbar.set_border_width(8)
+        imageToolbar.set_border_width(6)
         #toolbar.set_size_request(170, 50)
         
         # Create an Image to show the album's cover
@@ -240,6 +242,24 @@ class View(gtk.Window):
         tl = gtk.ToolItem()
         tl.add(self.slider)
         tl.set_expand(True)
+        toolbar.insert(tl, -1)
+        
+        tl = gtk.ToolItem()
+        l = gtk.Label()
+        l.set_size_request(20,0)
+        tl.add(l)
+        toolbar.insert(tl, 3)
+        
+        tl = gtk.ToolItem()
+        l = gtk.Label()
+        l.set_size_request(9,0)
+        tl.add(l)
+        toolbar.insert(tl, 0)
+        
+        tl = gtk.ToolItem()
+        l = gtk.Label()
+        l.set_size_request(12,0)
+        tl.add(l)
         toolbar.insert(tl, -1)
         
         self.imageToolbar = imageToolbar
