@@ -20,7 +20,7 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, urllib , os, time, pynotify
+import gtk, urllib , os, time, pynotify, setproctitle as spt
 from multiprocessing import Process, Manager
 from HTMLParser import HTMLParser
 from AF import AudioFile
@@ -73,6 +73,7 @@ class NotifyUpdate(Process):
         self.start()
         
     def run(self):
+        spt.setproctitle('CometSound Notifier')
         try:
             while not Global.stop:
                 time.sleep(0.5)
@@ -103,6 +104,7 @@ class CoverUpdater(Process):
         self.start()
         
     def run(self):
+        spt.setproctitle('CS Cover Finder')
         filename = self.filename
         index = filename.rfind("/")    
         directory = filename[:index]

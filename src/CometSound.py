@@ -49,6 +49,9 @@ def getArg():
     else:
         dir = ''
     return dir
+
+import setproctitle as spt
+spt.setproctitle('CometSound')
         
 def main():
     gtk.main()
