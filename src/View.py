@@ -206,21 +206,22 @@ class View(gtk.Window):
         self.menubar = uimanager.get_widget('/MenuBar')
         toolbar = uimanager.get_widget('/ToolBar')
         imageToolbar = uimanager.get_widget('/ImageToolBar')
-        #toolbar.set_border_width(8)
-        imageToolbar.set_border_width(6)
         #toolbar.set_size_request(170, 50)
         
         # Create an Image to show the album's cover
         self.image = AlbumImage()
+        box = gtk.HBox()
+        box.pack_start(self.image, True)
+        box.set_border_width(6)
         tv = gtk.ToolItem()
-        tv.add(self.image)
+        tv.add(box)
         imageToolbar.insert(tv, 0)
         
         # Create a Label to show track info
         self.label = gtk.Label()
         self.label.set_justify(gtk.JUSTIFY_LEFT)
         self.label.set_alignment(0, 0)
-        self.label.set_padding(15, 10)
+        self.label.set_padding(9, 10)
         #self.label.set_line_wrap(True)
         self.slider.connect('expose-event', self.image.updateImage)
         box = gtk.HBox()
