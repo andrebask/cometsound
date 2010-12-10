@@ -263,6 +263,12 @@ class View(gtk.Window):
         tl.add(l)
         toolbar.insert(tl, -1)
         
+        tl = gtk.ToolItem()
+        l = gtk.Label()
+        l.set_size_request(7,0)
+        tl.add(l)
+        imageToolbar.insert(tl, -1)
+        
         self.imageToolbar = imageToolbar
         self.hbox.pack_start(toolbar, True)
     

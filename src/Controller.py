@@ -395,7 +395,8 @@ class Controller:
                     self.playerThread.play()  
         elif self.view.actiongroup.get_action('Play/Stop').get_stock_id() == gtk.STOCK_MEDIA_PAUSE: 
             self.playerThread.pause()            
-     
+        self.view.image.updateImage()
+        
     def nextTrack(self, obj = None):
         """Handles the click on the Next button"""
         self.playerThread.next()
@@ -600,22 +601,25 @@ class Controller:
         return {'filename':filename, 'title':title, 'album':album, 'artist':artist, 'genre':genre, 'year':year, 'num':num }
 
     def sliderClickPress(self, slider, event):
-        gobject.source_remove(self.playerThread.timeoutID)    
-        slider.handler_block_by_func(self.playerThread.onSliderChange)
-        value = self.getSliderValue(slider, event)
-        slider.get_adjustment().set_value(value)
+        self.sliderClickValue = self.getSliderValue(slider, event)
+        if self.sliderClickValue < self.duration:
+            gobject.source_remove(self.playerThread.timeoutID)    
+            slider.handler_block_by_func(self.playerThread.onSliderChange)
+            slider.set_value(self.sliderClickValue)
         
     def sliderClickRelease(self, slider, event):
-        self.playerThread.setTimeout()
-        slider.handler_unblock_by_func(self.playerThread.onSliderChange)
         value = self.getSliderValue(slider, event)
-        slider.set_value(value)
+        if self.sliderClickValue < self.duration and value < self.duration:
+            self.playerThread.setTimeout()
+            slider.handler_unblock_by_func(self.playerThread.onSliderChange)
+            slider.set_value(value)
         
     def getSliderValue(self, slider, event):   
         rectangle = tuple(slider.get_allocation())
-        width = rectangle[2] - 100
-        start = rectangle[0] - 100
-        pos = int(event.get_coords()[0]) - start
+        width = rectangle[2] - 82
+        pos = event.get_coords()[0]
+        if pos < 63:
+            width += 82
         value = (pos * self.duration) / (width)
         return value
      

@@ -30,16 +30,16 @@ from Controller import Controller
 def registerClasses():
     cerealizer.register(AF.AudioFile)            
 
-#dir = os.path.join(os.environ.get('HOME', None), '.CometSound')
-#pidFile = os.path.join(dir, 'program.pid') 
-#if not os.path.exists(dir):
-#    os.makedirs(dir)
-#fp = open(pidFile, 'w')
-#try:
-#    fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
-#except IOError:
-#    print 'CometSound is already running'
-#    sys.exit(0)
+dir = os.path.join(os.environ.get('HOME', None), '.CometSound')
+pidFile = os.path.join(dir, 'program.pid') 
+if not os.path.exists(dir):
+    os.makedirs(dir)
+fp = open(pidFile, 'w')
+try:
+    fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
+except IOError:
+    print 'CometSound is already running'
+    sys.exit(0)
 
 def getArg():
     if len(sys.argv) > 1 and sys.argv[1] != '':
