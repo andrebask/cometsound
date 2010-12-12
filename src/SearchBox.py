@@ -30,6 +30,9 @@ class SearchBox(gtk.Entry):
         self.control = control
         self.artistStore = gtk.ListStore(gobject.TYPE_STRING)
         self.albumStore = gtk.ListStore(gobject.TYPE_STRING)
+        self.set_property("primary-icon-stock", gtk.STOCK_FIND)
+        self.set_property("secondary-icon-stock", gtk.STOCK_CLEAR)
+        self.connect("icon-press", self.simpleClear)
         self.setListStore(listStore)
         self.completion = gtk.EntryCompletion()
         self.completion.set_model(self.listStore)
@@ -38,6 +41,9 @@ class SearchBox(gtk.Entry):
         self.completion.connect('match-selected', self.matchAction, 0)
         self.set_completion(self.completion)
     
+    def simpleClear(self, editable, data = None, data2 = None):
+        self.set_text('')
+        
     def clear(self, editable, data = None):
         self.set_text('')
         self.disconnect_by_func(self.clear)

@@ -110,7 +110,7 @@ class FilesFrame(gtk.Frame):
         self.searchBox = searchBox
         self.searchBox.set_size_request(self.get_screen().get_width() / 6, 30) 
         
-        self.buttons.pack_start(gtk.Label('  %s: ' % _('Search')), False)
+        #self.buttons.pack_start(gtk.Label('  %s: ' % _('Search')), False)
         self.buttons.pack_start(searchBox, True)
         self.buttons.pack_start(file, False)
         self.buttons.pack_start(title, False)
