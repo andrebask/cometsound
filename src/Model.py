@@ -22,6 +22,8 @@
 
 import gtk, stat, os, string, commands, cerealizer, time, sys
 from AF import AudioFile
+from Queue import Queue
+from threading import Thread
 
 audioTypes = ['.mp3', '.wma', '.ogg', '.flac', 
             '.m4a', '.mp4', '.aac', '.wav',
@@ -70,9 +72,45 @@ class Model:
                 self.fraction = float(1) / self.numOfFiles
             except:
                 self.directory = ''    
-        self.audioFileList = self.__searchFiles(self.directory) 
+        self.audioFileList = self.__startSearchFiles(self.directory) 
             
-    def __searchFiles(self, directory):
+    def __startSearchFiles(self, directory):
+        """Starts the threads to scan the file system"""
+        #print directory
+        list = [self.directory]
+        try:
+            fileList = os.listdir(directory)
+        except:
+            return list
+        queue = Queue()
+        dirList = []
+        for fileName in fileList:
+            if os.access((os.path.join(directory, fileName)), os.R_OK) and fileName[0] != '.':
+                try:
+                    filestat = os.stat(os.path.join(directory, fileName))
+                except:
+                    print "error reading " + directory + '/' + fileName
+                    continue
+                #print 'processing ' + fileName
+                if self.isAudio(fileName):
+                    list.append(AudioFile(directory, fileName))   
+                elif stat.S_ISDIR(filestat.st_mode):
+                    #print filestat.st_mtime
+                    dirList.append(fileName)
+                    t = Thread(target = self.__searchFiles, args = (os.path.join(directory, fileName), queue))
+                    t.start()
+            self.count += int(commands.getstatusoutput("find \"%s\" | wc -l" % (os.path.join(directory, fileName)))[1])
+            self.__updateProgressBar()
+            
+        for fileName in dirList:
+            l = queue.get()
+            if len(l) != 0:
+                l.insert(0, fileName)
+                list.append(l)
+                
+        return list    
+
+    def __searchFiles(self, directory, queue = None):
         """Recursively scans the file system to find audio files and add them to the tree"""
         #print directory
         list = [self.directory]
@@ -81,7 +119,6 @@ class Model:
         except:
             return list
         for fileName in fileList:
-            self.__updateProgressBar()
             if os.access((os.path.join(directory, fileName)), os.R_OK) and fileName[0] != '.':
                 try:
                     filestat = os.stat(os.path.join(directory, fileName))
@@ -97,14 +134,16 @@ class Model:
                     if len(l) != 0:
                         l.insert(0, fileName)
                         list.append(l)
-        return list    
+        if queue == None:
+            return list
+        else:
+            queue.put(list)
     
     def __updateProgressBar(self):
         """Updates the progress bar that shows the current status of the scan"""
         if self.progressBar != None:
             self.progressBar.set_fraction(self.count * self.fraction)
             #self.progressBar.set_text(str(self.count * self.fraction)[2:4] + "%")
-            self.count+=1
             while gtk.events_pending():
                 gtk.main_iteration() 
     
