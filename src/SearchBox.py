@@ -41,8 +41,9 @@ class SearchBox(gtk.Entry):
         self.completion.connect('match-selected', self.matchAction, 0)
         self.set_completion(self.completion)
     
-    def simpleClear(self, editable, data = None, data2 = None):
-        self.set_text('')
+    def simpleClear(self, entry, icon, event):
+        if icon == gtk.ENTRY_ICON_SECONDARY:
+            self.set_text('')
         
     def clear(self, editable, data = None):
         self.set_text('')

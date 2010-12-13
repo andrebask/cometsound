@@ -102,6 +102,7 @@ class PlaylistFrame(gtk.Frame):
         repeatB.set_tooltip_text(_('Repeat'))
         repeatB.connect("toggled", self.control.setRepeat)
         
+        self.buttons.set_border_width(3)
         self.buttons.pack_start(gtk.Label(_('Playlist')), True)
         self.buttons.pack_start(repeatB, False)
         self.buttons.pack_start(shuffleB, False)

@@ -84,6 +84,7 @@ class Model:
             return list
         queue = Queue()
         dirList = []
+        increment = int(self.numOfFiles/len(fileList))
         for fileName in fileList:
             if os.access((os.path.join(directory, fileName)), os.R_OK) and fileName[0] != '.':
                 try:
@@ -99,7 +100,7 @@ class Model:
                     dirList.append(fileName)
                     t = Thread(target = self.__searchFiles, args = (os.path.join(directory, fileName), queue))
                     t.start()
-            self.count += int(commands.getstatusoutput("find \"%s\" | wc -l" % (os.path.join(directory, fileName)))[1])
+            self.count += increment
             self.__updateProgressBar()
             
         for fileName in dirList:

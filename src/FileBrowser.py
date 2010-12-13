@@ -77,8 +77,8 @@ class FilesFrame(gtk.Frame):
         self.createSearchToolbar()
         self.scroll.add(self.treeview)
         vbox = gtk.VBox()
-        vbox.pack_start(self.scroll)
         vbox.pack_start(self.buttons, False)
+        vbox.pack_start(self.scroll)
         self.add(vbox)
 
         self.show_all()
@@ -108,9 +108,10 @@ class FilesFrame(gtk.Frame):
             b.set_mode(False)
             
         self.searchBox = searchBox
-        self.searchBox.set_size_request(self.get_screen().get_width() / 6, 30) 
+        self.searchBox.set_size_request(self.get_screen().get_width() / 6, 28) 
         
         #self.buttons.pack_start(gtk.Label('  %s: ' % _('Search')), False)
+        self.buttons.set_border_width(3)
         self.buttons.pack_start(searchBox, True)
         self.buttons.pack_start(file, False)
         self.buttons.pack_start(title, False)
