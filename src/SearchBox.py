@@ -47,6 +47,7 @@ class SearchBox(gtk.Entry):
         self.completion.set_match_func(self.matchFunc)
         self.set_completion(self.completion)
         self.previousList = []
+        self.stop = False
     
     def matchClear(self, editable):
         if self.get_text() == '':
@@ -54,6 +55,7 @@ class SearchBox(gtk.Entry):
         else:
             self.matchStore.clear()
         self.previousList = []
+        self.stop = False
     
     def simpleClear(self, entry, icon, event):
         if icon == gtk.ENTRY_ICON_SECONDARY:
@@ -85,10 +87,13 @@ class SearchBox(gtk.Entry):
             list = []
             for c in range(9):
                 list.append(model.get_value(iter, c))
-            if list not in self.previousList:
-                self.previousList.append(list)
+            if list in self.previousList:
+                self.stop = True
+            if not self.stop:
+                if len(self.previousList) == 0:
+                    self.previousList.append(list)
                 self.matchStore.append(list) 
-            self.control.view.filesTree.setStore(self.matchStore) 
+                self.control.view.filesTree.setStore(self.matchStore) 
             return False
         else:
             return False
