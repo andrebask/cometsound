@@ -21,6 +21,8 @@
 ##
 
 import gtk, gobject, SortFunctions as SF
+from Translator import t
+_ = t.getTranslationFunc()
 
 class SearchBox(gtk.Entry):
     
@@ -28,11 +30,14 @@ class SearchBox(gtk.Entry):
         
         gtk.Entry.__init__(self)
         self.control = control
+        self.modify_text(gtk.STATE_NORMAL,  gtk.gdk.Color('#AAAAAA'))
+        self.set_text(_('Search'))
         self.artistStore = gtk.ListStore(gobject.TYPE_STRING)
         self.albumStore = gtk.ListStore(gobject.TYPE_STRING)
         self.set_property("primary-icon-stock", gtk.STOCK_FIND)
         self.set_property("secondary-icon-stock", gtk.STOCK_CLEAR)
         self.connect("icon-press", self.simpleClear)
+        self.connect("focus-in-event", self.clear)
         self.setListStore(listStore)
         self.completion = gtk.EntryCompletion()
         self.completion.set_model(self.listStore)
@@ -47,6 +52,7 @@ class SearchBox(gtk.Entry):
         
     def clear(self, editable, data = None):
         self.set_text('')
+        self.modify_text(gtk.STATE_NORMAL,  gtk.gdk.Color(0,0,0))
         self.disconnect_by_func(self.clear)
         
     def copyValues(self, model, path, iter, user_data = None):

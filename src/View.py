@@ -113,7 +113,7 @@ class View(gtk.Window):
         self.vbox.pack_start(sbar, False)
         self.show_all()
         self.filesTree.setModel(self.model)
-        self.filesTree.searchBox.grab_focus()
+        self.filesTree.treeview.grab_focus()
         self.control.refreshTree()
         
     def createPrimaryToolbar(self):
