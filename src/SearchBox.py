@@ -32,96 +32,64 @@ class SearchBox(gtk.Entry):
         self.control = control
         self.modify_text(gtk.STATE_NORMAL,  gtk.gdk.Color('#AAAAAA'))
         self.set_text(_('Search'))
-        self.artistStore = gtk.ListStore(gobject.TYPE_STRING)
-        self.albumStore = gtk.ListStore(gobject.TYPE_STRING)
+        s = gobject.TYPE_STRING
+        g = gobject.TYPE_OBJECT
+        self.matchStore = gtk.ListStore(s, s, s, s, s, s, s, g, s)
         self.set_property("primary-icon-stock", gtk.STOCK_FIND)
         self.set_property("secondary-icon-stock", gtk.STOCK_CLEAR)
         self.connect("icon-press", self.simpleClear)
         self.connect("focus-in-event", self.clear)
-        self.setListStore(listStore)
+        self.connect('changed', self.matchClear)
+        self.listStore = listStore
         self.completion = gtk.EntryCompletion()
         self.completion.set_model(self.listStore)
         self.completion.set_text_column(2)
         self.completion.set_match_func(self.matchFunc)
-        self.completion.connect('match-selected', self.matchAction, 0)
         self.set_completion(self.completion)
+        self.previousList = []
+    
+    def matchClear(self, editable):
+        if self.get_text() == '':
+            self.control.view.filesTree.setStore()
+        else:
+            self.matchStore.clear()
+        self.previousList = []
     
     def simpleClear(self, entry, icon, event):
         if icon == gtk.ENTRY_ICON_SECONDARY:
             self.set_text('')
-        
+            
     def clear(self, editable, data = None):
         self.set_text('')
         self.modify_text(gtk.STATE_NORMAL,  gtk.gdk.Color(0,0,0))
         self.disconnect_by_func(self.clear)
-        
-    def copyValues(self, model, path, iter, user_data = None):
-        value = model.get_value(iter, 4)
-        if value not in self.albumList:
-            self.albumList.append(value)
-            self.albumStore.append([value])
-        value = model.get_value(iter, 3)
-        if value not in self.artistList:
-            self.artistList.append(value)
-            self.artistStore.append([value])
-    
+            
     def setListStore(self, listStore):
         self.listStore = listStore
-        self.albumList = []
-        self.artistList = []
-        self.artistStore.clear()
-        self.albumStore.clear()
-        self.listStore.foreach(self.copyValues)
+        self.set_text('')
+        self.control.view.filesTree.setStore()
             
     def changeSearchColumn(self, widget, data=None): 
-        
         if widget.get_active():  
-            self.completion = gtk.EntryCompletion()
-            if data == 3:
-                self.completion.set_model(self.artistStore)
-                self.completion.set_text_column(0)
-            elif data == 4:
-                self.completion.set_model(self.albumStore)
-                self.completion.set_text_column(0)    
-            else:    
-                self.completion.set_model(self.listStore)    
-                self.completion.set_text_column(data)
-            self.completion.set_match_func(self.matchFunc)
-            self.completion.connect('match-selected', self.matchAction, data)
-            self.set_completion(self.completion)
+            self.completion.set_text_column(data)
             
     def matchFunc(self, completion, key_string, iter, func_data = None):
         model = completion.get_model()
         searchColumn = completion.get_text_column()
         try:
             row = model.get_value(iter, searchColumn).lower()
-            row = row.split('(')[0]
         except:
             return False    
         key = key_string.lower()               
         if row.find(key) != -1:
-            return True
+            list = []
+            for c in range(9):
+                list.append(model.get_value(iter, c))
+            if list not in self.previousList:
+                self.previousList.append(list)
+                self.matchStore.append(list) 
+            self.control.view.filesTree.setStore(self.matchStore) 
+            return False
         else:
             return False
-    
-    def matchAction(self, completion, model, iter, column):
-        self.connect('changed', self.clear)
-        if column == 0 or column == 2:
-            fileName = model.get_value(iter, 8)
-            self.control.addTrack(fileName)
-        else:
-            if column == 3:
-                self.listStore.set_sort_func(13, SF.sortNameFunc, 4)
-                self.listStore.set_sort_column_id(13, gtk.SORT_ASCENDING)
-            elif column == 4:
-                self.listStore.set_sort_func(13, SF.sortNumFunc, 1)
-                self.listStore.set_sort_column_id(13, gtk.SORT_ASCENDING)    
-            value = model.get_value(iter, 0)  
-            self.listStore.foreach(self.add, (value, column))  
-        self.control.updatePlaylist()
 
-    def add(self, model, path, iter, (value, column)):
-        v = model.get_value(iter, column)
-        if v == value:
-            fileName = model.get_value(iter, 8)
-            self.control.addTrack(fileName)

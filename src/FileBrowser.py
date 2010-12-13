@@ -128,8 +128,6 @@ class FilesFrame(gtk.Frame):
                 if self.formatDict[string.lower(ext)] == True:
                     data = f.getTagValues() + [self.rightPixbuf] + [f.getDir() + f.getTagValues()[0]]
                     self.treeStore.append(parent, data)
-                    data[2] = data[2] + '\t(' + data[4] + ')'
-                    data[4] = data[4] + '\t(' + data[3] + ')'
                     self.listStore.append(data)
             elif type(f).__name__ == 'list':
                 if not self.__isEmpty(f):
@@ -210,6 +208,12 @@ class FilesFrame(gtk.Frame):
         self.treeStore.clear()
         self.listStore.clear()
         self.createTree(None, self.listOfFiles)
+    
+    def setStore(self, store = None):
+        if store == None:
+            self.treeview.set_model(self.treeStore)
+        else:
+            self.treeview.set_model(store)
     
     def openMenu(self, time, path):
         cfname = self.treeview.get_model()[path][8]

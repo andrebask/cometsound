@@ -181,9 +181,11 @@ class Controller:
             
     def toggle(self, cell, path, rowModel):
         """Adds the selected files to the playlist and updates the treeview"""
+        print 
         completeFilename = rowModel[path][8]
         self.addTrack(completeFilename)
-        self.__recursiveToggle(path, rowModel)
+        if type(rowModel).__name__ == 'TreeStore':
+            self.__recursiveToggle(path, rowModel)
         self.updatePlaylist()
         
     def __recursiveToggle(self, path, rowModel):
@@ -203,7 +205,7 @@ class Controller:
 
     def addAll(self, widget, add):
         """Adds to the playlist all the files of the current folder"""
-        rowModel = self.view.filesTree.treeStore
+        rowModel = self.view.filesTree.treeview.get_model()
         rowModel.foreach(self.__add)
         self.updatePlaylist()
         
@@ -417,7 +419,7 @@ class Controller:
             self.view.set_title('CometSound')    
             return
         if t['title'] != '' and t['title'] != ' ':
-            info = (t['title'][:50], t['album'][:50], t['artist'][:50])
+            info = (t['title'][:60], t['album'][:60], t['artist'][:60])
             label = "<span font_desc='18'><b>%s</b></span>\n<span font_desc='14'>%s\n%s</span>" % info
             
             winTitle = "%s - %s - %s" % (t['title'], t['album'], t['artist'])
@@ -440,7 +442,7 @@ class Controller:
 #                self.notification.show()
         else:
             winTitle = t['filename']
-            label = "File:\t<b>" + winTitle[:50] + "</b>\n\n"
+            label = "File:\t<b>" + winTitle[:60] + "</b>\n\n"
             self.view.label.set_markup(label)
             self.view.set_title(winTitle)    
     
