@@ -63,10 +63,7 @@ class FilesFrame(gtk.Frame):
 
         self.createTree(None, self.listOfFiles)
         # create and sort the TreeView using treeStore
-        self.treeStore.set_sort_func(0, SF.sortNameFunc)
-        self.treeStore.set_sort_func(1, SF.sortNumFunc, self.columns.index('#'))
-        self.treeStore.set_sort_func(6, SF.sortNumFunc, self.columns.index(_('Year')))
-        self.treeStore.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        self.setSortFunctions()
         self.treeview = gtk.TreeView(self.treeStore)
         self.treeview.set_rules_hint(True)
         self.treeview.connect("button-press-event", self.control.doubleClickSelect)
@@ -82,6 +79,13 @@ class FilesFrame(gtk.Frame):
         self.add(vbox)
 
         self.show_all()
+    
+    def setSortFunctions(self):
+        self.treeStore.set_sort_func(0, SF.sortNameFunc)
+        self.treeStore.set_sort_func(1, SF.sortNumFunc, self.columns.index('#'))
+        self.treeStore.set_sort_func(4, SF.sortNameFunc, self.columns.index(_('Album')))
+        self.treeStore.set_sort_func(6, SF.sortNumFunc, self.columns.index(_('Year')))
+        self.treeStore.set_sort_column_id(0, gtk.SORT_ASCENDING)
     
     def createSearchToolbar(self):
         

@@ -115,6 +115,8 @@ class View(gtk.Window):
         self.filesTree.setModel(self.model)
         self.filesTree.treeview.grab_focus()
         self.control.refreshTree()
+        if self.model.playlist != None:
+            self.control.playStopSelected()
         
     def createPrimaryToolbar(self):
         self.vbox = gtk.VBox()

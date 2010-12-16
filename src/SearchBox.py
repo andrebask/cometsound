@@ -30,15 +30,12 @@ class SearchBox(gtk.Entry):
         
         gtk.Entry.__init__(self)
         self.control = control
-        self.modify_text(gtk.STATE_NORMAL,  gtk.gdk.Color('#AAAAAA'))
-        self.set_text(_('Search'))
         s = gobject.TYPE_STRING
         g = gobject.TYPE_OBJECT
         self.matchStore = gtk.ListStore(s, s, s, s, s, s, s, g, s)
         self.set_property("primary-icon-stock", gtk.STOCK_FIND)
         self.set_property("secondary-icon-stock", gtk.STOCK_CLEAR)
         self.connect("icon-press", self.simpleClear)
-        self.connect("focus-in-event", self.clear)
         self.connect('changed', self.matchClear)
         self.listStore = listStore
         self.completion = gtk.EntryCompletion()
@@ -51,7 +48,7 @@ class SearchBox(gtk.Entry):
     
     def matchClear(self, editable):
         if self.get_text() == '':
-            self.control.view.filesTree.setStore()
+            self.fileBrowser.setStore()
         else:
             self.matchStore.clear()
         self.previousList = []
@@ -68,8 +65,11 @@ class SearchBox(gtk.Entry):
             
     def setListStore(self, listStore):
         self.listStore = listStore
-        self.set_text('')
-        self.control.view.filesTree.setStore()
+        self.fileBrowser = self.control.view.filesTree
+        self.set_text(_('Search'))
+        self.modify_text(gtk.STATE_NORMAL,  gtk.gdk.Color('#AAAAAA'))
+        self.connect("focus-in-event", self.clear)
+        self.fileBrowser.setStore()
             
     def changeSearchColumn(self, widget, data=None): 
         if widget.get_active():  
@@ -93,7 +93,7 @@ class SearchBox(gtk.Entry):
                 if len(self.previousList) == 0:
                     self.previousList.append(list)
                 self.matchStore.append(list) 
-                self.control.view.filesTree.setStore(self.matchStore) 
+                self.fileBrowser.setStore(self.matchStore) 
             return False
         else:
             return False

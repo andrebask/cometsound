@@ -62,14 +62,21 @@ class Model:
                     raise Exception
             except:
                 self.directory = ''
-                #print sys.exc_info()    
+                #print sys.exc_info()  
+            self.playlist = None  
             return
         else:
             try:
                 self.numOfFiles = int(commands.getstatusoutput("find \"%s\" | wc -l" % (directory))[1])
                 self.fraction = float(1) / self.numOfFiles
             except:
-                self.directory = ''    
+                self.directory = ''
+        if isAudio(self.directory):
+            self.playlist = [self.directory]
+            index = self.directory.rfind("/")    
+            self.directory = self.directory[:index]
+        else:
+            self.playlist = None
         self.audioFileList = self.__searchFiles(self.directory) 
             
     def __searchFiles(self, directory):
@@ -90,7 +97,7 @@ class Model:
                     print "error reading " + directory + '/' + fileName
                     continue
                 #print 'processing ' + fileName
-                if self.isAudio(fileName):
+                if isAudio(fileName):
                     list.append(AudioFile(directory, fileName))   
                 elif stat.S_ISDIR(filestat.st_mode):
                     #print filestat.st_mtime
@@ -145,11 +152,11 @@ class Model:
                 print 'adding new dir ' + element
                 newdir = self.__searchFiles(path)
                 fileTree.append([element] + newdir[1:])
-            elif stat.S_ISREG(os.stat(path).st_mode) and self.isAudio(element):
+            elif stat.S_ISREG(os.stat(path).st_mode) and isAudio(element):
                 print 'adding new file ' + element
                 fileTree.append(AudioFile(dir, element))
      
-    def isAudio(self, fileName):
-        i = fileName.rfind('.')
-        ext = string.lower(fileName[i:])
-        return ext in audioTypes                 
+def isAudio(fileName):
+    i = fileName.rfind('.')
+    ext = string.lower(fileName[i:])
+    return ext in audioTypes                 

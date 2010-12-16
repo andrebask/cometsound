@@ -155,6 +155,8 @@ class Controller:
         return int(wh[0]), int(wh[1]), int(wh[2]), float(wh[3])
     
     def lastPlaylist(self):
+        if self.model.playlist != None:
+            return self.model.playlist
         try:
             if self.settings['lastplaylist']:
                 dir = self.cacheDir
@@ -282,6 +284,20 @@ class Controller:
         except:
             return
         
+    def dbusPlay(self, cfname):
+        self.addTrack(cfname)
+        pt = self.playerThread
+        if pt.trackNum == -1:
+            self.playerThread.started = True
+            self.playerThread.setTimeout()
+            self.view.slider.set_sensitive(True)
+        if pt.shuffle:
+            i = pt.shuffleList.index(len(self.playlist)-1)
+            pt.trackNum = i - 1
+        else:
+            pt.trackNum = len(self.playlist) - 2
+        pt.next()     
+             
     def doubleClickPlay(self, tree, event):
         """Detects double click on the playlist and play the selected track"""
         try:
