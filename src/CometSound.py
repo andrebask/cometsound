@@ -61,7 +61,6 @@ class DbusService(dbus.service.Object):
 
     @dbus.service.method(dbus_interface='com.thelinuxroad.CometSound')
     def addTrack(self, cfname):
-        print 'ciao'
         self.control.dbusPlay(cfname)
 
 
