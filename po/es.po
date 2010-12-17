@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: cometsound\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-11-20 02:01+0100\n"
-"PO-Revision-Date: 2010-11-30 09:49+0000\n"
-"Last-Translator: Andrea Bernardini <Unknown>\n"
+"PO-Revision-Date: 2010-12-16 14:24+0000\n"
+"Last-Translator: Fitoschido <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-14 06:36+0000\n"
+"X-Launchpad-Export-Date: 2010-12-17 07:05+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:223
@@ -108,11 +108,11 @@ msgstr "Añadir"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:112
 msgid "<b>Status Icon</b>"
-msgstr "<b>Ícono de estado</b>"
+msgstr "<b>Icono de estado</b>"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:114
 msgid "Enable status icon with track's informations"
-msgstr "Habilitar ícono de estado con la información del tema"
+msgstr "Habilitar icono de estado con la información de la pista"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:115
 msgid "Enable status icon"
