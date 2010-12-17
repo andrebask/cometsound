@@ -77,7 +77,6 @@ class PlayerThread(threading.Thread):
         """Starts the thread"""
         self.started = True
         self.setTimeout()
-        self.control.view.slider.set_sensitive(True)
         self.next()
         while not self.stopevent.isSet():    
             self.stopevent.wait(2)

@@ -34,6 +34,7 @@ class Model:
         
     def __init__(self, directory, progressBar = None):
         self.progressBar = progressBar
+        self.numOfFiles = 0
         self.cachefname = os.path.join(os.environ.get('HOME', None) , '.CometSound' , 'cache')
         try:
             self.lastUpdate = os.path.getmtime(self.cachefname)
@@ -74,7 +75,10 @@ class Model:
         if isAudio(self.directory):
             self.playlist = [self.directory]
             index = self.directory.rfind("/")    
-            self.directory = self.directory[:index]
+            if self.numOfFiles < 500:
+                self.directory = self.directory[:index]
+            else:
+                self.directory = ''
         else:
             self.playlist = None
         self.audioFileList = self.__searchFiles(self.directory) 
@@ -88,7 +92,7 @@ class Model:
         except:
             return list
         for fileName in fileList:
-            if self.numOfFiles > 1000:
+            if self.numOfFiles > 300:
                 self.__updateProgressBar()
             if os.access((os.path.join(directory, fileName)), os.R_OK) and fileName[0] != '.':
                 try:
@@ -117,6 +121,7 @@ class Model:
                 gtk.main_iteration() 
     
     def updateModel(self):
+        self.changed = False
         self.__updateModel(self.getAudioFileList(), self.directory)
         self.lastUpdate = time.time()
         
@@ -133,6 +138,7 @@ class Model:
                 else:
                     print 'deleting dir %s ' % element
                     toDelete.append(element)
+                    self.changed = True
             elif type(element).__name__ == 'instance':
                 fname = element.getTagValue('fileName')
                 if fname in fileList:
@@ -141,9 +147,11 @@ class Model:
                     if os.path.getmtime(path) > self.lastUpdate:
                         print 'updating file %s ' % element.getTagValue('fileName')
                         fileTree[fileTree.index(element)] = AudioFile(dir, fname)
+                        self.changed = True
                 else:
                     print 'deleting file %s ' % element.getTagValue('fileName')
                     toDelete.append(element)
+                    self.changed = True
         for old in toDelete:
             fileTree.remove(old)
         for element in fileList:
@@ -152,9 +160,11 @@ class Model:
                 print 'adding new dir ' + element
                 newdir = self.__searchFiles(path)
                 fileTree.append([element] + newdir[1:])
+                self.changed = True
             elif stat.S_ISREG(os.stat(path).st_mode) and isAudio(element):
                 print 'adding new file ' + element
                 fileTree.append(AudioFile(dir, element))
+                self.changed = True
      
 def isAudio(fileName):
     i = fileName.rfind('.')

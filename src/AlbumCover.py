@@ -115,12 +115,8 @@ class CoverUpdater(Process):
         self.artist = af.getTagValue('artist')
         if not self.getLocalCover():
             self.downloadCover(self.artist, self.album)  
-        try:
-            Global.filename = self.filename
-            Global.coverChanged = True
-        except:
-            return
-        
+        Global.filename = self.filename
+        Global.coverChanged = True
         
     def getLocalCover(self):            
         images = [file for file in os.listdir(self.directory) if file.split('.')[-1].lower() in ['jpg', 'jpeg', 'png']]

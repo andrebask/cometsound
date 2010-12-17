@@ -76,4 +76,4 @@ if __name__ == "__main__":
     c = Controller(m)
     View(m, c)
     DbusService(c)
-    main()       
+    main()     

@@ -172,14 +172,30 @@ class Controller:
         except:
             return []
     
+    def __expFunc(self, tree, path):
+        model = tree.get_model()
+        iter = model.get_iter(path)
+        folderName = model.get_value(iter, 0)
+        self.expandedList.append(folderName)
+    
+    def __restoreExpanded(self, model, path, iter):
+        iter = model.get_iter(path)
+        folderName = model.get_value(iter, 0)
+        if folderName in self.expandedList:
+            self.view.filesTree.treeview.expand_row(path, False)
+            
     def __refreshViewTree(self): 
-        """Refreshes the treeview"""  
+        """Refreshes the treeview""" 
+        self.expandedList = [] 
+        self.view.filesTree.treeview.map_expanded_rows(self.__expFunc)
         self.view.filesTree.setModel(self.model)
         self.view.filesTree.searchBox.setListStore(self.view.filesTree.listStore)
+        self.view.filesTree.treeStore.foreach(self.__restoreExpanded)
     
     def refreshTree(self, widget = None, data = None):
         self.model.updateModel()
-        self.__refreshViewTree()
+        if self.model.changed:
+            self.__refreshViewTree()
             
     def toggle(self, cell, path, rowModel):
         """Adds the selected files to the playlist and updates the treeview"""
@@ -407,6 +423,7 @@ class Controller:
             if len(self.playlist) > 0:
                 if not self.playerThread.isStarted():
                     self.playerThread.setPlaylist(self.playlist)
+                    self.view.slider.set_sensitive(True)
                     self.playerThread.start()
                     self.playerThread.join(0.1)
                 else: 

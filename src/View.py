@@ -249,7 +249,7 @@ class View(gtk.Window):
         
         tl = gtk.ToolItem()
         l = gtk.Label()
-        l.set_size_request(20,0)
+        l.set_size_request(19,0)
         tl.add(l)
         toolbar.insert(tl, 3)
         
@@ -411,6 +411,7 @@ class View(gtk.Window):
         volume = self.control.playerThread.getVolume()
         self.control.saveWinSize(self.width, self.height, pos, volume)
         self.control.playerThread.stop()
+        #self.control.modelUpdater.terminate()
         if self.control.playerThread.isAlive():
             self.control.playerThread.terminate()
         gtk.main_quit()

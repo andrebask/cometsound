@@ -91,7 +91,7 @@ class FilesFrame(gtk.Frame):
         
         self.buttons = gtk.HBox()
 
-        addAllB = self.control.view.createButton(gtk.STOCK_APPLY, _('Select All'), self.control.addAll, True)
+        addAllB = self.control.view.createButton(gtk.STOCK_ADD, _('Add all'), self.control.addAll, True)
         refreshB = self.control.view.createButton(gtk.STOCK_REFRESH, _('Refresh'), self.control.refreshTree)
         
         searchBox = SearchBox(self.listStore, self.control)
@@ -121,8 +121,8 @@ class FilesFrame(gtk.Frame):
         self.buttons.pack_start(title, False)
         self.buttons.pack_start(artist, False)
         self.buttons.pack_start(album, False)
-        self.buttons.pack_start(addAllB, False)
         self.buttons.pack_start(refreshB, False)
+        self.buttons.pack_start(addAllB, False)
         
     def createTree(self, parent, filelist):
         """Adds the files informations to the treeview"""
