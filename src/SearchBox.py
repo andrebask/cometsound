@@ -26,10 +26,10 @@ _ = t.getTranslationFunc()
 
 class SearchBox(gtk.Entry):
     
-    def __init__(self, listStore, control):
+    def __init__(self, listStore, fileBrowser):
         
         gtk.Entry.__init__(self)
-        self.control = control
+        self.fileBrowser = fileBrowser
         s = gobject.TYPE_STRING
         g = gobject.TYPE_OBJECT
         self.matchStore = gtk.ListStore(s, s, s, s, s, s, s, g, s)
@@ -37,7 +37,7 @@ class SearchBox(gtk.Entry):
         self.set_property("secondary-icon-stock", gtk.STOCK_CLEAR)
         self.connect("icon-press", self.simpleClear)
         self.connect('changed', self.matchClear)
-        self.listStore = listStore
+        self.setListStore(listStore)
         self.completion = gtk.EntryCompletion()
         self.completion.set_model(self.listStore)
         self.completion.set_text_column(2)
@@ -65,7 +65,6 @@ class SearchBox(gtk.Entry):
             
     def setListStore(self, listStore):
         self.listStore = listStore
-        self.fileBrowser = self.control.view.filesTree
         self.set_text(_('Search'))
         self.modify_text(gtk.STATE_NORMAL,  gtk.gdk.Color('#AAAAAA'))
         self.connect("focus-in-event", self.clear)

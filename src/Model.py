@@ -75,7 +75,7 @@ class Model:
         if isAudio(self.directory):
             self.playlist = [self.directory]
             index = self.directory.rfind("/")    
-            if self.numOfFiles < 500:
+            if self.numOfFiles < 300:
                 self.directory = self.directory[:index]
             else:
                 self.directory = ''

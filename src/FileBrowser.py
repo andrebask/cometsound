@@ -94,7 +94,7 @@ class FilesFrame(gtk.Frame):
         addAllB = self.control.view.createButton(gtk.STOCK_ADD, _('Add all'), self.control.addAll, True)
         refreshB = self.control.view.createButton(gtk.STOCK_REFRESH, _('Refresh'), self.control.refreshTree)
         
-        searchBox = SearchBox(self.listStore, self.control)
+        searchBox = SearchBox(self.listStore, self)
                         
         title = gtk.RadioButton(None, _('Title'))
         title.connect('toggled', searchBox.changeSearchColumn, 2)
