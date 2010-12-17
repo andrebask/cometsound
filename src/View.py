@@ -79,7 +79,7 @@ class View(gtk.Window):
         self.set_position(gtk.WIN_POS_CENTER)
         self.connect('expose-event', self.storeSize)
         self.icon = gtk.Image()
-        self.icon.set_from_file("icon.svg")
+        self.icon.set_from_file("icon.png")
         self.pix = self.icon.get_pixbuf().scale_simple(48, 48, gtk.gdk.INTERP_BILINEAR)
         self.set_icon(self.pix)
         self.tray = None

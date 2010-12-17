@@ -32,6 +32,7 @@ Global = manager.Namespace()
 Global.cover = None
 Global.stop = False
 Global.coverChanged = False
+Global.notificationChanged = False
 Global.filename = ''
 
 class AlbumImage(gtk.Image):
@@ -50,6 +51,7 @@ class AlbumImage(gtk.Image):
                 self.set_from_pixbuf(pix)
             except:
                 return
+            Global.coverChanged = False
         
     def setDefaultCover(self):
         self.set_from_file(os.path.join(cacheDir, 'tmp', 'default.jpg'))
@@ -77,9 +79,9 @@ class NotifyUpdate(Process):
         try:
             while not Global.stop:
                 time.sleep(0.5)
-                if Global.coverChanged:
+                if Global.notificationChanged:
                     self.update()
-                    Global.coverChanged = False
+                    Global.notificationChanged = False
         except:
             return
            
@@ -117,6 +119,7 @@ class CoverUpdater(Process):
             self.downloadCover(self.artist, self.album)  
         Global.filename = self.filename
         Global.coverChanged = True
+        Global.notificationChanged = True
         
     def getLocalCover(self):            
         images = [file for file in os.listdir(self.directory) if file.split('.')[-1].lower() in ['jpg', 'jpeg', 'png']]

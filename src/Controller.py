@@ -427,7 +427,10 @@ class Controller:
                     self.playerThread.start()
                     self.playerThread.join(0.1)
                 else: 
-                    self.playerThread.play()  
+                    self.playerThread.play() 
+                    if self.playerThread.trackNum == 0:
+                        self.playerThread.updateGUI()   
+                        self.view.slider.set_sensitive(True)                  
         elif self.view.actiongroup.get_action('Play/Stop').get_stock_id() == gtk.STOCK_MEDIA_PAUSE: 
             self.playerThread.pause()            
         self.view.image.updateImage()
@@ -552,7 +555,7 @@ class Controller:
                 append([icon, f]) 
             i+=1
 
-    def clearPlaylist(self, widget, data=None):
+    def clearPlaylist(self, widget = None, data=None):
         """Removes all the files from the playlist"""
         self.playerThread.clearPlaylist()
         self.createPlaylist()
@@ -565,7 +568,9 @@ class Controller:
             num = row[0]-i
             self.__removeTrack(num) 
             i+=1    
-        self.updatePlaylist()    
+        self.updatePlaylist() 
+        if len(self.playlist) == 0:
+            self.view.slider.set_sensitive(False)   
 
     def __removeTrack(self, num): 
         """Handles the removal of the files in the playlist"""
