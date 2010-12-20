@@ -428,11 +428,11 @@ class Controller:
                     self.playerThread.start()
                     self.playerThread.join(0.1)
                 else: 
-                    self.playerThread.play() 
                     if self.playerThread.trackNum == 0 and self.view.slider.get_value() == 0:
                         self.playerThread.updateGUI()   
                     if not self.view.slider.get_sensitive():
                         self.view.slider.set_sensitive(True)                  
+                    self.playerThread.play() 
         elif self.view.actiongroup.get_action('Play/Stop').get_stock_id() == gtk.STOCK_MEDIA_PAUSE: 
             self.playerThread.pause()            
         self.view.image.updateImage()
