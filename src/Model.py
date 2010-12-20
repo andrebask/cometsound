@@ -75,7 +75,7 @@ class Model:
         if isAudio(self.directory):
             self.playlist = [self.directory]
             index = self.directory.rfind("/")    
-            if self.numOfFiles < 300:
+            if self.numOfFiles < 200:
                 self.directory = self.directory[:index]
             else:
                 self.directory = ''
@@ -92,7 +92,7 @@ class Model:
         except:
             return list
         for fileName in fileList:
-            if self.numOfFiles > 300:
+            if self.numOfFiles > 200:
                 self.__updateProgressBar()
             if os.access((os.path.join(directory, fileName)), os.R_OK) and fileName[0] != '.':
                 try:
