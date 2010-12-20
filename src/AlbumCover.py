@@ -34,6 +34,7 @@ Global.stop = False
 Global.coverChanged = False
 Global.notificationChanged = False
 Global.filename = ''
+Global.albumArtist = '', ''
 
 class AlbumImage(gtk.Image):
     
@@ -115,11 +116,13 @@ class CoverUpdater(Process):
         self.directory = directory
         self.album = af.getTagValue('album')
         self.artist = af.getTagValue('artist')
-        if not self.getLocalCover():
-            self.downloadCover(self.artist, self.album)  
+        if Global.albumArtist != (self.album, self.artist):
+            if not self.getLocalCover():
+                self.downloadCover(self.artist, self.album)  
         Global.filename = self.filename
         Global.coverChanged = True
         Global.notificationChanged = True
+        Global.albumArtist = self.album, self.artist
         
     def getLocalCover(self):            
         images = [file for file in os.listdir(self.directory) if file.split('.')[-1].lower() in ['jpg', 'jpeg', 'png']]
