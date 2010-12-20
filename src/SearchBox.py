@@ -33,6 +33,7 @@ class SearchBox(gtk.Entry):
         s = gobject.TYPE_STRING
         g = gobject.TYPE_OBJECT
         self.matchStore = gtk.ListStore(s, s, s, s, s, s, s, g, s)
+        self.setSortFunctions()
         self.set_property("primary-icon-stock", gtk.STOCK_FIND)
         self.set_property("secondary-icon-stock", gtk.STOCK_CLEAR)
         self.connect("icon-press", self.simpleClear)
@@ -97,3 +98,9 @@ class SearchBox(gtk.Entry):
         else:
             return False
 
+    def setSortFunctions(self):
+        self.matchStore.set_sort_func(0, SF.sortNameFunc)
+        self.matchStore.set_sort_func(1, SF.sortNumFunc, 1)
+        self.matchStore.set_sort_func(4, SF.sortNameFunc, 4)
+        self.matchStore.set_sort_func(6, SF.sortNumFunc, 6)
+        self.matchStore.set_sort_column_id(0, gtk.SORT_ASCENDING)

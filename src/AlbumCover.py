@@ -54,7 +54,7 @@ class AlbumImage(gtk.Image):
             Global.coverChanged = False
         
     def setDefaultCover(self):
-        self.set_from_file(os.path.join(cacheDir, 'tmp', 'default.jpg'))
+        self.set_from_file('note.svg')
         pix = self.get_pixbuf().scale_simple(115, 115, gtk.gdk.INTERP_BILINEAR)
         self.set_from_pixbuf(pix)
 
@@ -143,7 +143,7 @@ class CoverUpdater(Process):
         except:
             pass
         if parser.image == None:
-            Global.cover = os.path.join(cacheDir, 'tmp', 'default.jpg')
+            Global.cover = 'note.svg'
             return
         tmpPath = os.path.join(cacheDir, 'tmp')
         if not os.path.exists(tmpPath):

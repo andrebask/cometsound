@@ -319,10 +319,11 @@ class Controller:
         try:
             if event.type == gtk.gdk._2BUTTON_PRESS:
                 path, x, y = self.__detectPath(tree, event) 
+                if not self.view.slider.get_sensitive():
+                    self.view.slider.set_sensitive(True)
                 if self.playerThread.trackNum == -1:
                     self.playerThread.started = True
                     self.playerThread.setTimeout()
-                    self.view.slider.set_sensitive(True)
                 i = int(path)
                 if self.playerThread.shuffle:
                     num = int(path)
@@ -428,8 +429,9 @@ class Controller:
                     self.playerThread.join(0.1)
                 else: 
                     self.playerThread.play() 
-                    if self.playerThread.trackNum == 0:
+                    if self.playerThread.trackNum == 0 and self.view.slider.get_value() == 0:
                         self.playerThread.updateGUI()   
+                    if not self.view.slider.get_sensitive():
                         self.view.slider.set_sensitive(True)                  
         elif self.view.actiongroup.get_action('Play/Stop').get_stock_id() == gtk.STOCK_MEDIA_PAUSE: 
             self.playerThread.pause()            
