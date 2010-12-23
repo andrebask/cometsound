@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: cometsound\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-12-20 17:02+0100\n"
-"PO-Revision-Date: 2010-11-14 07:34+0000\n"
-"Last-Translator: Andrea Bernardini <Unknown>\n"
+"PO-Revision-Date: 2010-12-22 17:46+0000\n"
+"Last-Translator: bouchard renaud <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-21 14:24+0000\n"
+"X-Launchpad-Export-Date: 2010-12-23 06:04+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:246
@@ -125,19 +125,19 @@ msgstr "Désactiver l'icône d'état"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:124
 msgid "<b>Startup settings</b>"
-msgstr ""
+msgstr "<b>Réglages de démarrage</b>"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:127
 msgid "Reload last play queue"
-msgstr ""
+msgstr "Recharger la dernière liste de lecture"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:129
 msgid "Reload last folder"
-msgstr ""
+msgstr "Recharger le dernier dossier"
 
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:94
 msgid "Add all"
-msgstr ""
+msgstr "Tout ajouter"
 
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:95
 msgid "Refresh"
@@ -170,7 +170,7 @@ msgstr "Aléatoire"
 
 #: Programmazione/Python/workspace/CometSound/src/Playlist.py:102
 msgid "Repeat"
-msgstr ""
+msgstr "Répéter"
 
 #: Programmazione/Python/workspace/CometSound/src/SearchBox.py:69
 msgid "Search"
