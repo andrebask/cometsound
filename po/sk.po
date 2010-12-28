@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: cometsound\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-12-20 17:02+0100\n"
-"PO-Revision-Date: 2010-11-22 08:22+0000\n"
-"Last-Translator: Andrea Bernardini <Unknown>\n"
+"PO-Revision-Date: 2010-12-27 07:56+0000\n"
+"Last-Translator: DAG Software <Unknown>\n"
 "Language-Team: Slovak <sk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-21 14:24+0000\n"
+"X-Launchpad-Export-Date: 2010-12-28 05:24+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:246
@@ -125,7 +125,7 @@ msgstr "Zakázať stavovú ikonu"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:124
 msgid "<b>Startup settings</b>"
-msgstr ""
+msgstr "<b>Nastavenia spúšťania</b>"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:127
 msgid "Reload last play queue"
@@ -137,7 +137,7 @@ msgstr "Znovu načítať posledný priečinok"
 
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:94
 msgid "Add all"
-msgstr ""
+msgstr "Pridať všetko"
 
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:95
 msgid "Refresh"
