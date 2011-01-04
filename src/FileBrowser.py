@@ -20,10 +20,12 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, string, gobject, SortFunctions as SF, CometSound
+import gtk, string, gobject, SortFunctions as SF
+from Translator import t
 from TagsEditorDialog import TagsEditor
+from SearchBox import SearchBox
 
-_ = CometSound.t.getTranslationFunc()
+_ = t.getTranslationFunc()
 
 colToKey  = {'#': 'num', _('Title'): 'title', _('Artist'): 'artist',
                 _('Album'): 'album', _('Genre'): 'genre', _('Year'): 'year'}
@@ -61,10 +63,7 @@ class FilesFrame(gtk.Frame):
 
         self.createTree(None, self.listOfFiles)
         # create and sort the TreeView using treeStore
-        self.treeStore.set_sort_func(0, SF.sortNameFunc)
-        self.treeStore.set_sort_func(1, SF.sortNumFunc, self.columns.index('#'))
-        self.treeStore.set_sort_func(6, SF.sortNumFunc, self.columns.index(_('Year')))
-        self.treeStore.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        self.setSortFunctions()
         self.treeview = gtk.TreeView(self.treeStore)
         self.treeview.set_rules_hint(True)
         self.treeview.connect("button-press-event", self.control.doubleClickSelect)
@@ -72,11 +71,58 @@ class FilesFrame(gtk.Frame):
         # create the TreeViewColumns to display the data
         self.__createColumns()    
         
-        
+        self.createSearchToolbar()
         self.scroll.add(self.treeview)
-        self.add(self.scroll)
+        vbox = gtk.VBox()
+        vbox.pack_start(self.buttons, False)
+        vbox.pack_start(self.scroll)
+        self.add(vbox)
 
         self.show_all()
+    
+    def setSortFunctions(self):
+        self.treeStore.set_sort_func(0, SF.sortNameFunc)
+        self.treeStore.set_sort_func(1, SF.sortNumFunc, self.columns.index('#'))
+        self.treeStore.set_sort_func(4, SF.sortNameFunc, self.columns.index(_('Album')))
+        self.treeStore.set_sort_func(6, SF.sortNumFunc, self.columns.index(_('Year')))
+        self.treeStore.set_sort_column_id(0, gtk.SORT_ASCENDING)
+    
+    def createSearchToolbar(self):
+        
+        self.buttons = gtk.HBox()
+
+        addAllB = self.control.view.createButton(gtk.STOCK_ADD, _('Add all'), self.control.addAll, True)
+        refreshB = self.control.view.createButton(gtk.STOCK_REFRESH, _('Refresh'), self.control.refreshTree)
+        
+        searchBox = SearchBox(self.listStore, self)
+                        
+        title = gtk.RadioButton(None, _('Title'))
+        title.connect('toggled', searchBox.changeSearchColumn, 2)
+        file = gtk.RadioButton(title, 'File')
+        file.connect('toggled', searchBox.changeSearchColumn, 0)
+        artist = gtk.RadioButton(file, _('Artist'))
+        artist.connect('toggled', searchBox.changeSearchColumn, 3)
+        album = gtk.RadioButton(artist, _('Album'))
+        album.connect('toggled', searchBox.changeSearchColumn, 4)
+
+        self.searchButtons = [file, title, artist, album]
+        
+        for b in self.searchButtons:
+            b.set_relief(gtk.RELIEF_NONE)
+            b.set_mode(False)
+            
+        self.searchBox = searchBox
+        self.searchBox.set_size_request(self.get_screen().get_width() / 6, 28) 
+        
+        #self.buttons.pack_start(gtk.Label('  %s: ' % _('Search')), False)
+        self.buttons.set_border_width(3)
+        self.buttons.pack_start(searchBox, True)
+        self.buttons.pack_start(file, False)
+        self.buttons.pack_start(title, False)
+        self.buttons.pack_start(artist, False)
+        self.buttons.pack_start(album, False)
+        self.buttons.pack_start(refreshB, False)
+        self.buttons.pack_start(addAllB, False)
         
     def createTree(self, parent, filelist):
         """Adds the files informations to the treeview"""
@@ -86,8 +132,6 @@ class FilesFrame(gtk.Frame):
                 if self.formatDict[string.lower(ext)] == True:
                     data = f.getTagValues() + [self.rightPixbuf] + [f.getDir() + f.getTagValues()[0]]
                     self.treeStore.append(parent, data)
-                    data[2] = data[2] + '\t(' + data[4] + ')'
-                    data[4] = data[4] + '\t(' + data[3] + ')'
                     self.listStore.append(data)
             elif type(f).__name__ == 'list':
                 if not self.__isEmpty(f):
@@ -168,6 +212,12 @@ class FilesFrame(gtk.Frame):
         self.treeStore.clear()
         self.listStore.clear()
         self.createTree(None, self.listOfFiles)
+    
+    def setStore(self, store = None):
+        if store == None:
+            self.treeview.set_model(self.treeStore)
+        else:
+            self.treeview.set_model(store)
     
     def openMenu(self, time, path):
         cfname = self.treeview.get_model()[path][8]

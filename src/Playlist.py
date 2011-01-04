@@ -20,9 +20,10 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, gobject, CometSound
+import gtk, gobject
+from Translator import t
 
-_ = CometSound.t.getTranslationFunc()
+_ = t.getTranslationFunc()
 
 class PlaylistFrame(gtk.Frame):
     """Gtk Frame modified to store a treeview that shows the playlist"""
@@ -65,9 +66,49 @@ class PlaylistFrame(gtk.Frame):
         tvcolumn.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         tvcolumn.set_resizable(True)
         
+        self.createButtons()
+        
+        self.treeview.set_headers_visible(False)
         self.scroll.add(self.treeview)
-        self.add(self.scroll)
+        vbox = gtk.VBox()
+        vbox.pack_start(self.buttons, False)
+        vbox.pack_start(self.scroll)
+        self.add(vbox)
         self.show_all()
+    
+    def createButtons(self):
+        
+        self.buttons = gtk.HBox()
+
+        clearB = self.control.view.createButton(gtk.STOCK_CLEAR, _('Clear Playlist'), self.control.clearPlaylist)
+        removeSelectedB = self.control.view.createButton(gtk.STOCK_REMOVE, _('Remove Selection'), self.control.removeSelected)
+        saveB = self.control.view.createButton(gtk.STOCK_SAVE, _('Save Playlist'), self.control.view.savePlaylistDialog)
+        
+        sIcon = gtk.Image()
+        icontheme = gtk.icon_theme_get_for_screen(self.get_screen())
+        pixbuf = icontheme.choose_icon(['stock_shuffle'], 18, 0).load_icon()
+        sIcon.set_from_pixbuf(pixbuf)
+        shuffleB = gtk.ToggleButton()
+        shuffleB.add(sIcon)
+        shuffleB.set_tooltip_text(_('Shuffle'))
+        shuffleB.connect("toggled", self.control.shufflePlaylist)
+        
+        sIcon = gtk.Image()
+        icontheme = gtk.icon_theme_get_for_screen(self.get_screen())
+        pixbuf = icontheme.choose_icon(['stock_repeat'], 18, 0).load_icon()
+        sIcon.set_from_pixbuf(pixbuf)
+        repeatB = gtk.ToggleButton()
+        repeatB.add(sIcon)
+        repeatB.set_tooltip_text(_('Repeat'))
+        repeatB.connect("toggled", self.control.setRepeat)
+        
+        self.buttons.set_border_width(3)
+        self.buttons.pack_start(gtk.Label(_('Playlist')), True)
+        self.buttons.pack_start(repeatB, False)
+        self.buttons.pack_start(shuffleB, False)
+        self.buttons.pack_start(saveB, False)
+        self.buttons.pack_start(clearB, False)
+        self.buttons.pack_start(removeSelectedB, False)          
     
     def setupDnD(self):
         """Drag and drop inizialization"""

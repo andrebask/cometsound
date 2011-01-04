@@ -21,19 +21,21 @@
 ##
 
 import gtk, os, Model, gst, pynotify, cerealizer, random, time, gobject
+from Translator import t
 from AF import AudioFile
 from Player import PlayerThread
-from View import CometSound, defaultSettings
+from View import defaultSettings
 from Model import audioTypes
+cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")
 
-_ = CometSound.t.getTranslationFunc()
+_ = t.getTranslationFunc()
 
 icons = {'True': gtk.STOCK_MEDIA_PLAY, 'False': gtk.STOCK_MEDIA_PAUSE}
 
 class Controller:
     """This Class Handles the interactions between the GUI(View) and the Model"""
     folder = ''
-    cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound") 
+    cacheDir = cacheDir
     
     def __init__(self, model):
         self.model = model
@@ -153,6 +155,8 @@ class Controller:
         return int(wh[0]), int(wh[1]), int(wh[2]), float(wh[3])
     
     def lastPlaylist(self):
+        if self.model.playlist != None:
+            return self.model.playlist
         try:
             if self.settings['lastplaylist']:
                 dir = self.cacheDir
@@ -168,20 +172,38 @@ class Controller:
         except:
             return []
     
+    def __expFunc(self, tree, path):
+        model = tree.get_model()
+        iter = model.get_iter(path)
+        folderName = model.get_value(iter, 0)
+        self.expandedList.append(folderName)
+    
+    def __restoreExpanded(self, model, path, iter):
+        iter = model.get_iter(path)
+        folderName = model.get_value(iter, 0)
+        if folderName in self.expandedList:
+            self.view.filesTree.treeview.expand_row(path, False)
+            
     def __refreshViewTree(self): 
-        """Refreshes the treeview"""  
+        """Refreshes the treeview""" 
+        self.expandedList = [] 
+        self.view.filesTree.treeview.map_expanded_rows(self.__expFunc)
         self.view.filesTree.setModel(self.model)
-        self.view.searchBox.setListStore(self.view.filesTree.listStore)
+        self.view.filesTree.searchBox.setListStore(self.view.filesTree.listStore)
+        self.view.filesTree.treeStore.foreach(self.__restoreExpanded)
     
     def refreshTree(self, widget = None, data = None):
         self.model.updateModel()
-        self.__refreshViewTree()
+        if self.model.changed:
+            self.__refreshViewTree()
             
     def toggle(self, cell, path, rowModel):
         """Adds the selected files to the playlist and updates the treeview"""
+        print 
         completeFilename = rowModel[path][8]
         self.addTrack(completeFilename)
-        self.__recursiveToggle(path, rowModel)
+        if type(rowModel).__name__ == 'TreeStore':
+            self.__recursiveToggle(path, rowModel)
         self.updatePlaylist()
         
     def __recursiveToggle(self, path, rowModel):
@@ -201,7 +223,7 @@ class Controller:
 
     def addAll(self, widget, add):
         """Adds to the playlist all the files of the current folder"""
-        rowModel = self.view.filesTree.treeStore
+        rowModel = self.view.filesTree.treeview.get_model()
         rowModel.foreach(self.__add)
         self.updatePlaylist()
         
@@ -278,15 +300,30 @@ class Controller:
         except:
             return
         
+    def dbusPlay(self, cfname):
+        self.addTrack(cfname)
+        pt = self.playerThread
+        if pt.trackNum == -1:
+            self.playerThread.started = True
+            self.playerThread.setTimeout()
+            self.view.slider.set_sensitive(True)
+        if pt.shuffle:
+            i = pt.shuffleList.index(len(self.playlist)-1)
+            pt.trackNum = i - 1
+        else:
+            pt.trackNum = len(self.playlist) - 2
+        pt.next()     
+             
     def doubleClickPlay(self, tree, event):
         """Detects double click on the playlist and play the selected track"""
         try:
             if event.type == gtk.gdk._2BUTTON_PRESS:
                 path, x, y = self.__detectPath(tree, event) 
+                if not self.view.slider.get_sensitive():
+                    self.view.slider.set_sensitive(True)
                 if self.playerThread.trackNum == -1:
                     self.playerThread.started = True
                     self.playerThread.setTimeout()
-                    self.view.slider.set_sensitive(True)
                 i = int(path)
                 if self.playerThread.shuffle:
                     num = int(path)
@@ -387,13 +424,19 @@ class Controller:
             if len(self.playlist) > 0:
                 if not self.playerThread.isStarted():
                     self.playerThread.setPlaylist(self.playlist)
+                    self.view.slider.set_sensitive(True)
                     self.playerThread.start()
                     self.playerThread.join(0.1)
                 else: 
-                    self.playerThread.play()  
+                    if self.playerThread.trackNum == 0 and self.view.slider.get_value() == 0:
+                        self.playerThread.updateGUI()   
+                    if not self.view.slider.get_sensitive():
+                        self.view.slider.set_sensitive(True)                  
+                    self.playerThread.play() 
         elif self.view.actiongroup.get_action('Play/Stop').get_stock_id() == gtk.STOCK_MEDIA_PAUSE: 
             self.playerThread.pause()            
-     
+        self.view.image.updateImage()
+        
     def nextTrack(self, obj = None):
         """Handles the click on the Next button"""
         self.playerThread.next()
@@ -409,11 +452,14 @@ class Controller:
         except:
             label = '\n\n'
             self.view.label.set_text(label)
+            self.view.label.set_tooltip_text(label)
+            self.view.tray.set_tooltip_text(label)
             self.view.set_title('CometSound')    
+            self.view.image.setDefaultCover()
             return
         if t['title'] != '' and t['title'] != ' ':
-            info = (t['title'][:50], t['album'][:50], t['artist'][:50])
-            label = "<b>%s</b>\n%s\n%s" % info
+            info = (t['title'][:60], t['album'][:60], t['artist'][:60])
+            label = "<span font_desc='18'><b>%s</b></span>\n<span font_desc='14'>%s\n%s</span>" % info
             
             winTitle = "%s - %s - %s" % (t['title'], t['album'], t['artist'])
             label = label.replace('&', '&amp;')
@@ -429,12 +475,13 @@ class Controller:
             
             self.view.label.set_tooltip_text(tooltip)
             self.view.tray.set_tooltip_text("%s\n%s\n%s" % info)
-            if notify:
-                self.notification.update(t['title'], "%s\n%s" % (t['album'], t['artist']))
-                self.notification.show()
+            self.view.label.queue_draw()
+#            if notify:
+#                self.notification.update(t['title'], "%s\n%s" % (t['album'], t['artist']))
+#                self.notification.show()
         else:
             winTitle = t['filename']
-            label = "File:\t<b>" + winTitle[:50] + "</b>\n\n"
+            label = "File:\t<b>" + winTitle[:60] + "</b>\n\n"
             self.view.label.set_markup(label)
             self.view.set_title(winTitle)    
     
@@ -511,7 +558,7 @@ class Controller:
                 append([icon, f]) 
             i+=1
 
-    def clearPlaylist(self, widget, data=None):
+    def clearPlaylist(self, widget = None, data=None):
         """Removes all the files from the playlist"""
         self.playerThread.clearPlaylist()
         self.createPlaylist()
@@ -524,7 +571,9 @@ class Controller:
             num = row[0]-i
             self.__removeTrack(num) 
             i+=1    
-        self.updatePlaylist()    
+        self.updatePlaylist() 
+        if len(self.playlist) == 0:
+            self.view.slider.set_sensitive(False)   
 
     def __removeTrack(self, num): 
         """Handles the removal of the files in the playlist"""
@@ -595,22 +644,25 @@ class Controller:
         return {'filename':filename, 'title':title, 'album':album, 'artist':artist, 'genre':genre, 'year':year, 'num':num }
 
     def sliderClickPress(self, slider, event):
-        gobject.source_remove(self.playerThread.timeoutID)    
-        slider.handler_block_by_func(self.playerThread.onSliderChange)
-        value = self.getSliderValue(slider, event)
-        slider.get_adjustment().set_value(value)
+        self.sliderClickValue = self.getSliderValue(slider, event)
+        if self.sliderClickValue < self.duration:
+            gobject.source_remove(self.playerThread.timeoutID)    
+            slider.handler_block_by_func(self.playerThread.onSliderChange)
+            slider.set_value(self.sliderClickValue)
         
     def sliderClickRelease(self, slider, event):
-        self.playerThread.setTimeout()
-        slider.handler_unblock_by_func(self.playerThread.onSliderChange)
         value = self.getSliderValue(slider, event)
-        slider.set_value(value)
+        if self.sliderClickValue < self.duration and value < self.duration:
+            self.playerThread.setTimeout()
+            slider.handler_unblock_by_func(self.playerThread.onSliderChange)
+            slider.set_value(value)
         
     def getSliderValue(self, slider, event):   
         rectangle = tuple(slider.get_allocation())
-        width = rectangle[2] - 87
-        start = rectangle[0] + 5
-        pos = int(event.get_coords()[0]) - start
+        width = rectangle[2] - 82
+        pos = event.get_coords()[0]
+        if pos < 63:
+            width += 82
         value = (pos * self.duration) / (width)
         return value
      

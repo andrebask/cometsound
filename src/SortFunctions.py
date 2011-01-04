@@ -26,12 +26,19 @@ equal = 0
 
 def sortNameFunc(model, iter1, iter2, data = 0):
     """Sorting algorithm for treeview's rows"""
-    value1 = model.get_value(iter1, data).lower()
-    value2 = model.get_value(iter2, data).lower()
+    try:
+        value1 = model.get_value(iter1, data).lower()
+        value2 = model.get_value(iter2, data).lower()
+    except:
+        value1 = None
+        value2 = None
     row1Isfile = model.get_value(iter1, 8) != ''
     row2Isfile = model.get_value(iter2, 8) != ''
     if value1 == value2:
-        return equal
+        if data == 4:
+            return sortNumFunc(model, iter1, iter2, 1)
+        else:
+            return equal
     if not row1Isfile and row2Isfile:
         return ok
     elif not row1Isfile and not row2Isfile:

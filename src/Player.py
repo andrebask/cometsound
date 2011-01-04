@@ -20,7 +20,8 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import threading, os, gst, gtk, gobject, random
+import threading, os, gst, gtk, gobject, random, pynotify
+from AlbumCover import CoverUpdater, NotifyUpdate
 
 class PlayerThread(threading.Thread):
     """Thread that manages all the player's operations"""
@@ -35,6 +36,9 @@ class PlayerThread(threading.Thread):
         self.player = None
         self.playing = False
         self.started = False
+        self.updater = None
+        self.labelUpdated = False
+        self.notify = NotifyUpdate()
         self.trackNum = -1        
         self.__createPlayer()
         self.stopevent = threading.Event()
@@ -73,7 +77,6 @@ class PlayerThread(threading.Thread):
         """Starts the thread"""
         self.started = True
         self.setTimeout()
-        self.control.view.slider.set_sensitive(True)
         self.next()
         while not self.stopevent.isSet():    
             self.stopevent.wait(2)
@@ -89,20 +92,32 @@ class PlayerThread(threading.Thread):
         t = message.type
         if t == gst.MESSAGE_ELEMENT and self.playing:
             if self.trackNum > -1 and self.started:
-                self.control.updateLabel(self.playlist[self.getNum()], self.playing)
+                self.updateGUI()
+                self.labelUpdated = True
             self.control.updatePlaylist()
         elif t == gst.MESSAGE_EOS:
             self.trackNum = 0 
             self.control.updatePlaylist()
             self.stop()
+            self.labelUpdated = False
             self.player.set_property("uri", "file://" + self.playlist[0])
         elif t == gst.MESSAGE_ERROR:
             self.stop()
             err, debug = message.parse_error()
             print "Error: %s" % err, debug
         elif t == gst.MESSAGE_NEW_CLOCK:
-            self.control.updateLabel(self.playlist[self.getNum()], self.playing)
-
+            if not self.labelUpdated:
+                self.updateGUI()
+                self.labelUpdated = False
+                
+    def updateGUI(self):
+        self.control.updateLabel(self.playlist[self.getNum()], self.playing)
+        try:
+            self.updater.terminate()
+        except:
+            pass
+        self.updater = CoverUpdater(self.playlist[self.getNum()])
+        
     def onFinish(self, player):
         """Handles the end of a stream, 
            preparing the player to play an other track"""
@@ -126,9 +141,9 @@ class PlayerThread(threading.Thread):
     def play(self):
         """Starts playing"""
         self.playing = True
-        self.player.set_state(gst.STATE_PLAYING)
         self.control.view.setButtonPause()
         self.control.updatePlaylist()
+        self.player.set_state(gst.STATE_PLAYING)
         
     def stop(self):
         """Stops playing"""

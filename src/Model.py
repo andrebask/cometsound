@@ -34,6 +34,7 @@ class Model:
         
     def __init__(self, directory, progressBar = None):
         self.progressBar = progressBar
+        self.numOfFiles = 0
         self.cachefname = os.path.join(os.environ.get('HOME', None) , '.CometSound' , 'cache')
         try:
             self.lastUpdate = os.path.getmtime(self.cachefname)
@@ -62,14 +63,24 @@ class Model:
                     raise Exception
             except:
                 self.directory = ''
-                #print sys.exc_info()    
+                #print sys.exc_info()  
+            self.playlist = None  
             return
         else:
             try:
                 self.numOfFiles = int(commands.getstatusoutput("find \"%s\" | wc -l" % (directory))[1])
                 self.fraction = float(1) / self.numOfFiles
             except:
-                self.directory = ''    
+                self.directory = ''
+        if isAudio(self.directory):
+            self.playlist = [self.directory]
+            index = self.directory.rfind("/")    
+            if self.numOfFiles < 200:
+                self.directory = self.directory[:index]
+            else:
+                self.directory = ''
+        else:
+            self.playlist = None
         self.audioFileList = self.__searchFiles(self.directory) 
             
     def __searchFiles(self, directory):
@@ -81,7 +92,8 @@ class Model:
         except:
             return list
         for fileName in fileList:
-            self.__updateProgressBar()
+            if self.numOfFiles > 200:
+                self.__updateProgressBar()
             if os.access((os.path.join(directory, fileName)), os.R_OK) and fileName[0] != '.':
                 try:
                     filestat = os.stat(os.path.join(directory, fileName))
@@ -89,7 +101,7 @@ class Model:
                     print "error reading " + directory + '/' + fileName
                     continue
                 #print 'processing ' + fileName
-                if self.isAudio(fileName):
+                if isAudio(fileName):
                     list.append(AudioFile(directory, fileName))   
                 elif stat.S_ISDIR(filestat.st_mode):
                     #print filestat.st_mtime
@@ -109,6 +121,7 @@ class Model:
                 gtk.main_iteration() 
     
     def updateModel(self):
+        self.changed = False
         self.__updateModel(self.getAudioFileList(), self.directory)
         self.lastUpdate = time.time()
         
@@ -125,6 +138,7 @@ class Model:
                 else:
                     print 'deleting dir %s ' % element
                     toDelete.append(element)
+                    self.changed = True
             elif type(element).__name__ == 'instance':
                 fname = element.getTagValue('fileName')
                 if fname in fileList:
@@ -133,9 +147,11 @@ class Model:
                     if os.path.getmtime(path) > self.lastUpdate:
                         print 'updating file %s ' % element.getTagValue('fileName')
                         fileTree[fileTree.index(element)] = AudioFile(dir, fname)
+                        self.changed = True
                 else:
                     print 'deleting file %s ' % element.getTagValue('fileName')
                     toDelete.append(element)
+                    self.changed = True
         for old in toDelete:
             fileTree.remove(old)
         for element in fileList:
@@ -144,11 +160,13 @@ class Model:
                 print 'adding new dir ' + element
                 newdir = self.__searchFiles(path)
                 fileTree.append([element] + newdir[1:])
-            elif stat.S_ISREG(os.stat(path).st_mode) and self.isAudio(element):
+                self.changed = True
+            elif stat.S_ISREG(os.stat(path).st_mode) and isAudio(element):
                 print 'adding new file ' + element
                 fileTree.append(AudioFile(dir, element))
+                self.changed = True
      
-    def isAudio(self, fileName):
-        i = fileName.rfind('.')
-        ext = string.lower(fileName[i:])
-        return ext in audioTypes                 
+def isAudio(fileName):
+    i = fileName.rfind('.')
+    ext = string.lower(fileName[i:])
+    return ext in audioTypes                 

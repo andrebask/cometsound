@@ -20,9 +20,10 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, gobject, CometSound
+import gtk
+from Translator import t
 
-_ = CometSound.t.getTranslationFunc()
+_ = t.getTranslationFunc()
 
 class AboutDialog(gtk.AboutDialog):
     
@@ -65,26 +66,31 @@ class PreferencesDialog(gtk.Dialog):
     
     def __init__(self, columns, control, settings):
         gtk.Dialog.__init__(self)
-        self.set_size_request(300,350)
+        self.set_size_request(300,400)
         self.control = control
         self.control.readSettings()
         #settings = self.control.settings            
         self.set_title(_('CometSound preferences'))
         sinks = ['Auto', 'ALSA', 'PulseAudio', 'OSS', 'Jack']
         gstSinks = ['autoaudiosink', 'alsasink', 'pulsesink', 'osssink', 'jackaudiosink']
-        vbox = self.get_child()
+        dialogBox = self.get_child()
+        vbox = gtk.VBox()
         audioLabel = gtk.Label()
         audioLabel.set_alignment(0,0)
-        audioLabel.set_padding(0,6)
+        audioLabel.set_padding(5,6)
         audioLabel.set_markup(_('<b>Audio output (Restart required)</b>'))
         audioCombo = gtk.combo_box_new_text()
+        acombo = gtk.HBox()
+        acombo.pack_start(gtk.Label('     '), False)
+        acombo.pack_start(audioCombo)
+        acombo.pack_start(gtk.Label('  '), False)
         for s in sinks:
             audioCombo.append_text(s)
         audioCombo.set_active(gstSinks.index(settings['audiosink']))
         
         columnsLabel = gtk.Label()
         columnsLabel.set_alignment(0,0)
-        columnsLabel.set_padding(0,6)
+        columnsLabel.set_padding(5,6)
         columnsLabel.set_markup(_('<b>Visible columns</b>'))
         labels = dict()
         cbox1 = gtk.VButtonBox() 
@@ -109,17 +115,21 @@ class PreferencesDialog(gtk.Dialog):
                 
         statusLabel = gtk.Label()
         statusLabel.set_alignment(0,0)
-        statusLabel.set_padding(0,6)
+        statusLabel.set_padding(5,6)
         statusLabel.set_markup(_('<b>Status Icon</b>'))
         statusCombo = gtk.combo_box_new_text()
         statusCombo.append_text(_('Enable status icon with track\'s informations'))
         statusCombo.append_text(_('Enable status icon'))
         statusCombo.append_text(_('Disable status icon'))
         statusCombo.set_active(settings['statusicon'])
+        scombo = gtk.HBox()
+        scombo.pack_start(gtk.Label('     '), False)
+        scombo.pack_start(statusCombo)
+        scombo.pack_start(gtk.Label('  '), False)
         
         startupLabel = gtk.Label()
         startupLabel.set_alignment(0,0)
-        startupLabel.set_padding(0,6)
+        startupLabel.set_padding(5,6)
         startupLabel.set_markup(_('<b>Startup settings</b>'))
         startbox = gtk.VButtonBox() 
         startbox.set_layout(gtk.BUTTONBOX_START)
@@ -131,13 +141,21 @@ class PreferencesDialog(gtk.Dialog):
         startbox.pack_start(cachecb)
                 
         vbox.pack_start(audioLabel)
-        vbox.pack_start(audioCombo)
+        vbox.pack_start(acombo)
         vbox.pack_start(columnsLabel)
         vbox.pack_start(hbox) 
         vbox.pack_start(statusLabel)
-        vbox.pack_start(statusCombo)
+        vbox.pack_start(scombo)
         vbox.pack_start(startupLabel)
         vbox.pack_start(startbox)
+        
+        notebook = gtk.Notebook()
+        notebook.set_tab_pos(gtk.POS_TOP)
+        notebook.append_page(vbox, gtk.Label('General'))
+        notebook.append_page(gtk.Label('TODO'), gtk.Label('Scrobbler'))
+        
+        dialogBox.pack_start(notebook)
+        
         self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)   
         self.show_all()
         

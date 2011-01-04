@@ -20,29 +20,15 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import AF, cerealizer, gtk
+import AF, cerealizer, gtk, fcntl, sys, os, dbus, dbus.service, dbus.glib
 import mutagen.asf as mtgasf
-import Model
-import Controller
-import View
-from Translator import Translator
+cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")  
+from Model import Model, isAudio
+from View import View
+from Controller import Controller
     
 def registerClasses():
     cerealizer.register(AF.AudioFile)            
-          
-t = Translator()
-
-import fcntl, sys, os
-dir = os.path.join(os.environ.get('HOME', None), '.CometSound')
-pidFile = os.path.join(dir, 'program.pid') 
-if not os.path.exists(dir):
-    os.makedirs(dir)
-fp = open(pidFile, 'w')
-try:
-    fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
-except IOError:
-    print 'CometSound is already running'
-    sys.exit(0)
 
 def getArg():
     if len(sys.argv) > 1 and sys.argv[1] != '':
@@ -52,13 +38,42 @@ def getArg():
     else:
         dir = ''
     return dir
+
+dir = os.path.join(os.environ.get('HOME', None), '.CometSound')
+pidFile = os.path.join(dir, 'program.pid') 
+if not os.path.exists(dir):
+    os.makedirs(dir)
+fp = open(pidFile, 'w')
+try:
+    fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
+except IOError:
+    print 'CometSound is already running'
+    if isAudio(getArg()):
+        addTrack = dbus.SessionBus().get_object('com.thelinuxroad.CometSound', '/com/thelinuxroad/CometSound').get_dbus_method("addTrack")
+        addTrack(getArg())
+    sys.exit(0)
+
+class DbusService(dbus.service.Object):
+    def __init__(self, control):
+        self.control = control
+        busName = dbus.service.BusName('com.thelinuxroad.CometSound', bus = dbus.SessionBus())
+        dbus.service.Object.__init__(self, busName, '/com/thelinuxroad/CometSound')
+
+    @dbus.service.method(dbus_interface='com.thelinuxroad.CometSound')
+    def addTrack(self, cfname):
+        self.control.dbusPlay(cfname)
+
+
+import setproctitle as spt
+spt.setproctitle('CometSound')
         
 def main():
     gtk.main()
     return 0
 if __name__ == "__main__":
     registerClasses()
-    m = Model.Model(getArg())
-    c = Controller.Controller(m)
-    View.View(m, c)
-    main()       
+    m = Model(getArg())
+    c = Controller(m)
+    View(m, c)
+    DbusService(c)
+    main()     
