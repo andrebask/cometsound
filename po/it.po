@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-21 14:24+0000\n"
+"X-Launchpad-Export-Date: 2011-01-05 05:46+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:246
@@ -125,7 +125,7 @@ msgstr "Disabilita icona di stato"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:124
 msgid "<b>Startup settings</b>"
-msgstr "<b>Impostazioni d'avvio</b>"
+msgstr "Impostazioni d'avvio"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:127
 msgid "Reload last play queue"
@@ -255,11 +255,8 @@ msgstr "Esci"
 msgid "Pause"
 msgstr "Pausa"
 
-<<<<<<< TREE
-=======
 #~ msgid "Deselect All"
 #~ msgstr "Deseleziona tutto"
 
 #~ msgid "Select All"
 #~ msgstr "Seleziona tutto"
->>>>>>> MERGE-SOURCE
