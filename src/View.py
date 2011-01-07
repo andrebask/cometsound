@@ -44,7 +44,11 @@ defaultSettings = {'audiosink': 'autoaudiosink',
                        _('Genre'): True,
                         _('Year'): True,
                         'lastplaylist': True,
-                        'foldercache': True 
+                        'foldercache': True, 
+                        'scrobbler': False,
+                        'user': '',
+                        'pwdHash': '',
+                        'fakepwd': ''
                          }
 
 class View(gtk.Window):
@@ -149,7 +153,8 @@ class View(gtk.Window):
                                  ('PlaylistsFolder', None, _('Open folder...'), None, None, self.openPlaylistFolder),
                                  ('View', None, _('_View')),
                                  ('Help', None, _('_Help')),
-                                 ('About', gtk.STOCK_ABOUT, _('About CometSound'), None, _('About CometSound'), self.showAboutDialog)
+                                 ('About', gtk.STOCK_ABOUT, _('About CometSound'), None, _('About CometSound'), self.showAboutDialog),
+                                 ('Love', gtk.STOCK_ABOUT, _('Love'), None, _('Love (last.fm)'), self.control.playerThread.love)
                                  ])
         
         actions = self.control.readPlaylists()
@@ -201,6 +206,7 @@ class View(gtk.Window):
                                           </menu>
                                         </menubar>
                                         <toolbar name="ImageToolBar">
+                                            <toolitem action="Love"/>
                                             <toolitem action="Open"/>
                                         </toolbar>
                                         <toolbar name="ToolBar">
@@ -250,7 +256,7 @@ class View(gtk.Window):
         self.volumeButton.connect('value-changed', self.control.playerThread.onVolumeChanged)
         tv = gtk.ToolItem()
         tv.add(self.volumeButton)
-        imageToolbar.insert(tv, 3)
+        imageToolbar.insert(tv, 4)
         
         tl = gtk.ToolItem()
         tl.add(self.slider)

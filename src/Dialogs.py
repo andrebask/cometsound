@@ -22,6 +22,7 @@
 
 import gtk
 from Translator import t
+from Scrobbler import Scrobbler, pylast
 
 _ = t.getTranslationFunc()
 
@@ -69,7 +70,6 @@ class PreferencesDialog(gtk.Dialog):
         self.set_size_request(300,400)
         self.control = control
         self.control.readSettings()
-        #settings = self.control.settings            
         self.set_title(_('CometSound preferences'))
         sinks = ['Auto', 'ALSA', 'PulseAudio', 'OSS', 'Jack']
         gstSinks = ['autoaudiosink', 'alsasink', 'pulsesink', 'osssink', 'jackaudiosink']
@@ -101,7 +101,7 @@ class PreferencesDialog(gtk.Dialog):
         hbox.pack_start(cbox1)
         hbox.pack_start(cbox2)
         count = 0
-        print settings.keys()
+        #print settings.keys()
         for c in columns:
             if c != '' and c != _('Name') and c != _('Add'):
                 cb = gtk.CheckButton(c)
@@ -149,10 +149,70 @@ class PreferencesDialog(gtk.Dialog):
         vbox.pack_start(startupLabel)
         vbox.pack_start(startbox)
         
+        svbox = gtk.VBox()
+        self.pwdChanged = False
+        self.userChanged = False
+        scrobblerLabel = gtk.Label()
+        scrobblerLabel.set_alignment(0,0)
+        scrobblerLabel.set_padding(5,6)
+        scrobblerLabel.set_markup(_('<b>Last.fm login</b>'))
+        uhbox = gtk.HBox()
+        ulabel = gtk.Label(_('Username:'))
+        ulabel.set_alignment(0.5,0.5)
+        ulabel.set_padding(10, 0)
+        ulabel.set_size_request(45,40)
+        uentry = gtk.Entry()
+        uentry.set_text(settings['user'])
+        uentry.connect('changed', self.setUserChanged)
+        phbox = gtk.HBox()
+        plabel = gtk.Label(_('Password:'))
+        plabel.set_alignment(0.5,0.5)
+        plabel.set_padding(10, 0)
+        plabel.set_size_request(45,40)
+        pentry = gtk.Entry()
+        pentry.set_text(settings['fakepwd'])
+        pentry.set_visibility(False)
+        self.emptyentry = len(pentry.get_text()) == 0
+        pentry.connect('changed', self.setPwdChanged)
+        cbhbox = gtk.HBox()
+        loginbox = gtk.HBox()
+        scrobblercb = gtk.CheckButton(_('Enable scrobbling'))
+        scrobblercb.set_active(settings['scrobbler'])
+        cbhbox.pack_start(scrobblercb)
+        cbhbox.set_border_width(10)
+        loginImage = gtk.Image()
+        self.loginImage = loginImage
+        loginButton = gtk.Button(_('Login'))
+        loginButton.connect('clicked', self.login, uentry, pentry)
+        self.control.playerThread.scrobbler.thread.join()
+        if self.control.playerThread.scrobbler.connected:
+            loginImage.set_from_stock(gtk.STOCK_APPLY, gtk.ICON_SIZE_SMALL_TOOLBAR)
+            loginLabel = gtk.Label('Logged in')
+        else:
+            loginImage.set_from_stock(gtk.STOCK_CANCEL, gtk.ICON_SIZE_SMALL_TOOLBAR)
+            loginLabel = gtk.Label('Logged off')
+        loginLabel.set_alignment(0.1,0.5)
+        self.loginLabel = loginLabel
+        loginbox.pack_start(loginImage, False)
+        loginbox.pack_start(loginLabel)
+        loginbox.pack_start(loginButton, False)
+        loginbox.set_border_width(10)
+        uhbox.pack_start(ulabel)
+        uhbox.pack_start(uentry)
+        uhbox.pack_start(gtk.Label('  '), False)
+        phbox.pack_start(plabel)
+        phbox.pack_start(pentry)
+        phbox.pack_start(gtk.Label('  '), False)
+        svbox.pack_start(scrobblerLabel, False)
+        svbox.pack_start(uhbox, False)
+        svbox.pack_start(phbox, False)
+        svbox.pack_start(loginbox, False)
+        svbox.pack_start(cbhbox, False)
+        
         notebook = gtk.Notebook()
         notebook.set_tab_pos(gtk.POS_TOP)
         notebook.append_page(vbox, gtk.Label('General'))
-        notebook.append_page(gtk.Label('TODO'), gtk.Label('Scrobbler'))
+        notebook.append_page(svbox, gtk.Label('Scrobbler'))
         
         dialogBox.pack_start(notebook)
         
@@ -168,7 +228,59 @@ class PreferencesDialog(gtk.Dialog):
                     newsettings[c] = labels[c].get_active()
             newsettings['lastplaylist'] = playcb.get_active()
             newsettings['foldercache'] = cachecb.get_active()
+            newsettings['scrobbler'] = scrobblercb.get_active()
+            self.storeLoginData(settings, newsettings, uentry, pentry)
             self.control.writeSettings(newsettings)
             self.control.refreshColumnsVisibility()
             self.control.refreshStatusIcon()
             self.destroy()        
+    
+    def storeLoginData(self, settings, newsettings, uentry, pentry):
+            if self.pwdChanged and self.userChanged:
+                newsettings['user'] = uentry.get_text()
+                newsettings['pwdHash'] = pylast.md5(pentry.get_text())
+                newsettings['fakepwd'] = '*' * len(pentry.get_text())
+            elif self.userChanged:
+                newsettings['user'] = uentry.get_text()
+                newsettings['pwdHash'] = settings['pwdHash']
+                newsettings['fakepwd'] = settings['fakepwd']
+            elif self.pwdChanged:
+                newsettings['user'] = settings['user']
+                newsettings['pwdHash'] = pylast.md5(pentry.get_text())
+                newsettings['fakepwd'] = '*' * len(pentry.get_text())
+            else:
+                newsettings['user'] = settings['user']
+                newsettings['pwdHash'] = settings['pwdHash']
+                newsettings['fakepwd'] = settings['fakepwd']
+                
+    def login(self, button, userentry, pwdentry):
+        if self.pwdChanged or self.userChanged:
+            u = userentry.get_text()
+            ph = pylast.md5(pwdentry.get_text())
+        else:
+            s = self.control.settings
+            u = s['user']
+            ph = s['pwdHash']
+        a = gtk.gdk.PixbufAnimation('progress.gif')
+        self.loginImage.set_from_animation(a)
+        while gtk.events_pending():
+                gtk.main_iteration()
+        self.control.playerThread.scrobbler = Scrobbler(u, ph)
+        self.control.playerThread.scrobbler.thread.join()
+        connected = self.control.playerThread.scrobbler.connected
+        if connected:
+            self.loginImage.set_from_stock(gtk.STOCK_APPLY, gtk.ICON_SIZE_SMALL_TOOLBAR)
+            self.loginLabel.set_text('Logged in')
+        else:
+            self.loginImage.set_from_stock(gtk.STOCK_CANCEL, gtk.ICON_SIZE_SMALL_TOOLBAR)
+            self.loginLabel.set_text('Invalid user or password!')
+            
+    def setPwdChanged(self, entry):
+        if not self.emptyentry:
+            if not self.pwdChanged:
+                entry.set_text('')
+                entry.set_position(0)
+        self.pwdChanged = True
+        
+    def setUserChanged(self, entry):
+        self.userChanged = True

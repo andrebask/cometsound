@@ -20,8 +20,9 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import threading, os, gst, gtk, gobject, random, pynotify
+import threading, os, gst, gtk, gobject, random, pynotify, time
 from AlbumCover import CoverUpdater, NotifyUpdate
+from Scrobbler import Scrobbler
 
 class PlayerThread(threading.Thread):
     """Thread that manages all the player's operations"""
@@ -30,11 +31,16 @@ class PlayerThread(threading.Thread):
         threading.Thread.__init__(self)
         self.playlist = playlist
         self.control = control
+        s = self.control.settings
+        print s
+        self.scrobbler = Scrobbler(s['user'], s['pwdHash'])
+        self.timestamp = int(time.time())
         self.shuffle = False  
         self.repeat = False
         self.shuffleList = []
         self.player = None
         self.playing = False
+        self.played = 0
         self.started = False
         self.updater = None
         self.labelUpdated = False
@@ -117,6 +123,11 @@ class PlayerThread(threading.Thread):
         except:
             pass
         self.updater = CoverUpdater(self.playlist[self.getNum()])
+        if self.control.settings['scrobbler']:
+            self.scrobbler.nowPlaying(self.playlist[self.getNum()])
+            self.timestamp = str(int(time.time()))
+            self.scrobbled = False
+            self.played = 0
         
     def onFinish(self, player):
         """Handles the end of a stream, 
@@ -189,6 +200,14 @@ class PlayerThread(threading.Thread):
             return self.shuffleList[num]
         else:
             return self.trackNum
+    
+    def love(self, o):
+        self.scrobbler.love(self.playlist[self.getNum()])
+        
+    def scrobble(self):
+        if not self.scrobbled:
+            self.scrobbler.scrobble(self.playlist[self.getNum()], self.timestamp)
+            self.scrobbled = True
         
     def setRand(self):
         self.trackNum = -1
