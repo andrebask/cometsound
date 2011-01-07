@@ -65,10 +65,9 @@ class Scrobbler():
         self.network.update_now_playing(a, t)
     
     def scrobble(self, filename, timestamp):
-        print 'scrobble'
-#        if self.connected:
-#            t = Thread(target=self.__scrobble, args=(filename, timestamp,))
-#            t.start()
+        if self.connected:
+            t = Thread(target=self.__scrobble, args=(filename, timestamp,))
+            t.start()
         
     def __scrobble(self, filename, timestamp):
         self.thread.join()
