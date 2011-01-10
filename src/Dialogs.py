@@ -186,10 +186,10 @@ class PreferencesDialog(gtk.Dialog):
         loginButton.connect('clicked', self.login, uentry, pentry)
         self.control.playerThread.scrobbler.thread.join()
         if self.control.playerThread.scrobbler.connected:
-            loginImage.set_from_stock(gtk.STOCK_APPLY, gtk.ICON_SIZE_SMALL_TOOLBAR)
+            loginImage.set_from_stock(gtk.STOCK_YES, gtk.ICON_SIZE_SMALL_TOOLBAR)
             loginLabel = gtk.Label('Logged in')
         else:
-            loginImage.set_from_stock(gtk.STOCK_CANCEL, gtk.ICON_SIZE_SMALL_TOOLBAR)
+            loginImage.set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_SMALL_TOOLBAR)
             loginLabel = gtk.Label('Logged off')
         loginLabel.set_alignment(0.1,0.5)
         self.loginLabel = loginLabel
@@ -261,7 +261,7 @@ class PreferencesDialog(gtk.Dialog):
             s = self.control.settings
             u = s['user']
             ph = s['pwdHash']
-        a = gtk.gdk.PixbufAnimation('progress.gif')
+        a = gtk.gdk.PixbufAnimation('images/progress.gif')
         self.loginImage.set_from_animation(a)
         while gtk.events_pending():
                 gtk.main_iteration()

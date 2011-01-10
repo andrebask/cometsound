@@ -683,7 +683,8 @@ class Controller:
 
             self.view.slider.handler_unblock_by_func(self.playerThread.onSliderChange)
             
-            self.playerThread.played += 1
+            if self.playerThread.playing:
+                self.playerThread.played += 1
             
             if self.settings['scrobbler']:
                 percentage = int(((self.playerThread.played / 10) / self.duration) * 100)

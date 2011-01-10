@@ -55,7 +55,7 @@ class AlbumImage(gtk.Image):
             Global.coverChanged = False
         
     def setDefaultCover(self):
-        self.set_from_file('note.svg')
+        self.set_from_file('images/note.svg')
         pix = self.get_pixbuf().scale_simple(115, 115, gtk.gdk.INTERP_BILINEAR)
         self.set_from_pixbuf(pix)
 

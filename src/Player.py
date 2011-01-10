@@ -32,7 +32,6 @@ class PlayerThread(threading.Thread):
         self.playlist = playlist
         self.control = control
         s = self.control.settings
-        print s
         self.scrobbler = Scrobbler(s['user'], s['pwdHash'])
         self.timestamp = int(time.time())
         self.shuffle = False  
