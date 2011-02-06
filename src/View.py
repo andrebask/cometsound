@@ -29,7 +29,7 @@ from FileBrowser import FilesFrame
 from Model import audioTypes
 from AlbumCover import AlbumImage, Global
 
-version = '0.3.2'
+version = '0.3.3'
 _ = t.getTranslationFunc()
 
 columns = [_('Name'), '#', _('Title'), _('Artist'),
@@ -44,7 +44,11 @@ defaultSettings = {'audiosink': 'autoaudiosink',
                        _('Genre'): True,
                         _('Year'): True,
                         'lastplaylist': True,
-                        'foldercache': True 
+                        'foldercache': True, 
+                        'scrobbler': False,
+                        'user': '',
+                        'pwdHash': '',
+                        'fakepwd': ''
                          }
 
 class View(gtk.Window):
@@ -79,7 +83,7 @@ class View(gtk.Window):
         self.set_position(gtk.WIN_POS_CENTER)
         self.connect('expose-event', self.storeSize)
         self.icon = gtk.Image()
-        self.icon.set_from_file("icon.png")
+        self.icon.set_from_file("images/icon.png")
         self.pix = self.icon.get_pixbuf().scale_simple(48, 48, gtk.gdk.INTERP_BILINEAR)
         self.set_icon(self.pix)
         self.tray = None
@@ -117,6 +121,7 @@ class View(gtk.Window):
         self.control.refreshTree()
         if self.model.playlist != None:
             self.control.playStopSelected()
+        #self.framebox.hide()
         
     def createPrimaryToolbar(self):
         self.vbox = gtk.VBox()
@@ -147,8 +152,10 @@ class View(gtk.Window):
                                  ('Next', gtk.STOCK_MEDIA_NEXT, None, None, _('Next'), self.control.nextTrack),
                                  ('Playlists', None, _('Playlists')),
                                  ('PlaylistsFolder', None, _('Open folder...'), None, None, self.openPlaylistFolder),
+                                 ('View', None, _('_View')),
                                  ('Help', None, _('_Help')),
-                                 ('About', gtk.STOCK_ABOUT, _('About CometSound'), None, _('About CometSound'), self.showAboutDialog)
+                                 ('About', gtk.STOCK_ABOUT, _('About CometSound'), None, _('About CometSound'), self.showAboutDialog),
+                                 ('Love', gtk.STOCK_ABOUT, _('Love'), None, _('Love (last.fm)'), self.control.playerThread.love)
                                  ])
         
         actions = self.control.readPlaylists()
@@ -167,6 +174,11 @@ class View(gtk.Window):
         uitogglelist = ''
         for label in list:
             uitogglelist = uitogglelist + '<menuitem action="%s"/>' % (label)    
+            
+        actiongroup.add_radio_actions([('Tree View', None, _('Tree View'), None, _('Tree visualization'), 0),
+                                        ('List View', None, _('List View'), None, _('List visualization'), 1),
+                                        ('Tag View', None, _('Tag View'), None, _('Tag based visualization'), 2),
+                                        ('Small View', None, _('Small View'), None, _('Small visualization'), 3)])
 
         # Add the actiongroup to the uimanager
         uimanager.insert_action_group(actiongroup, 0)
@@ -179,18 +191,24 @@ class View(gtk.Window):
                                             <menuitem action="Preferences"/>
                                             <menuitem action="Quit"/>
                                           </menu>
-                                          <menu action="RadioBand">'''
+                                          <menu action="View">
+                                            <menuitem action="Tree View"/>
+                                            <menuitem action="List View"/>
+                                            <menuitem action="Tag View"/>
+                                            <menu action="RadioBand">'''
                                             + uitogglelist +
-                                       '''</menu>
+                                         '''</menu>
+                                          </menu>
                                           <menu action="Playlists">
                                             <menuitem action="PlaylistsFolder"/>'''
                                             + uilist +
-                                      ''' </menu>
+                                      ''' </menu>                                          
                                           <menu action="Help">
                                             <menuitem action="About"/>
                                           </menu>
                                         </menubar>
                                         <toolbar name="ImageToolBar">
+                                            <toolitem action="Love"/>
                                             <toolitem action="Open"/>
                                         </toolbar>
                                         <toolbar name="ToolBar">
@@ -240,7 +258,7 @@ class View(gtk.Window):
         self.volumeButton.connect('value-changed', self.control.playerThread.onVolumeChanged)
         tv = gtk.ToolItem()
         tv.add(self.volumeButton)
-        imageToolbar.insert(tv, 3)
+        imageToolbar.insert(tv, 4)
         
         tl = gtk.ToolItem()
         tl.add(self.slider)

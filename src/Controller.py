@@ -455,6 +455,7 @@ class Controller:
             self.view.label.set_tooltip_text(label)
             self.view.tray.set_tooltip_text(label)
             self.view.set_title('CometSound')    
+            self.view.image.setDefaultCover()
             return
         if t['title'] != '' and t['title'] != ' ':
             info = (t['title'][:60], t['album'][:60], t['artist'][:60])
@@ -681,6 +682,16 @@ class Controller:
             self.view.slider.set_value(self.position)
 
             self.view.slider.handler_unblock_by_func(self.playerThread.onSliderChange)
+            
+            if self.playerThread.playing:
+                self.playerThread.played += 1
+            
+            if self.settings['scrobbler']:
+                percentage = int(((self.playerThread.played / 10) / self.duration) * 100)
+                
+                if percentage == 50:
+                    if self.duration > 30:
+                        self.playerThread.scrobble()
 
         except gst.QueryError:
             # pipeline must not be ready and does not know position
@@ -697,4 +708,3 @@ class Controller:
     def sliderFormat(self, scale, value): 
         """Sets the time format shown on the slider"""  
         return "%02d:%02d/%02d:%02d" % (self.position / 60, self.position % 60, self.duration / 60, self.duration % 60)
-                                

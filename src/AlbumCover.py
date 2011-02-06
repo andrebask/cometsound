@@ -55,7 +55,7 @@ class AlbumImage(gtk.Image):
             Global.coverChanged = False
         
     def setDefaultCover(self):
-        self.set_from_file('note.svg')
+        self.set_from_file('images/note.svg')
         pix = self.get_pixbuf().scale_simple(115, 115, gtk.gdk.INTERP_BILINEAR)
         self.set_from_pixbuf(pix)
 
@@ -138,13 +138,14 @@ class CoverUpdater(Process):
         album = album.replace(' ', '+')
         link = 'http://www.last.fm/music/%s/%s' % (artist, album)
         parser = CoverParser()
-        try:
-            sock = urllib.urlopen(link)
-            parser.feed(sock.read(5000))
-            sock.close()
-            parser.close()
-        except:
-            pass
+        if isConnected():
+            try:
+                sock = urllib.urlopen(link)
+                parser.feed(sock.read(3000))
+                sock.close()
+                parser.close()
+            except:
+                pass
         if parser.image == None:
             Global.cover = 'note.svg'
             return
@@ -154,3 +155,12 @@ class CoverUpdater(Process):
         Global.cover = os.path.join(tmpPath,'cover.jpg')
         urllib.urlretrieve(parser.image, Global.cover)
         
+def isConnected():
+    try:
+        con = urllib.urlopen("http://www.google.com/")
+        data = con.read()
+        print 'connected'
+        return True
+    except:
+        print 'not connected'
+        return False

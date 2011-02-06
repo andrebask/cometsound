@@ -76,27 +76,30 @@ class SearchBox(gtk.Entry):
             self.completion.set_text_column(data)
             
     def matchFunc(self, completion, key_string, iter, func_data = None):
-        model = completion.get_model()
-        searchColumn = completion.get_text_column()
-        try:
-            row = model.get_value(iter, searchColumn).lower()
-        except:
-            return False    
-        key = key_string.lower()               
-        if row.find(key) != -1:
-            list = []
-            for c in range(9):
-                list.append(model.get_value(iter, c))
-            if list in self.previousList:
-                self.stop = True
-            if not self.stop:
-                if len(self.previousList) == 0:
-                    self.previousList.append(list)
-                self.matchStore.append(list) 
-                self.fileBrowser.setStore(self.matchStore) 
-            return False
-        else:
-            return False
+        if not self.stop:
+            model = completion.get_model()
+            searchColumn = completion.get_text_column()
+            try:
+                row = model.get_value(iter, searchColumn).lower()
+            except:
+                return False    
+            key = key_string.lower()               
+            if row.find(key) != -1:
+                list = []
+                for c in range(9):
+                    list.append(model.get_value(iter, c))
+                if list in self.previousList:
+                    self.stop = True
+                if not self.stop:
+                    if len(self.previousList) == 0:
+                        self.previousList.append(list)
+                    self.matchStore.append(list) 
+                else:
+                    self.fileBrowser.setStore(self.matchStore)
+                return False
+            else:
+                return False
+        return False
 
     def setSortFunctions(self):
         self.matchStore.set_sort_func(0, SF.sortNameFunc)
