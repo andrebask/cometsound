@@ -683,6 +683,8 @@ class Controller:
 
             self.view.slider.handler_unblock_by_func(self.playerThread.onSliderChange)
             
+            self.view.image.emit('event', gtk.gdk.Event(gtk.gdk.NOTHING))
+            
             if self.playerThread.playing:
                 self.playerThread.played += 1
             

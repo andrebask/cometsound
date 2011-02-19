@@ -243,7 +243,6 @@ class View(gtk.Window):
         self.label.set_alignment(0, 0)
         self.label.set_padding(9, 10)
         #self.label.set_line_wrap(True)
-        self.slider.connect('expose-event', self.image.updateImage)
         box = gtk.HBox()
         box.pack_start(self.label, True)
         #box.pack_start(gtk.Label(), False)

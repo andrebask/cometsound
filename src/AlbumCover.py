@@ -43,6 +43,7 @@ class AlbumImage(gtk.Image):
     def __init__(self):
         gtk.Image.__init__(self)
         self.setDefaultCover()
+        self.connect('event', self.updateImage)
         
     def updateImage(self, widget = None, event = None):
         if Global.coverChanged:
@@ -71,14 +72,13 @@ class CoverParser(HTMLParser):
                     if att == 'content':
                         self.image = val
 
-class NotifyUpdate(Thread):
+class NotifyUpdater(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.notify = pynotify.Notification(' ',' ')
         self.start()
         
     def run(self):
-        #spt.setproctitle('CometSound Notifier')
         try:
             while not Global.stop:
                 #time.sleep(0.3)

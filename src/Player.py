@@ -21,7 +21,7 @@
 ##
 
 import threading, os, gst, gtk, gobject, random, pynotify, time
-from AlbumCover import CoverUpdater, NotifyUpdate, Global
+from AlbumCover import CoverUpdater, NotifyUpdater, Global
 from Scrobbler import Scrobbler
 
 class PlayerThread(threading.Thread):
@@ -43,7 +43,7 @@ class PlayerThread(threading.Thread):
         self.started = False
         self.updater = CoverUpdater()
         self.labelUpdated = False
-        self.notify = NotifyUpdate()
+        self.notify = NotifyUpdater()
         self.trackNum = -1        
         self.__createPlayer()
         self.stopevent = threading.Event()
