@@ -130,7 +130,7 @@ class FilesFrame(gtk.Frame):
             if type(f).__name__ == 'instance':
                 ext = f.getTagValues()[0].split('.')[-1]
                 if self.formatDict[string.lower(ext)] == True:
-                    data = f.getTagValues() + [self.rightPixbuf] + [f.getDir() + f.getTagValues()[0]]
+                    data = f.getTagValues() + (self.rightPixbuf,) + (f.getDir() + f.getTagValues()[0],)
                     self.treeStore.append(parent, data)
                     self.listStore.append(data)
             elif type(f).__name__ == 'list':

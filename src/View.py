@@ -429,7 +429,7 @@ class View(gtk.Window):
         volume = self.control.playerThread.getVolume()
         self.control.saveWinSize(self.width, self.height, pos, volume)
         self.control.playerThread.stop()
-        #self.control.modelUpdater.terminate()
+        self.control.playerThread.updater.terminate()
         if self.control.playerThread.isAlive():
             self.control.playerThread.terminate()
         gtk.main_quit()

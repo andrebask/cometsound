@@ -28,7 +28,7 @@ from View import View
 from Controller import Controller
     
 def registerClasses():
-    cerealizer.register(AF.AudioFile)            
+    cerealizer.register(AF.AudioFileInfos)            
 
 def getArg():
     if len(sys.argv) > 1 and sys.argv[1] != '':

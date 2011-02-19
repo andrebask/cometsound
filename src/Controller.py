@@ -425,8 +425,8 @@ class Controller:
                 if not self.playerThread.isStarted():
                     self.playerThread.setPlaylist(self.playlist)
                     self.view.slider.set_sensitive(True)
-                    self.playerThread.start()
-                    self.playerThread.join(0.1)
+                    self.playerThread.go()
+                    #self.playerThread.join(0.1)
                 else: 
                     if self.playerThread.trackNum == 0 and self.view.slider.get_value() == 0:
                         self.playerThread.updateGUI()   

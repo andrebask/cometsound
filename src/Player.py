@@ -21,7 +21,7 @@
 ##
 
 import threading, os, gst, gtk, gobject, random, pynotify, time
-from AlbumCover import CoverUpdater, NotifyUpdate
+from AlbumCover import CoverUpdater, NotifyUpdate, Global
 from Scrobbler import Scrobbler
 
 class PlayerThread(threading.Thread):
@@ -41,12 +41,13 @@ class PlayerThread(threading.Thread):
         self.playing = False
         self.played = 0
         self.started = False
-        self.updater = None
+        self.updater = CoverUpdater()
         self.labelUpdated = False
         self.notify = NotifyUpdate()
         self.trackNum = -1        
         self.__createPlayer()
         self.stopevent = threading.Event()
+        self.start()
     
     def isStarted(self):
         return self.started
@@ -80,12 +81,14 @@ class PlayerThread(threading.Thread):
             
     def run(self):
         """Starts the thread"""
-        self.started = True
-        self.setTimeout()
-        self.next()
         while not self.stopevent.isSet():    
             self.stopevent.wait(2)
         gtk.main_quit()
+    
+    def go(self):
+        self.started = True
+        self.setTimeout()
+        self.next()
     
     def setTimeout(self):
         self.timeoutID = gobject.timeout_add(100, self.control.updateSlider)
@@ -117,11 +120,8 @@ class PlayerThread(threading.Thread):
                 
     def updateGUI(self):
         self.control.updateLabel(self.playlist[self.getNum()], self.playing)
-        try:
-            self.updater.terminate()
-        except:
-            pass
-        self.updater = CoverUpdater(self.playlist[self.getNum()])
+        Global.filename = self.playlist[self.getNum()]
+        Global.trackChanged = True
         if self.control.settings['scrobbler']:
             self.scrobbler.nowPlaying(self.playlist[self.getNum()])
             self.timestamp = str(int(time.time()))

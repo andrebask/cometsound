@@ -74,8 +74,17 @@ class AudioFile:
 			self.supported = False
 			#print sys.exc_info()	
 		else:
-			list = [(key, keyTag) for key in keyList for keyTag in formatDict[string.lower(fileext)]
-					 if keyList.index(key) == formatDict[string.lower(fileext)].index(keyTag)]
+			tagList = formatDict[string.lower(fileext)]
+			list = [(keyList[0], tagList[0]),
+					(keyList[1], tagList[1]),
+					(keyList[2], tagList[2]),
+					(keyList[3], tagList[3]),
+					(keyList[4], tagList[4]),
+					(keyList[5], tagList[5])
+					]
+			
+#			list = [(key, keyTag) for key in keyList for keyTag in formatDict[string.lower(fileext)]
+#					 if keyList.index(key) == formatDict[string.lower(fileext)].index(keyTag)]
 			for couple in list:
 				try:
 					self.tagsDict[couple[0]] = str(tags[couple[1]][0])
@@ -112,6 +121,9 @@ class AudioFile:
 			tags = EasyMP4(fileName)
 			#print tags.keys()
 		return tags, fileext
+	
+	def getAudioFileInfos(self):
+		return AudioFileInfos(self.tagsDict, self.directoryName)
 				
 	def getTagValues(self):
 		"""Returns a list with the tag values:
@@ -140,4 +152,30 @@ class AudioFile:
 
 	def getDir(self):
 		"""Returns the name of this file's directory"""
-		return self.directoryName		
+		return self.directoryName	
+	
+class AudioFileInfos:
+	"""Data structure that stores tags"""
+
+	def __init__(self, tagsdict, directory):
+		"""Builds the audio file structure from the file system path"""
+		self.tagsList = (
+                		tagsdict[fname],
+                  		tagsdict[keyList[5]],
+                	   	tagsdict[keyList[0]],
+                	    tagsdict[keyList[1]],
+                	    tagsdict[keyList[2]],
+                	    tagsdict[keyList[3]],
+                	    tagsdict[keyList[4]],
+                	    )
+		self.directoryName = directory
+		self.cfname = os.path.join(directory, tagsdict[fname])
+				
+	def getTagValues(self):
+		"""Returns a list with the tag values:
+		   file name, title, artist, album, genre, year, track number"""
+		return self.tagsList
+
+	def getDir(self):
+		"""Returns the name of this file's directory"""
+		return self.directoryName	

@@ -21,6 +21,7 @@
 ##
 
 import gtk, urllib , os, time, pynotify, setproctitle as spt
+from threading import Thread
 from multiprocessing import Process, Manager
 from HTMLParser import HTMLParser
 from AF import AudioFile
@@ -31,6 +32,7 @@ manager = Manager()
 Global = manager.Namespace()
 Global.cover = None
 Global.stop = False
+Global.trackChanged = False
 Global.coverChanged = False
 Global.notificationChanged = False
 Global.filename = ''
@@ -69,17 +71,17 @@ class CoverParser(HTMLParser):
                     if att == 'content':
                         self.image = val
 
-class NotifyUpdate(Process):
+class NotifyUpdate(Thread):
     def __init__(self):
-        Process.__init__(self)
+        Thread.__init__(self)
         self.notify = pynotify.Notification(' ',' ')
         self.start()
         
     def run(self):
-        spt.setproctitle('CometSound Notifier')
+        #spt.setproctitle('CometSound Notifier')
         try:
             while not Global.stop:
-                time.sleep(0.5)
+                #time.sleep(0.3)
                 if Global.notificationChanged:
                     self.update()
                     Global.notificationChanged = False
@@ -100,29 +102,31 @@ class NotifyUpdate(Process):
         self.notify.show()
 
 class CoverUpdater(Process):
-    def __init__(self, filename):
+    def __init__(self):
         Process.__init__(self)
         self.stop = False
-        self.filename = filename
         self.start()
         
     def run(self):
-        spt.setproctitle('CS Cover Finder')
-        filename = self.filename
-        index = filename.rfind("/")    
-        directory = filename[:index]
-        filename = filename[index+1:]
-        af = AudioFile(directory, filename)
-        self.directory = directory
-        self.album = af.getTagValue('album')
-        self.artist = af.getTagValue('artist')
-        if Global.albumArtist != (self.album, self.artist):
-            if not self.getLocalCover():
-                self.downloadCover(self.artist, self.album)  
-        Global.filename = self.filename
-        Global.coverChanged = True
-        Global.notificationChanged = True
-        Global.albumArtist = self.album, self.artist
+        while not Global.stop:
+            while not Global.trackChanged:
+                time.sleep(0.1)
+            Global.trackChanged = False
+            spt.setproctitle('CS Cover Finder')
+            filename = Global.filename
+            index = filename.rfind("/")    
+            directory = filename[:index]
+            filename = filename[index+1:]
+            af = AudioFile(directory, filename)
+            self.directory = directory
+            self.album = af.getTagValue('album')
+            self.artist = af.getTagValue('artist')
+            if Global.albumArtist != (self.album, self.artist):
+                if not self.getLocalCover():
+                    self.downloadCover(self.artist, self.album)  
+            Global.coverChanged = True
+            Global.notificationChanged = True
+            Global.albumArtist = self.album, self.artist
         
     def getLocalCover(self):            
         images = [file for file in os.listdir(self.directory) if file.split('.')[-1].lower() in ['jpg', 'jpeg', 'png']]

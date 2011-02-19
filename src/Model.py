@@ -102,7 +102,7 @@ class Model:
                     continue
                 #print 'processing ' + fileName
                 if isAudio(fileName):
-                    list.append(AudioFile(directory, fileName))   
+                    list.append(AudioFile(directory, fileName).getAudioFileInfos())   
                 elif stat.S_ISDIR(filestat.st_mode):
                     #print filestat.st_mtime
                     l = self.__searchFiles(os.path.join(directory, fileName))
@@ -140,13 +140,13 @@ class Model:
                     toDelete.append(element)
                     self.changed = True
             elif type(element).__name__ == 'instance':
-                fname = element.getTagValue('fileName')
+                fname = element.getTagValues()[0]
                 if fname in fileList:
                     fileList.remove(fname)
                     path = os.path.join(dir, fname)
                     if os.path.getmtime(path) > self.lastUpdate:
                         print 'updating file %s ' % element.getTagValue('fileName')
-                        fileTree[fileTree.index(element)] = AudioFile(dir, fname)
+                        fileTree[fileTree.index(element)] = AudioFile(dir, fname).getAudioFileInfos()
                         self.changed = True
                 else:
                     print 'deleting file %s ' % element.getTagValue('fileName')
@@ -163,7 +163,7 @@ class Model:
                 self.changed = True
             elif stat.S_ISREG(os.stat(path).st_mode) and isAudio(element):
                 print 'adding new file ' + element
-                fileTree.append(AudioFile(dir, element))
+                fileTree.append(AudioFile(dir, element).getAudioFileInfos())
                 self.changed = True
      
 def isAudio(fileName):
