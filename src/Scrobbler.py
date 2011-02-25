@@ -25,8 +25,8 @@ from AF import AudioFile
 from threading import Thread
 from Queue import Queue
 
-API_KEY = "ae63b9f4c40a190ca059d5b5170acc69" 
-API_SECRET = "3092aec9dfa6e643b1ea910cc12e2e12"
+API_KEY = "" 
+API_SECRET = ""
 
 def getArtistTitle(filename):
     index = filename.rfind("/")    
