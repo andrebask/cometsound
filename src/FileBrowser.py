@@ -60,6 +60,8 @@ class FilesFrame(gtk.Frame):
         s = gobject.TYPE_STRING
         self.treeStore = gtk.TreeStore(s, s, s, s, s, s, s, g, s)
         self.listStore = gtk.ListStore(s, s, s, s, s, s, s, g, s)
+        self.tagTreeDict = {}
+        self.tagStore = gtk.TreeStore(s, s, s, s, s, s, s, g, s)
 
         self.createTree(None, self.listOfFiles)
         # create and sort the TreeView using treeStore
@@ -149,6 +151,25 @@ class FilesFrame(gtk.Frame):
                 if not self.__isEmpty(f):
                     return False           
         return True
+    
+    def createTagTree(self, column):
+        """Adds the files informations to the treeview"""
+        self.tagTreeDict = {}
+        self.tagStore.clear()
+        self.listStore.foreach(self.__insertInTagTree, column)
+        for key in self.tagTreeDict.keys():
+            parent = self.tagStore.append(None, [key, '', '', '', '', '', '', self.dirPixbuf, ''])
+            for row in self.tagTreeDict[key]:
+                self.tagStore.append(parent, row)
+    
+    def __insertInTagTree(self, model, path, iter, column):
+        list = []
+        for c in range(9):
+            list.append(model.get_value(iter, c))
+        try:
+            self.tagTreeDict[list[column]].append(list)
+        except:
+            self.tagTreeDict[list[column]] = [list]
     
     def __createColumns(self):
         """Builds and sets the treeview's columns"""

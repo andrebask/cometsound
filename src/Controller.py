@@ -277,21 +277,23 @@ class Controller:
                 iter = model.get_iter(path)
                 if model.get_value(iter, 8) != '':
                     self.toggle(None, path, model)
-                    if pt.trackNum == -1:
-                        self.playerThread.started = True
-                        self.playerThread.setTimeout()
-                        self.view.slider.set_sensitive(True)
+                    notStarted = pt.trackNum == -1
                     if pt.shuffle:
                         i = pt.shuffleList.index(len(self.playlist)-1)
                         pt.trackNum = i - 1
                     else:
                         pt.trackNum = len(self.playlist) - 2
-                    pt.next()  
+                    if notStarted:
+                        pt.go()    
+                    else:
+                        pt.next()  
                 else:
                     if tree.row_expanded(path):
                         tree.collapse_row(path)
                     else:
                         tree.expand_row(path, False)
+                if not self.view.slider.get_sensitive():
+                    self.view.slider.set_sensitive(True)
             elif event.type == gtk.gdk.BUTTON_PRESS and event.button == 1:
                 if max > x > min:
                     model = tree.get_model()
@@ -303,16 +305,18 @@ class Controller:
     def dbusPlay(self, cfname):
         self.addTrack(cfname)
         pt = self.playerThread
-        if pt.trackNum == -1:
-            self.playerThread.started = True
-            self.playerThread.setTimeout()
-            self.view.slider.set_sensitive(True)
+        notStarted = pt.trackNum == -1
         if pt.shuffle:
             i = pt.shuffleList.index(len(self.playlist)-1)
             pt.trackNum = i - 1
         else:
             pt.trackNum = len(self.playlist) - 2
-        pt.next()     
+        if notStarted:
+            pt.go()
+        else:
+            pt.next()     
+        if not self.view.slider.get_sensitive():
+            self.view.slider.set_sensitive(True)
              
     def doubleClickPlay(self, tree, event):
         """Detects double click on the playlist and play the selected track"""
@@ -321,15 +325,16 @@ class Controller:
                 path, x, y = self.__detectPath(tree, event) 
                 if not self.view.slider.get_sensitive():
                     self.view.slider.set_sensitive(True)
-                if self.playerThread.trackNum == -1:
-                    self.playerThread.started = True
-                    self.playerThread.setTimeout()
                 i = int(path)
                 if self.playerThread.shuffle:
                     num = int(path)
                     i = self.playerThread.shuffleList.index(int(path))
+                notStarted = self.playerThread.trackNum == -1
                 self.playerThread.trackNum = i - 1
-                self.playerThread.next()    
+                if notStarted:
+                    self.playerThread.go()
+                else:
+                    self.playerThread.next()    
         except:
             return
     

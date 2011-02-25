@@ -145,11 +145,11 @@ class Model:
                     fileList.remove(fname)
                     path = os.path.join(dir, fname)
                     if os.path.getmtime(path) > self.lastUpdate:
-                        print 'updating file %s ' % element.getTagValue('fileName')
+                        print 'updating file %s ' % element.getTagValues()[0]
                         fileTree[fileTree.index(element)] = AudioFile(dir, fname).getAudioFileInfos()
                         self.changed = True
                 else:
-                    print 'deleting file %s ' % element.getTagValue('fileName')
+                    print 'deleting file %s ' % element.getTagValues()[0]
                     toDelete.append(element)
                     self.changed = True
         for old in toDelete:
