@@ -69,16 +69,18 @@ class View(gtk.Window):
         
         # Create the toplevel window
         self.connect('destroy', lambda w: self.destroy())
-        minwidth = 733 #int(self.get_screen().get_width() / 2.5)
-        minheight = 420 #int(self.get_screen().get_height() / 2.5)
+        self.minwidth = 733 #int(self.get_screen().get_width() / 2.5)
+        self.minheight = 420 #int(self.get_screen().get_height() / 2.5)
+        self.previousWidht = 733
+        self.previousHeight = 420
         try:
             self.width, self.height, framepos, self.volume = self.control.readWinSize()
         except:
-            self.width = minwidth
-            self.height = minheight
-            framepos = int(minwidth * 0.7)
+            self.width = self.minwidth
+            self.height = self.minheight
+            framepos = int(self.minwidth * 0.7)
             self.volume = 10
-        self.set_size_request(minwidth, minheight)
+        self.set_size_request(self.minwidth, self.minheight)
         self.resize(self.width, self.height) 
         self.set_position(gtk.WIN_POS_CENTER)
         self.connect('expose-event', self.storeSize)
@@ -107,6 +109,7 @@ class View(gtk.Window):
         self.progressBar.set_properties('min-horizontal-bar-height', 10)
         sbar = gtk.Statusbar()
         sbar.set_size_request(0,14)
+        self.statusbar = sbar
         
         self.vbox.set_spacing(0)                             
         self.vbox.pack_start(self.menubar, False)
@@ -175,10 +178,10 @@ class View(gtk.Window):
         for label in list:
             uitogglelist = uitogglelist + '<menuitem action="%s"/>' % (label)    
             
-        actiongroup.add_radio_actions([('Tree View', None, _('Tree View'), None, _('Tree visualization'), 0),
+        actiongroup.add_radio_actions([('Tree View', None, _('File View'), None, _('File System Tree visualization'), 0),
                                         ('List View', None, _('List View'), None, _('List visualization'), 1),
                                         ('Tag View', None, _('Tag View'), None, _('Tag based visualization'), 2),
-                                        ('Small View', None, _('Small View'), None, _('Small visualization'), 3)])
+                                        ('Small View', None, _('Small View'), None, _('Small visualization'), 3)], 0, self.changeView)
 
         # Add the actiongroup to the uimanager
         uimanager.insert_action_group(actiongroup, 0)
@@ -195,6 +198,7 @@ class View(gtk.Window):
                                             <menuitem action="Tree View"/>
                                             <menuitem action="List View"/>
                                             <menuitem action="Tag View"/>
+                                            <menuitem action="Small View"/>
                                             <menu action="RadioBand">'''
                                             + uitogglelist +
                                          '''</menu>
@@ -296,6 +300,36 @@ class View(gtk.Window):
         merge_id = self.uimanager.new_merge_id()
         self.uimanager.add_ui(merge_id, 'ui/MenuBar/Playlists', newPlaylist, newPlaylist, gtk.UI_MANAGER_MENUITEM, False)
         
+    def changeView(self, radioaction, current):
+        if current.get_current_value() == 3:
+            self.previousWidht = self.width
+            self.previousHeight = self.height
+            self.framebox.hide()
+            self.statusbar.hide()
+            self.set_size_request(self.minwidth - 100, 200)
+            self.resize(self.minwidth - 100, 200) 
+            self.set_resizable(False)
+        elif current.get_current_value() == 0:
+            self.filesTree.setStore(self.filesTree.treeStore)
+            self.framebox.show()
+            self.statusbar.show()
+            self.set_size_request(self.previousWidht, self.previousHeight)
+            self.set_resizable(True)
+        elif current.get_current_value() == 1:
+            self.filesTree.setStore(self.filesTree.listStore)
+            self.framebox.show()
+            self.statusbar.show()
+            self.set_size_request(self.previousWidht, self.previousHeight)
+            self.set_resizable(True)
+        elif current.get_current_value() == 2:
+            self.filesTree.createTagTree(3)
+            self.filesTree.setStore(self.filesTree.tagStore)
+            self.framebox.show()
+            self.statusbar.show()
+            self.set_size_request(self.previousWidht, self.previousHeight)
+            self.set_resizable(True)
+        
+            
     def createSlider(self):
         # Create a slider to show player progress
         self.adjustment = gtk.Adjustment(0.0, 0.00, 100.0, 0.1, 1.0, 1.0)

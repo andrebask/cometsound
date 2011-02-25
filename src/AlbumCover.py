@@ -81,7 +81,7 @@ class NotifyUpdater(Thread):
     def run(self):
         try:
             while not Global.stop:
-                #time.sleep(0.3)
+                time.sleep(0.1)
                 if Global.notificationChanged:
                     self.update()
                     Global.notificationChanged = False
@@ -110,7 +110,7 @@ class CoverUpdater(Process):
     def run(self):
         while not Global.stop:
             while not Global.trackChanged:
-                time.sleep(0.1)
+                time.sleep(0.5)
             Global.trackChanged = False
             spt.setproctitle('CS Cover Finder')
             filename = Global.filename

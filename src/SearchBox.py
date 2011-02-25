@@ -42,17 +42,18 @@ class SearchBox(gtk.Entry):
         self.completion = gtk.EntryCompletion()
         self.completion.set_model(self.listStore)
         self.completion.set_text_column(2)
+        self.searchColumn = self.completion.get_text_column()
         self.completion.set_match_func(self.matchFunc)
         self.set_completion(self.completion)
-        self.previousList = []
+        self.previousDict = {}
         self.stop = False
     
     def matchClear(self, editable):
-        if self.get_text() == '':
+        if len(self.get_text()) < 2:
             self.fileBrowser.setStore()
         else:
             self.matchStore.clear()
-        self.previousList = []
+        self.previousDict = {}
         self.stop = False
     
     def simpleClear(self, entry, icon, event):
@@ -74,28 +75,27 @@ class SearchBox(gtk.Entry):
     def changeSearchColumn(self, widget, data=None): 
         if widget.get_active():  
             self.completion.set_text_column(data)
+            self.searchColumn = self.completion.get_text_column()
             
     def matchFunc(self, completion, key_string, iter, func_data = None):
-        if not self.stop:
-            model = completion.get_model()
-            searchColumn = completion.get_text_column()
+        if not self.stop and len(key_string) > 1:
             try:
-                row = model.get_value(iter, searchColumn).lower()
+                row = self.listStore.get_value(iter, self.searchColumn).lower()
             except:
                 return False    
             key = key_string.lower()               
             if row.find(key) != -1:
                 list = []
                 for c in range(9):
-                    list.append(model.get_value(iter, c))
-                if list in self.previousList:
-                    self.stop = True
-                if not self.stop:
-                    if len(self.previousList) == 0:
-                        self.previousList.append(list)
-                    self.matchStore.append(list) 
-                else:
+                    list.append(self.listStore.get_value(iter, c))
+                try:
+                    x = self.previousDict[list[8]]
+                    for key in self.previousDict.keys():
+                        self.matchStore.append(self.previousDict[key])
                     self.fileBrowser.setStore(self.matchStore)
+                    self.stop = True
+                except:
+                    self.previousDict[list[8]] = list
                 return False
             else:
                 return False
