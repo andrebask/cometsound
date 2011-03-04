@@ -133,26 +133,14 @@ class Controller:
         self.savePlaylist('lastplaylist', '')
     
     def saveWinSize(self, width, height, pos, volume):
-        try:
-            dir = self.cacheDir
-            if not os.path.exists(dir):
-                os.makedirs(dir)
-            sizeFile = os.path.join(dir, 'size')
-            FILE = open(sizeFile,'w')
-            for n in (width, height, pos, volume):
-                FILE.write(str(n) + '\n')
-            FILE.close()
-        except:
-            return
+        self.settings['width'] = width
+        self.settings['height'] = height
+        self.settings['pos'] = pos
+        self.settings['volume'] = volume
     
     def readWinSize(self):
-        sizeFile = os.path.join(self.cacheDir, 'size')
-        FILE = open(sizeFile,'r')
-        wh = []
-        for line in FILE:
-            wh.append(line[:-1]) 
-        FILE.close()
-        return int(wh[0]), int(wh[1]), int(wh[2]), float(wh[3])
+        s = self.settings
+        return s['width'], s['height'], s['pos'], s['volume']
     
     def lastPlaylist(self):
         if self.model.playlist != None:

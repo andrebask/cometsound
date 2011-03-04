@@ -48,7 +48,8 @@ defaultSettings = {'audiosink': 'autoaudiosink',
                         'scrobbler': False,
                         'user': '',
                         'pwdHash': '',
-                        'fakepwd': ''
+                        'fakepwd': '',
+                        'view': 0
                          }
 
 class View(gtk.Window):
@@ -124,7 +125,12 @@ class View(gtk.Window):
         self.control.refreshTree()
         if self.model.playlist != None:
             self.control.playStopSelected()
-        #self.framebox.hide()
+        try:
+            while gtk.events_pending():
+                gtk.main_iteration() 
+            self.changeView(None, None, self.control.settings['view'])
+        except:
+            pass
         
     def createPrimaryToolbar(self):
         self.vbox = gtk.VBox()
@@ -157,8 +163,7 @@ class View(gtk.Window):
                                  ('PlaylistsFolder', None, _('Open folder...'), None, None, self.openPlaylistFolder),
                                  ('View', None, _('_View')),
                                  ('Help', None, _('_Help')),
-                                 ('About', gtk.STOCK_ABOUT, _('About CometSound'), None, _('About CometSound'), self.showAboutDialog),
-                                 ('Love', gtk.STOCK_ABOUT, _('Love'), None, _('Love (last.fm)'), self.control.playerThread.love)
+                                 ('About', gtk.STOCK_ABOUT, _('About CometSound'), None, _('About CometSound'), self.showAboutDialog)
                                  ])
         
         actions = self.control.readPlaylists()
@@ -181,7 +186,7 @@ class View(gtk.Window):
         actiongroup.add_radio_actions([('Tree View', None, _('File View'), None, _('File System Tree visualization'), 0),
                                         ('List View', None, _('List View'), None, _('List visualization'), 1),
                                         ('Tag View', None, _('Tag View'), None, _('Tag based visualization'), 2),
-                                        ('Small View', None, _('Small View'), None, _('Small visualization'), 3)], 0, self.changeView)
+                                        ('Small View', None, _('Small View'), None, _('Small visualization'), 3)], self.control.settings['view'], self.changeView)
 
         # Add the actiongroup to the uimanager
         uimanager.insert_action_group(actiongroup, 0)
@@ -212,7 +217,6 @@ class View(gtk.Window):
                                           </menu>
                                         </menubar>
                                         <toolbar name="ImageToolBar">
-                                            <toolitem action="Love"/>
                                             <toolitem action="Open"/>
                                         </toolbar>
                                         <toolbar name="ToolBar">
@@ -261,7 +265,21 @@ class View(gtk.Window):
         self.volumeButton.connect('value-changed', self.control.playerThread.onVolumeChanged)
         tv = gtk.ToolItem()
         tv.add(self.volumeButton)
-        imageToolbar.insert(tv, 4)
+        imageToolbar.insert(tv, 3)
+        
+        self.scrobblerButton = gtk.Button()
+        self.scrobblerButton.set_relief(gtk.RELIEF_NONE)
+        self.scrobblerButton.unset_flags(gtk.CAN_FOCUS) 
+        sIcon = gtk.Image()
+        sIcon.set_from_file("images/love.png")
+        si = sIcon.get_pixbuf().scale_simple(28, 28, gtk.gdk.INTERP_BILINEAR)
+        sIcon.set_from_pixbuf(si)
+        self.scrobblerButton.add(sIcon)
+        self.scrobblerButton.set_tooltip_text(_('Love this track (last.fm)'))
+        self.scrobblerButton.connect('clicked', self.control.playerThread.love)
+        tv = gtk.ToolItem()
+        tv.add(self.scrobblerButton)
+        imageToolbar.insert(tv, 2)
         
         tl = gtk.ToolItem()
         tl.add(self.slider)
@@ -300,8 +318,10 @@ class View(gtk.Window):
         merge_id = self.uimanager.new_merge_id()
         self.uimanager.add_ui(merge_id, 'ui/MenuBar/Playlists', newPlaylist, newPlaylist, gtk.UI_MANAGER_MENUITEM, False)
         
-    def changeView(self, radioaction, current):
-        if current.get_current_value() == 3:
+    def changeView(self, radioaction, current, value = None):
+        if not value:
+            value = current.get_current_value()
+        if value == 3:
             self.previousWidht = self.width
             self.previousHeight = self.height
             self.framebox.hide()
@@ -309,26 +329,28 @@ class View(gtk.Window):
             self.set_size_request(self.minwidth - 100, 200)
             self.resize(self.minwidth - 100, 200) 
             self.set_resizable(False)
-        elif current.get_current_value() == 0:
+        elif value == 0:
             self.filesTree.setStore(self.filesTree.treeStore)
             self.framebox.show()
             self.statusbar.show()
             self.set_size_request(self.previousWidht, self.previousHeight)
             self.set_resizable(True)
-        elif current.get_current_value() == 1:
+        elif value == 1:
             self.filesTree.setStore(self.filesTree.listStore)
             self.framebox.show()
             self.statusbar.show()
             self.set_size_request(self.previousWidht, self.previousHeight)
             self.set_resizable(True)
-        elif current.get_current_value() == 2:
+        elif value == 2:
             self.filesTree.createTagTree(3)
             self.filesTree.setStore(self.filesTree.tagStore)
             self.framebox.show()
             self.statusbar.show()
             self.set_size_request(self.previousWidht, self.previousHeight)
             self.set_resizable(True)
-        
+        if value != 3:
+            self.filesTree.setCurrentStoreNum(value)
+        self.control.settings['view'] = value
             
     def createSlider(self):
         # Create a slider to show player progress
@@ -460,7 +482,11 @@ class View(gtk.Window):
         self.control.saveCache()
         pos = self.framebox.get_position()
         volume = self.control.playerThread.getVolume()
-        self.control.saveWinSize(self.width, self.height, pos, volume)
+        if self.control.settings['view'] != 3:
+            self.control.saveWinSize(self.width, self.height, pos, volume)
+        else:
+            self.control.saveWinSize(self.previousWidht, self.previousHeight, pos, volume)
+        self.control.writeSettings(self.control.settings)
         self.control.playerThread.stop()
         self.control.playerThread.updater.terminate()
         if self.control.playerThread.isAlive():

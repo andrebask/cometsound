@@ -50,7 +50,7 @@ class SearchBox(gtk.Entry):
     
     def matchClear(self, editable):
         if len(self.get_text()) < 2:
-            self.fileBrowser.setStore()
+            self.fileBrowser.setCurrentStore()
         else:
             self.matchStore.clear()
         self.previousDict = {}

@@ -62,6 +62,8 @@ class FilesFrame(gtk.Frame):
         self.listStore = gtk.ListStore(s, s, s, s, s, s, s, g, s)
         self.tagTreeDict = {}
         self.tagStore = gtk.TreeStore(s, s, s, s, s, s, s, g, s)
+        self.currentStore = 0
+
 
         self.createTree(None, self.listOfFiles)
         # create and sort the TreeView using treeStore
@@ -88,6 +90,16 @@ class FilesFrame(gtk.Frame):
         self.treeStore.set_sort_func(4, SF.sortNameFunc, self.columns.index(_('Album')))
         self.treeStore.set_sort_func(6, SF.sortNumFunc, self.columns.index(_('Year')))
         self.treeStore.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        self.listStore.set_sort_func(0, SF.sortNameFunc)
+        self.listStore.set_sort_func(1, SF.sortNumFunc, self.columns.index('#'))
+        self.listStore.set_sort_func(4, SF.sortNameFunc, self.columns.index(_('Album')))
+        self.listStore.set_sort_func(6, SF.sortNumFunc, self.columns.index(_('Year')))
+        self.listStore.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        self.tagStore.set_sort_func(0, SF.sortNameFunc)
+        self.tagStore.set_sort_func(1, SF.sortNumFunc, self.columns.index('#'))
+        self.tagStore.set_sort_func(4, SF.sortNameFunc, self.columns.index(_('Album')))
+        self.tagStore.set_sort_func(6, SF.sortNumFunc, self.columns.index(_('Year')))
+        self.tagStore.set_sort_column_id(0, gtk.SORT_ASCENDING)
     
     def createSearchToolbar(self):
         
@@ -233,6 +245,13 @@ class FilesFrame(gtk.Frame):
         self.treeStore.clear()
         self.listStore.clear()
         self.createTree(None, self.listOfFiles)
+    
+    def setCurrentStoreNum(self, storeNum):
+        self.currentStore = storeNum
+    
+    def setCurrentStore(self):
+        stores = [self.treeStore, self.listStore, self.tagStore]
+        self.treeview.set_model(stores[self.currentStore])
     
     def setStore(self, store = None):
         if store == None:
