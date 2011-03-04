@@ -187,10 +187,10 @@ class PreferencesDialog(gtk.Dialog):
         self.control.playerThread.scrobbler.thread.join()
         if self.control.playerThread.scrobbler.connected:
             loginImage.set_from_stock(gtk.STOCK_YES, gtk.ICON_SIZE_SMALL_TOOLBAR)
-            loginLabel = gtk.Label('Logged in')
+            loginLabel = gtk.Label(_('Logged in'))
         else:
             loginImage.set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_SMALL_TOOLBAR)
-            loginLabel = gtk.Label('Logged off')
+            loginLabel = gtk.Label(_('Logged off'))
         loginLabel.set_alignment(0.1,0.5)
         self.loginLabel = loginLabel
         loginbox.pack_start(loginImage, False)
@@ -270,10 +270,10 @@ class PreferencesDialog(gtk.Dialog):
         connected = self.control.playerThread.scrobbler.connected
         if connected:
             self.loginImage.set_from_stock(gtk.STOCK_APPLY, gtk.ICON_SIZE_SMALL_TOOLBAR)
-            self.loginLabel.set_text('Logged in')
+            self.loginLabel.set_text(_('Logged in'))
         else:
             self.loginImage.set_from_stock(gtk.STOCK_CANCEL, gtk.ICON_SIZE_SMALL_TOOLBAR)
-            self.loginLabel.set_text('Invalid user or password!')
+            self.loginLabel.set_text(_('Invalid user or password!'))
             
     def setPwdChanged(self, entry):
         if not self.emptyentry:

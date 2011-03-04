@@ -182,12 +182,12 @@ class View(gtk.Window):
         uitogglelist = ''
         for label in list:
             uitogglelist = uitogglelist + '<menuitem action="%s"/>' % (label)    
-        
         try: 
             viewNum = self.control.settings['view'] 
+            a = viewNum + 5
         except: 
             self.control.settings['view'] = 0
-            viewNum = 0    
+            viewNum = 0
         actiongroup.add_radio_actions([('Tree View', None, _('File View'), None, _('File System visualization'), 0),
                                         ('List View', None, _('List View'), None, _('List visualization'), 1),
                                         ('Tag View', None, _('Tag View'), None, _('Tag based visualization'), 2),
@@ -324,9 +324,9 @@ class View(gtk.Window):
         self.uimanager.add_ui(merge_id, 'ui/MenuBar/Playlists', newPlaylist, newPlaylist, gtk.UI_MANAGER_MENUITEM, False)
         
     def changeView(self, radioaction, current, value = None):
-        self.control.settings['view'] = value
         if not value:
             value = current.get_current_value()
+        self.control.settings['view'] = value
         if value == 3:
             self.previousWidht = self.width
             self.previousHeight = self.height
