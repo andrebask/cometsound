@@ -289,9 +289,14 @@ class Controller:
                         self.toggle(None, path, model)
                     elif len(rowList) > 1:
                         for row in rowList:
-                            path = str(row[0]) + ':' + str(row[1])
+                            try:
+                                path = str(row[0]) + ':' + str(row[1])
+                            except:
+                                path = str(row[0])
                             self.toggle(None, path, model) 
-        except:     
+        except:  
+            import sys
+            print sys.exc_info()   
             return
         
     def dbusPlay(self):
