@@ -112,7 +112,7 @@ class Controller:
     
     def __reBuildViewTree(self):
         """Creates a new Model using the current folder"""
-        self.model = Model.Model(self.folder, self.view.progressBar)
+        self.model = Model.Model([self.folder], self.view.progressBar)
         self.saveCache()
         self.__refreshViewTree()
         self.view.vbox.remove(self.view.progressBar)

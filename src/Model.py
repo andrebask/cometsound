@@ -68,7 +68,7 @@ class Model:
             return
         else:
             try:
-                self.numOfFiles = int(commands.getstatusoutput("find \"%s\" | wc -l" % (directory))[1])
+                self.numOfFiles = int(commands.getstatusoutput("find \"%s\" | wc -l" % (self.directory))[1])
                 self.fraction = float(1) / self.numOfFiles
             except:
                 self.directory = ''
@@ -76,12 +76,12 @@ class Model:
         for file in directoryList:
             if isAudio(file):
                 self.playlist.append(file)
-        index = self.directory.rfind("/")    
-        if self.numOfFiles < 200:
-            self.directory = self.directory[:index]
-        else:
-            self.directory = ''
-                    
+        if isAudio(directoryList[0]):
+            index = self.directory.rfind("/")    
+            if self.numOfFiles < 200:
+                self.directory = self.directory[:index]
+            else:
+                self.directory = ''
         self.audioFileList = self.__searchFiles(self.directory) 
             
     def __searchFiles(self, directory):
