@@ -221,16 +221,16 @@ class PreferencesDialog(gtk.Dialog):
         
         response = self.run()
         if response == gtk.RESPONSE_CLOSE or response == gtk.RESPONSE_DELETE_EVENT:
-            newsettings = {'audiosink': gstSinks[audioCombo.get_active()]}
-            newsettings['statusicon'] = statusCombo.get_active()
+            settings['audiosink'] = gstSinks[audioCombo.get_active()]
+            settings['statusicon'] = statusCombo.get_active()
             for c in columns:
                 if c != '' and c != _('Name') and c != _('Add'):
-                    newsettings[c] = labels[c].get_active()
-            newsettings['lastplaylist'] = playcb.get_active()
-            newsettings['foldercache'] = cachecb.get_active()
-            newsettings['scrobbler'] = scrobblercb.get_active()
-            self.storeLoginData(settings, newsettings, uentry, pentry)
-            self.control.writeSettings(newsettings)
+                    settings[c] = labels[c].get_active()
+            settings['lastplaylist'] = playcb.get_active()
+            settings['foldercache'] = cachecb.get_active()
+            settings['scrobbler'] = scrobblercb.get_active()
+            self.storeLoginData(settings, settings, uentry, pentry)
+            self.control.writeSettings(settings)
             self.control.refreshColumnsVisibility()
             self.control.refreshStatusIcon()
             self.destroy()        

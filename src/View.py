@@ -182,11 +182,16 @@ class View(gtk.Window):
         uitogglelist = ''
         for label in list:
             uitogglelist = uitogglelist + '<menuitem action="%s"/>' % (label)    
-            
+        
+        try: 
+            viewNum = self.control.settings['view'] 
+        except: 
+            self.control.settings['view'] = 0
+            viewNum = 0    
         actiongroup.add_radio_actions([('Tree View', None, _('File View'), None, _('File System visualization'), 0),
                                         ('List View', None, _('List View'), None, _('List visualization'), 1),
                                         ('Tag View', None, _('Tag View'), None, _('Tag based visualization'), 2),
-                                        ('Small View', None, _('Small View'), None, _('Small visualization'), 3)], self.control.settings['view'], self.changeView)
+                                        ('Small View', None, _('Small View'), None, _('Small visualization'), 3)], viewNum, self.changeView)
 
         # Add the actiongroup to the uimanager
         uimanager.insert_action_group(actiongroup, 0)
@@ -319,6 +324,7 @@ class View(gtk.Window):
         self.uimanager.add_ui(merge_id, 'ui/MenuBar/Playlists', newPlaylist, newPlaylist, gtk.UI_MANAGER_MENUITEM, False)
         
     def changeView(self, radioaction, current, value = None):
+        self.control.settings['view'] = value
         if not value:
             value = current.get_current_value()
         if value == 3:
@@ -350,7 +356,6 @@ class View(gtk.Window):
             self.set_resizable(True)
         if value != 3:
             self.filesTree.setCurrentStoreNum(value)
-        self.control.settings['view'] = value
             
     def createSlider(self):
         # Create a slider to show player progress
