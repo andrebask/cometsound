@@ -20,7 +20,7 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import AF, cerealizer, gtk, fcntl, sys, os, dbus, dbus.service, dbus.glib
+import AF, cerealizer, gtk, fcntl, sys, os, dbus, dbus.service, dbus.glib, time
 import mutagen.asf as mtgasf
 cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")  
 from Model import Model, isAudio
@@ -31,13 +31,15 @@ def registerClasses():
     cerealizer.register(AF.AudioFileInfos)            
 
 def getArg():
+    list = []
     if len(sys.argv) > 1 and sys.argv[1] != '':
-        dir = sys.argv[1]
-        if dir[0] != '/':
-            dir = os.path.join(os.environ.get('HOME', None), dir)
+        for dir in sys.argv[1:]:
+            if dir[0] != '/':
+                dir = os.path.join(os.environ.get('COMETSOUND_DIR', None), dir)
+            list.append(dir)
     else:
-        dir = ''
-    return dir
+        list.append('')
+    return list
 
 dir = os.path.join(os.environ.get('HOME', None), '.CometSound')
 pidFile = os.path.join(dir, 'program.pid') 
@@ -48,9 +50,13 @@ try:
     fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
 except IOError:
     print 'CometSound is already running'
-    if isAudio(getArg()):
-        addTrack = dbus.SessionBus().get_object('com.thelinuxroad.CometSound', '/com/thelinuxroad/CometSound').get_dbus_method("addTrack")
-        addTrack(getArg())
+    time.sleep(1)
+    for arg in getArg():
+        if isAudio(arg):
+            addTrack = dbus.SessionBus().get_object('com.thelinuxroad.CometSound', '/com/thelinuxroad/CometSound').get_dbus_method("addTrack")
+            addTrack(arg)        
+    play = dbus.SessionBus().get_object('com.thelinuxroad.CometSound', '/com/thelinuxroad/CometSound').get_dbus_method("play")
+    play()
     sys.exit(0)
 
 class DbusService(dbus.service.Object):
@@ -60,8 +66,12 @@ class DbusService(dbus.service.Object):
         dbus.service.Object.__init__(self, busName, '/com/thelinuxroad/CometSound')
 
     @dbus.service.method(dbus_interface='com.thelinuxroad.CometSound')
+    def play(self):
+        self.control.dbusPlay()
+     
+    @dbus.service.method(dbus_interface='com.thelinuxroad.CometSound')    
     def addTrack(self, cfname):
-        self.control.dbusPlay(cfname)
+        self.control.dbusAddTrack(cfname)
 
 
 import setproctitle as spt

@@ -290,8 +290,7 @@ class Controller:
         except:
             return
         
-    def dbusPlay(self, cfname):
-        self.addTrack(cfname)
+    def dbusPlay(self):
         pt = self.playerThread
         notStarted = pt.trackNum == -1
         if pt.shuffle:
@@ -305,6 +304,9 @@ class Controller:
             pt.next()     
         if not self.view.slider.get_sensitive():
             self.view.slider.set_sensitive(True)
+    
+    def dbusAddTrack(self, cfname):
+        self.addTrack(cfname)
              
     def doubleClickPlay(self, tree, event):
         """Detects double click on the playlist and play the selected track"""
