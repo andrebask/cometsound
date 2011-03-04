@@ -254,6 +254,8 @@ class Controller:
             
     def doubleClickSelect(self, tree, event):
         """Detects double click on the treeview and updates the selection"""
+        rowList = tree.get_selection().get_selected_rows()[1]
+        model = tree.get_model()
         pt = self.playerThread
         try:
             path, x, y = self.__detectPath(tree, event)
@@ -261,7 +263,6 @@ class Controller:
             max, min = rectangle[0] + rectangle[2], rectangle[0]
             if event.type == gtk.gdk._2BUTTON_PRESS and x < min:
                 path, x, y = self.__detectPath(tree, event)
-                model = tree.get_model()
                 iter = model.get_iter(path)
                 if model.get_value(iter, 8) != '':
                     self.toggle(None, path, model)
@@ -284,10 +285,13 @@ class Controller:
                     self.view.slider.set_sensitive(True)
             elif event.type == gtk.gdk.BUTTON_PRESS and event.button == 1:
                 if max > x > min:
-                    model = tree.get_model()
-                    iter = model.get_iter(path)    
-                    self.toggle(None, path, model)
-        except:
+                    if len(rowList) <= 1:
+                        self.toggle(None, path, model)
+                    elif len(rowList) > 1:
+                        for row in rowList:
+                            path = str(row[0]) + ':' + str(row[1])
+                            self.toggle(None, path, model) 
+        except:     
             return
         
     def dbusPlay(self):

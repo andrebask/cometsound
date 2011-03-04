@@ -72,6 +72,7 @@ class FilesFrame(gtk.Frame):
         self.treeview.set_rules_hint(True)
         self.treeview.connect("button-press-event", self.control.doubleClickSelect)
         self.treeview.connect("button-press-event", self.control.rightClick, self.openMenu)
+        self.treeview.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         # create the TreeViewColumns to display the data
         self.__createColumns()    
         

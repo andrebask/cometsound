@@ -183,7 +183,7 @@ class View(gtk.Window):
         for label in list:
             uitogglelist = uitogglelist + '<menuitem action="%s"/>' % (label)    
             
-        actiongroup.add_radio_actions([('Tree View', None, _('File View'), None, _('File System Tree visualization'), 0),
+        actiongroup.add_radio_actions([('Tree View', None, _('File View'), None, _('File System visualization'), 0),
                                         ('List View', None, _('List View'), None, _('List visualization'), 1),
                                         ('Tag View', None, _('Tag View'), None, _('Tag based visualization'), 2),
                                         ('Small View', None, _('Small View'), None, _('Small visualization'), 3)], self.control.settings['view'], self.changeView)
