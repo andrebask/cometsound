@@ -110,7 +110,7 @@ class CoverUpdater(Process):
     def run(self):
         while not Global.stop:
             while not Global.trackChanged:
-                time.sleep(0.5)
+                time.sleep(0.1)
             Global.trackChanged = False
             spt.setproctitle('CS Cover Finder')
             filename = Global.filename

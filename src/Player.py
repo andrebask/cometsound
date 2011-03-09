@@ -23,6 +23,7 @@
 import threading, os, gst, gtk, gobject, random, pynotify, time
 from AlbumCover import CoverUpdater, NotifyUpdater, Global
 from Scrobbler import Scrobbler
+from Queue import Queue
 
 class PlayerThread(threading.Thread):
     """Thread that manages all the player's operations"""
@@ -34,6 +35,7 @@ class PlayerThread(threading.Thread):
         s = self.control.settings
         self.scrobbler = Scrobbler(s['user'], s['pwdHash'])
         self.timestamp = int(time.time())
+        self.queue = Queue()
         self.shuffle = False  
         self.repeat = False
         self.shuffleList = []
@@ -81,8 +83,13 @@ class PlayerThread(threading.Thread):
             
     def run(self):
         """Starts the thread"""
-        while not self.stopevent.isSet():    
-            self.stopevent.wait(2)
+        while not self.stopevent.isSet():  
+            try:  
+                Global.filename = self.queue.get_nowait()
+                Global.trackChanged = True
+            except:
+                pass
+            self.stopevent.wait(0.1)
         gtk.main_quit()
     
     def go(self):
@@ -120,8 +127,7 @@ class PlayerThread(threading.Thread):
                 
     def updateGUI(self):
         self.control.updateLabel(self.playlist[self.getNum()], self.playing)
-        Global.filename = self.playlist[self.getNum()]
-        Global.trackChanged = True
+        self.queue.put(self.playlist[self.getNum()])
         if self.control.settings['scrobbler']:
             self.scrobbler.nowPlaying(self.playlist[self.getNum()])
             self.timestamp = str(int(time.time()))
