@@ -45,7 +45,7 @@ class Scrobbler():
         
     def __connect(self, username, password_hash):
         try:
-            self.network = pylast.get_lastfm_network(api_key = API_KEY, 
+            self.network = pylast.LastFMNetwork(api_key = API_KEY, 
                                                      api_secret = API_SECRET, 
                                                      username = username, 
                                                      password_hash = password_hash)

@@ -20,7 +20,7 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, pygtk, os
+import gtk, pygtk, os, pango
 pygtk.require('2.0')
 from Translator import t
 from Dialogs import AboutDialog, PreferencesDialog, SavePlaylistDialog
@@ -255,6 +255,7 @@ class View(gtk.Window):
         self.label.set_justify(gtk.JUSTIFY_LEFT)
         self.label.set_alignment(0, 0)
         self.label.set_padding(9, 10)
+        self.label.set_ellipsize(pango.ELLIPSIZE_END)
         #self.label.set_line_wrap(True)
         box = gtk.HBox()
         box.pack_start(self.label, True)
@@ -326,7 +327,6 @@ class View(gtk.Window):
     def changeView(self, radioaction, current, value = None):
         if not value:
             value = current.get_current_value()
-        self.control.settings['view'] = value
         if value == 3:
             self.previousWidht = self.width
             self.previousHeight = self.height
@@ -337,25 +337,20 @@ class View(gtk.Window):
             self.set_resizable(False)
         elif value == 0:
             self.filesTree.setStore(self.filesTree.treeStore)
-            self.framebox.show()
-            self.statusbar.show()
-            self.set_size_request(self.previousWidht, self.previousHeight)
-            self.set_resizable(True)
         elif value == 1:
             self.filesTree.setStore(self.filesTree.listStore)
-            self.framebox.show()
-            self.statusbar.show()
-            self.set_size_request(self.previousWidht, self.previousHeight)
-            self.set_resizable(True)
         elif value == 2:
             self.filesTree.createTagTree(3)
             self.filesTree.setStore(self.filesTree.tagStore)
-            self.framebox.show()
-            self.statusbar.show()
-            self.set_size_request(self.previousWidht, self.previousHeight)
-            self.set_resizable(True)
         if value != 3:
             self.filesTree.setCurrentStoreNum(value)
+            if self.control.settings['view'] == 3:
+                self.framebox.show()
+                self.statusbar.show()
+                self.set_size_request(self.minwidth, self.minheight)
+                self.resize(self.previousWidht, self.previousHeight)
+                self.set_resizable(True)
+        self.control.settings['view'] = value
             
     def createSlider(self):
         # Create a slider to show player progress
@@ -483,6 +478,11 @@ class View(gtk.Window):
         self.destroy()
         
     def destroy(self):
+        self.hide()
+        while gtk.events_pending():
+            gtk.main_iteration() 
+        self.control.playerThread.stop()
+        self.control.playerThread.updater.terminate()
         Global.stop = True
         self.control.saveCache()
         pos = self.framebox.get_position()
@@ -492,8 +492,6 @@ class View(gtk.Window):
         else:
             self.control.saveWinSize(self.previousWidht, self.previousHeight, pos, volume)
         self.control.writeSettings(self.control.settings)
-        self.control.playerThread.stop()
-        self.control.playerThread.updater.terminate()
         if self.control.playerThread.isAlive():
             self.control.playerThread.terminate()
         gtk.main_quit()

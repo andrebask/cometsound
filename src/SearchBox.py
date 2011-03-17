@@ -53,6 +53,7 @@ class SearchBox(gtk.Entry):
             self.fileBrowser.setCurrentStore()
         else:
             self.matchStore.clear()
+            self.fileBrowser.setStore(self.matchStore)
         self.previousDict = {}
         self.stop = False
     

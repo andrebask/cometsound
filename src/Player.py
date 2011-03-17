@@ -86,10 +86,10 @@ class PlayerThread(threading.Thread):
         while not self.stopevent.isSet():  
             try:  
                 Global.filename = self.queue.get_nowait()
+                self.updateGUI()
                 Global.trackChanged = True
             except:
                 pass
-            self.stopevent.wait(0.1)
         gtk.main_quit()
     
     def go(self):
@@ -107,9 +107,13 @@ class PlayerThread(threading.Thread):
         t = message.type
         if t == gst.MESSAGE_ELEMENT and self.playing:
             if self.trackNum > -1 and self.started:
-                self.updateGUI()
+                self.queue.put(self.playlist[self.getNum()])
                 self.labelUpdated = True
             self.control.updatePlaylist()
+        elif t == gst.MESSAGE_NEW_CLOCK:
+            if not self.labelUpdated:
+                self.queue.put(self.playlist[self.getNum()])
+                self.labelUpdated = False
         elif t == gst.MESSAGE_EOS:
             self.trackNum = 0 
             self.control.updatePlaylist()
@@ -120,14 +124,9 @@ class PlayerThread(threading.Thread):
             self.stop()
             err, debug = message.parse_error()
             print "Error: %s" % err, debug
-        elif t == gst.MESSAGE_NEW_CLOCK:
-            if not self.labelUpdated:
-                self.updateGUI()
-                self.labelUpdated = False
                 
     def updateGUI(self):
         self.control.updateLabel(self.playlist[self.getNum()], self.playing)
-        self.queue.put(self.playlist[self.getNum()])
         if self.control.settings['scrobbler']:
             self.scrobbler.nowPlaying(self.playlist[self.getNum()])
             self.timestamp = str(int(time.time()))

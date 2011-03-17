@@ -96,7 +96,8 @@ class Controller:
         if response == gtk.RESPONSE_OK:
             folderChooser.hide()
             self.view.vbox.pack_start(self.view.progressBar, False)
-            self.view.show_all()
+            if self.settings['view'] != 3:
+                self.view.show_all()
             self.folder = folderChooser.get_current_folder()
             if old != self.folder:
                 if os.stat(self.folder).st_uid == os.getuid():
@@ -462,7 +463,7 @@ class Controller:
             self.view.image.setDefaultCover()
             return
         if t['title'] != '' and t['title'] != ' ':
-            info = (t['title'][:60], t['album'][:60], t['artist'][:60])
+            info = (t['title'], t['album'], t['artist'])
             label = "<span font_desc='18'><b>%s</b></span>\n<span font_desc='14'>%s\n%s</span>" % info
             
             winTitle = "%s - %s - %s" % (t['title'], t['album'], t['artist'])
@@ -485,7 +486,7 @@ class Controller:
 #                self.notification.show()
         else:
             winTitle = t['filename']
-            label = "File:\t<b>" + winTitle[:60] + "</b>\n\n"
+            label = "File:\t<b>" + winTitle + "</b>\n\n"
             self.view.label.set_markup(label)
             self.view.set_title(winTitle)    
     
