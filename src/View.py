@@ -325,6 +325,7 @@ class View(gtk.Window):
         self.uimanager.add_ui(merge_id, 'ui/MenuBar/Playlists', newPlaylist, newPlaylist, gtk.UI_MANAGER_MENUITEM, False)
         
     def changeView(self, radioaction, current, value = None):
+        self.filesTree.removeTagToolbar()
         if not value:
             value = current.get_current_value()
         if value == 3:
@@ -340,7 +341,7 @@ class View(gtk.Window):
         elif value == 1:
             self.filesTree.setStore(self.filesTree.listStore)
         elif value == 2:
-            self.filesTree.createTagToolbar()
+            self.filesTree.createTagView()
         if value != 3:
             self.filesTree.setCurrentStoreNum(value)
             if self.control.settings['view'] == 3:

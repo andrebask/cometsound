@@ -177,7 +177,7 @@ class FilesFrame(gtk.Frame):
                 self.tagStore.append(parent, row)
         self.setStore(self.tagStore)
     
-    def createTagToolbar(self):
+    def createTagView(self):
         
         tagButtons = gtk.HBox()
                         
@@ -203,6 +203,10 @@ class FilesFrame(gtk.Frame):
         tagButtons.pack_start(year, False)
         self.vbox.pack_start(tagButtons, False)
         self.show_all()
+    
+    def removeTagToolbar(self):
+        if len(self.vbox.get_children()) == 3:
+            self.vbox.remove(self.vbox.get_children()[-1])
     
     def __insertInTagTree(self, model, path, iter, column):
         list = []
