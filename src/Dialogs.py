@@ -22,7 +22,7 @@
 
 import gtk
 from Translator import t
-from Scrobbler import Scrobbler, pylast
+from Scrobbler import Scrobbler, md5
 
 _ = t.getTranslationFunc()
 

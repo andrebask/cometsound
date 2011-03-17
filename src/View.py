@@ -340,8 +340,7 @@ class View(gtk.Window):
         elif value == 1:
             self.filesTree.setStore(self.filesTree.listStore)
         elif value == 2:
-            self.filesTree.createTagTree(3)
-            self.filesTree.setStore(self.filesTree.tagStore)
+            self.filesTree.createTagToolbar()
         if value != 3:
             self.filesTree.setCurrentStoreNum(value)
             if self.control.settings['view'] == 3:

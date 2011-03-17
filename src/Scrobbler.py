@@ -20,7 +20,6 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import pylast
 from AF import AudioFile
 from threading import Thread
 from Queue import Queue
@@ -35,6 +34,12 @@ def getArtistTitle(filename):
     af = AudioFile(directory, filename)
     return af.getTagValue('artist'), af.getTagValue('title')
 
+try:
+    import pylast
+    md5 = pylast.md5
+except:
+    def foo(arg):return ''
+    md5 = foo
     
 class Scrobbler():
     

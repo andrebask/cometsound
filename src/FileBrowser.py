@@ -81,6 +81,7 @@ class FilesFrame(gtk.Frame):
         vbox = gtk.VBox()
         vbox.pack_start(self.buttons, False)
         vbox.pack_start(self.scroll)
+        self.vbox = vbox
         self.add(vbox)
 
         self.show_all()
@@ -165,7 +166,7 @@ class FilesFrame(gtk.Frame):
                     return False           
         return True
     
-    def createTagTree(self, column):
+    def createTagTree(self, widget = None, column = 3):
         """Adds the files informations to the treeview"""
         self.tagTreeDict = {}
         self.tagStore.clear()
@@ -174,6 +175,34 @@ class FilesFrame(gtk.Frame):
             parent = self.tagStore.append(None, [key, '', '', '', '', '', '', self.dirPixbuf, ''])
             for row in self.tagTreeDict[key]:
                 self.tagStore.append(parent, row)
+        self.setStore(self.tagStore)
+    
+    def createTagToolbar(self):
+        
+        tagButtons = gtk.HBox()
+                        
+        artist = gtk.RadioButton(None, _('Artist'))
+        artist.connect('toggled', self.createTagTree, 3)
+        album = gtk.RadioButton(artist, _('Album'))
+        album.connect('toggled', self.createTagTree, 4)
+        genre = gtk.RadioButton(album, _('Genre'))
+        genre.connect('toggled', self.createTagTree, 5)
+        year = gtk.RadioButton(genre, 'Year')
+        year.connect('toggled', self.createTagTree, 6)
+
+        tags = [artist, album, genre, year]
+        
+        for b in tags:
+            b.set_relief(gtk.RELIEF_NONE)
+            b.set_mode(False)
+        
+        tagButtons.set_border_width(3)
+        tagButtons.pack_start(artist, False)
+        tagButtons.pack_start(album, False)
+        tagButtons.pack_start(genre, False)
+        tagButtons.pack_start(year, False)
+        self.vbox.pack_start(tagButtons, False)
+        self.show_all()
     
     def __insertInTagTree(self, model, path, iter, column):
         list = []
