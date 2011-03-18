@@ -116,8 +116,8 @@ class PlayerThread(threading.Thread):
                 self.labelUpdated = False
         elif t == gst.MESSAGE_EOS:
             self.trackNum = 0 
-            self.control.updatePlaylist()
             self.stop()
+            self.control.updatePlaylist()
             self.labelUpdated = False
             self.player.set_property("uri", "file://" + self.playlist[0])
         elif t == gst.MESSAGE_ERROR:

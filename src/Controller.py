@@ -531,11 +531,11 @@ class Controller:
         for track in self.playlist:
             if i == pt.getNum():
                 iter = lstore.get_iter(str(i))
-                lstore.set_value(iter, 0, icons[playing])
+                lstore.set_value(iter, 0, icons[str(playing)])
             iter = lstore.get_iter(str(i))
             val = lstore.get_value(iter, 0)
             if (i != pt.getNum() 
-                and (val in [icons[playing], icons[str(not playing)]])):
+                and (val in [icons[icons.keys()[0]], icons[icons.keys()[1]]])):
                 lstore.set_value(iter, 0, None)
             i+=1
             

@@ -168,6 +168,9 @@ class FilesFrame(gtk.Frame):
     
     def createTagTree(self, widget = None, column = 3):
         """Adds the files informations to the treeview"""
+        self.setColumnsVisibility()
+        self.treeview.get_column(0).set_title(self.columns[column])
+        self.treeview.get_column(column).set_visible(False)
         self.tagTreeDict = {}
         self.tagStore.clear()
         self.listStore.foreach(self.__insertInTagTree, column)
@@ -203,6 +206,7 @@ class FilesFrame(gtk.Frame):
         tagButtons.pack_start(year, False)
         self.vbox.pack_start(tagButtons, False)
         self.show_all()
+        self.createTagTree()
     
     def removeTagToolbar(self):
         if len(self.vbox.get_children()) == 3:
