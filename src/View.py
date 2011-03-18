@@ -326,6 +326,7 @@ class View(gtk.Window):
         
     def changeView(self, radioaction, current, value = None):
         self.filesTree.removeTagToolbar()
+        self.filesTree.treeview.get_column(0).set_title(_('Name'))
         if not value:
             value = current.get_current_value()
         if value == 3:

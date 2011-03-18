@@ -296,8 +296,8 @@ class Controller:
                                 path = str(row[0])
                             self.toggle(None, path, model) 
         except:  
-            import sys
-            print sys.exc_info()   
+            #import sys
+            #print sys.exc_info()   
             return
         
     def dbusPlay(self):
