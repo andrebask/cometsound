@@ -37,7 +37,6 @@ def getArtistTitle(filename):
 try:
     import pylast
     md5 = pylast.md5
-    print 'ciao'
 except:
     def foo(arg):return ''
     md5 = foo
