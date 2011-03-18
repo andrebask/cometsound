@@ -37,6 +37,7 @@ def getArtistTitle(filename):
 try:
     import pylast
     md5 = pylast.md5
+    print 'ciao'
 except:
     def foo(arg):return ''
     md5 = foo
@@ -50,6 +51,7 @@ class Scrobbler():
         
     def __connect(self, username, password_hash):
         try:
+            import pylast
             self.network = pylast.LastFMNetwork(api_key = API_KEY, 
                                                      api_secret = API_SECRET, 
                                                      username = username, 
