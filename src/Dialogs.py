@@ -22,7 +22,7 @@
 
 import gtk
 from Translator import t
-from Scrobbler import Scrobbler, md5
+from Scrobbler import Scrobbler, md5, pylastInstalled
 
 _ = t.getTranslationFunc()
 
@@ -70,6 +70,11 @@ class PreferencesDialog(gtk.Dialog):
         self.set_size_request(300,400)
         self.control = control
         self.control.readSettings()
+        
+        ########################
+        ###   General Page   ###
+        ########################
+        
         self.set_title(_('CometSound preferences'))
         sinks = ['Auto', 'ALSA', 'PulseAudio', 'OSS', 'Jack']
         gstSinks = ['autoaudiosink', 'alsasink', 'pulsesink', 'osssink', 'jackaudiosink']
@@ -149,24 +154,31 @@ class PreferencesDialog(gtk.Dialog):
         vbox.pack_start(startupLabel)
         vbox.pack_start(startbox)
         
+        ##########################
+        ###   Scrobbler Page   ###
+        ##########################
+        
         svbox = gtk.VBox()
         self.pwdChanged = False
         self.userChanged = False
+        
         scrobblerLabel = gtk.Label()
         scrobblerLabel.set_alignment(0,0)
         scrobblerLabel.set_padding(5,6)
         scrobblerLabel.set_markup(_('<b>Last.fm login</b>'))
+        
         uhbox = gtk.HBox()
         ulabel = gtk.Label(_('Username:'))
-        ulabel.set_alignment(0.5,0.5)
+        ulabel.set_alignment(0,0.5)
         ulabel.set_padding(10, 0)
         ulabel.set_size_request(45,40)
         uentry = gtk.Entry()
         uentry.set_text(settings['user'])
         uentry.connect('changed', self.setUserChanged)
+        
         phbox = gtk.HBox()
         plabel = gtk.Label(_('Password:'))
-        plabel.set_alignment(0.5,0.5)
+        plabel.set_alignment(0,0.5)
         plabel.set_padding(10, 0)
         plabel.set_size_request(45,40)
         pentry = gtk.Entry()
@@ -174,16 +186,19 @@ class PreferencesDialog(gtk.Dialog):
         pentry.set_visibility(False)
         self.emptyentry = len(pentry.get_text()) == 0
         pentry.connect('changed', self.setPwdChanged)
+        
         cbhbox = gtk.HBox()
         loginbox = gtk.HBox()
         scrobblercb = gtk.CheckButton(_('Enable scrobbling'))
         scrobblercb.set_active(settings['scrobbler'])
+        scrobblercb.connect('toggled', self.hideLoveIcon)
         cbhbox.pack_start(scrobblercb)
         cbhbox.set_border_width(10)
         loginImage = gtk.Image()
         self.loginImage = loginImage
         loginButton = gtk.Button(_('Login'))
         loginButton.connect('clicked', self.login, uentry, pentry)
+        
         self.control.playerThread.scrobbler.thread.join()
         if self.control.playerThread.scrobbler.connected:
             loginImage.set_from_stock(gtk.STOCK_YES, gtk.ICON_SIZE_SMALL_TOOLBAR)
@@ -193,21 +208,26 @@ class PreferencesDialog(gtk.Dialog):
             loginLabel = gtk.Label(_('Logged off'))
         loginLabel.set_alignment(0.1,0.5)
         self.loginLabel = loginLabel
+        
         loginbox.pack_start(loginImage, False)
         loginbox.pack_start(loginLabel)
         loginbox.pack_start(loginButton, False)
         loginbox.set_border_width(10)
         uhbox.pack_start(ulabel)
-        uhbox.pack_start(uentry)
+        uhbox.pack_start(uentry, False)
         uhbox.pack_start(gtk.Label('  '), False)
         phbox.pack_start(plabel)
-        phbox.pack_start(pentry)
+        phbox.pack_start(pentry, False)
         phbox.pack_start(gtk.Label('  '), False)
         svbox.pack_start(scrobblerLabel, False)
         svbox.pack_start(uhbox, False)
         svbox.pack_start(phbox, False)
         svbox.pack_start(loginbox, False)
         svbox.pack_start(cbhbox, False)
+        
+        if not pylastInstalled:
+            svbox.set_sensitive(False)
+            svbox.pack_start(gtk.Label(_('*** Pylast module is not installed ***')), False)
         
         notebook = gtk.Notebook()
         notebook.set_tab_pos(gtk.POS_TOP)
@@ -284,3 +304,9 @@ class PreferencesDialog(gtk.Dialog):
         
     def setUserChanged(self, entry):
         self.userChanged = True
+    
+    def hideLoveIcon(self, togglebutton):
+        if togglebutton.get_active():
+            self.control.view.scrobblerButton.show()
+        else:
+            self.control.view.scrobblerButton.hide()

@@ -120,6 +120,12 @@ class View(gtk.Window):
         self.vbox.pack_start(self.framebox, True)
         self.vbox.pack_start(sbar, False)
         self.show_all()
+        
+        if self.control.settings['scrobbler']:
+            self.scrobblerButton.show()
+        else:
+            self.scrobblerButton.hide()        
+        
         self.filesTree.setModel(self.model)
         self.filesTree.treeview.grab_focus()
         self.control.refreshTree()
