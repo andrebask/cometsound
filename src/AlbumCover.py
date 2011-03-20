@@ -66,14 +66,11 @@ class AlbumImage(gtk.Image):
 class CoverParser(HTMLParser):
     image = None
     def handle_starttag(self, tag, attrs):
-        print 'parsing', attrs
         if tag == 'meta':
             if ('property', 'og:image') in attrs:
-                print 'found'
                 for (att, val) in attrs:
                     if att == 'content':
                         self.image = val
-                        print self.image
         
 class NotifyUpdater(Thread):
     def __init__(self):
@@ -151,7 +148,6 @@ class CoverUpdater(Process):
                 text = sock.read(2500)
                 #skip malformed tag
                 text = text[:text.find('<head>')+6] + text[text.find('<title>'):text.rfind('<')]
-                print text
                 parser.feed(text)
                 sock.close()
                 parser.close()

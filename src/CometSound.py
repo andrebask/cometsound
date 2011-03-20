@@ -26,7 +26,7 @@ cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")
 from Model import Model, isAudio
 from View import View
 from Controller import Controller
-    
+
 def registerClasses():
     cerealizer.register(AF.AudioFileInfos)            
 

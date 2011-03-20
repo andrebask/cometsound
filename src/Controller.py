@@ -25,7 +25,7 @@ from Translator import t
 from AF import AudioFile
 from Player import PlayerThread
 from View import defaultSettings
-from Model import audioTypes
+from Model import audioTypes, gtkTrick
 cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")
 
 _ = t.getTranslationFunc()
@@ -35,6 +35,7 @@ icons = {'True': gtk.STOCK_MEDIA_PLAY, 'False': gtk.STOCK_MEDIA_PAUSE}
 class Controller:
     """This Class Handles the interactions between the GUI(View) and the Model"""
     folder = ''
+    folders = []
     cacheDir = cacheDir
     
     def __init__(self, model):
@@ -87,20 +88,23 @@ class Controller:
 
     def openFolder(self, o):
         """Creates the dialog window that permits to choose the folder to scan"""
-        old = self.folder
+        old = self.folders
         folderChooser = gtk.FileChooserDialog('Select Folder...', None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
                                                (gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
         folderChooser.set_current_folder(self.folder)
         folderChooser.set_default_response(gtk.RESPONSE_OK)
+        folderChooser.set_select_multiple(True)
         response = folderChooser.run()
         if response == gtk.RESPONSE_OK:
             folderChooser.hide()
+            gtkTrick()
             self.view.vbox.pack_start(self.view.progressBar, False)
             if self.settings['view'] != 3:
-                self.view.show_all()
+                self.view.progressBar.show()
+            self.folders = folderChooser.get_filenames()
             self.folder = folderChooser.get_current_folder()
-            if old != self.folder:
-                if os.stat(self.folder).st_uid == os.getuid():
+            if old != self.folders:
+                if False not in [True for f in self.folders if os.stat(f).st_uid == os.getuid()]:
                     self.__reBuildViewTree()
             else:
                 self.view.vbox.remove(self.view.progressBar)
@@ -113,7 +117,10 @@ class Controller:
     
     def __reBuildViewTree(self):
         """Creates a new Model using the current folder"""
-        self.model = Model.Model([self.folder], self.view.progressBar)
+        if len(self.folders) == 1:
+            self.model = Model.Model([self.folders[0]], self.view.progressBar)
+        else:
+            self.model = Model.Model(self.folders, self.view.progressBar, True)
         self.saveCache()
         self.__refreshViewTree()
         self.view.vbox.remove(self.view.progressBar)

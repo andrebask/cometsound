@@ -26,7 +26,7 @@ from Translator import t
 from Dialogs import AboutDialog, PreferencesDialog, SavePlaylistDialog
 from Playlist import PlaylistFrame
 from FileBrowser import FilesFrame
-from Model import audioTypes
+from Model import audioTypes, gtkTrick
 from AlbumCover import AlbumImage, Global
 
 version = '0.3.3'
@@ -128,12 +128,14 @@ class View(gtk.Window):
         
         self.filesTree.setModel(self.model)
         self.filesTree.treeview.grab_focus()
-        self.control.refreshTree()
+        
+        if self.model.getAudioFileList()[1] != 'Group':
+            self.control.refreshTree()
+        
         if self.model.playlist != None:
             self.control.playStopSelected()
         try:
-            while gtk.events_pending():
-                gtk.main_iteration() 
+            gtkTrick()
             self.changeView(None, None, self.control.settings['view'])
         except:
             pass
@@ -486,8 +488,7 @@ class View(gtk.Window):
         
     def destroy(self):
         self.hide()
-        while gtk.events_pending():
-            gtk.main_iteration() 
+        gtkTrick()
         self.control.playerThread.stop()
         self.control.playerThread.updater.terminate()
         Global.stop = True

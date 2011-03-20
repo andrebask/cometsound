@@ -23,6 +23,10 @@
 import gtk, stat, os, string, commands, cerealizer, time, sys
 from AF import AudioFile
 
+def gtkTrick():
+    while gtk.events_pending():
+        gtk.main_iteration()
+
 audioTypes = ['.mp3', '.wma', '.ogg', '.flac', 
             '.m4a', '.mp4', '.aac', '.wav',
              '.ape', '.mpc', '.wv']
@@ -32,7 +36,7 @@ class Model:
     audioFileList = list()
     count = 0
         
-    def __init__(self, directoryList, progressBar = None):
+    def __init__(self, directoryList, progressBar = None, group = False):
         self.progressBar = progressBar
         self.numOfFiles = 0
         self.cachefname = os.path.join(os.environ.get('HOME', None) , '.CometSound' , 'cache')
@@ -40,7 +44,7 @@ class Model:
             self.lastUpdate = os.path.getmtime(self.cachefname)
         except:
             self.lastUpdate = 0    
-        self.setDir(directoryList)
+        self.setDir(directoryList, group)
      
     def getAudioFileList(self):
         return self.audioFileList   
@@ -48,7 +52,7 @@ class Model:
     def getDir(self):
         return self.directory
     
-    def setDir(self, directoryList):
+    def setDir(self, directoryList, group = False):
         """Sets the directory to scan, calculates the number of files,
            and builds the file system tree (using __searchFiles method)"""
         self.directory = directoryList[0]  
@@ -70,19 +74,30 @@ class Model:
             try:
                 self.numOfFiles = int(commands.getstatusoutput("find \"%s\" | wc -l" % (self.directory))[1])
                 self.fraction = float(1) / self.numOfFiles
+                if group:
+                    for dir in directoryList:
+                        self.numOfFiles += int(commands.getstatusoutput("find \"%s\" | wc -l" % (dir))[1])
+                    self.fraction = float(1) / self.numOfFiles
             except:
                 self.directory = ''
-        self.playlist = []
-        for file in directoryList:
-            if isAudio(file):
-                self.playlist.append(file)
-        if isAudio(directoryList[0]):
-            index = self.directory.rfind("/")    
-            if self.numOfFiles < 200:
-                self.directory = self.directory[:index]
-            else:
-                self.directory = ''
-        self.audioFileList = self.__searchFiles(self.directory) 
+        if not group:
+            self.playlist = []
+            for file in directoryList:
+                if isAudio(file):
+                    self.playlist.append(file)
+            if isAudio(directoryList[0]):
+                index = self.directory.rfind("/")    
+                if self.numOfFiles < 200:
+                    self.directory = self.directory[:index]
+                else:
+                    self.directory = ''
+            self.audioFileList = self.__searchFiles(self.directory) 
+        else:
+            groupdir = directoryList[0][:directoryList[0].rfind("/")]
+            self.audioFileList = [groupdir, 'Group']
+            for folder in directoryList:
+                dirname = folder[folder.rfind("/") + 1:]
+                self.audioFileList.append([dirname] + self.__searchFiles(folder))
             
     def __searchFiles(self, directory):
         """Recursively scans the file system to find audio files and add them to the tree"""
@@ -93,8 +108,7 @@ class Model:
         except:
             return list
         for fileName in fileList:
-            if self.numOfFiles > 200:
-                self.__updateProgressBar()
+            self.__updateProgressBar()
             if os.access((os.path.join(directory, fileName)), os.R_OK) and fileName[0] != '.':
                 try:
                     filestat = os.stat(os.path.join(directory, fileName))
@@ -118,8 +132,7 @@ class Model:
             self.progressBar.set_fraction(self.count * self.fraction)
             #self.progressBar.set_text(str(self.count * self.fraction)[2:4] + "%")
             self.count+=1
-            while gtk.events_pending():
-                gtk.main_iteration() 
+            gtkTrick()
     
     def updateModel(self):
         self.changed = False
