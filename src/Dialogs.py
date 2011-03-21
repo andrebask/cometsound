@@ -1,7 +1,7 @@
 ##
 #    Project: CometSound - A music player written in Python 
 #    Author: Andrea Bernardini <andrebask@gmail.com>
-#    Copyright: 2010 Andrea Bernardini
+#    Copyright: 2010-2011 Andrea Bernardini
 #    License: GPL-2+
 #
 #    This file is part of CometSound.
@@ -32,7 +32,7 @@ class AboutDialog(gtk.AboutDialog):
         gtk.AboutDialog.__init__(self)
         self.set_name('CometSound')    
         self.set_version(version)
-        self.set_copyright(u'Copyright \u00A9 2010 Andrea Bernardini')
+        self.set_copyright(u'Copyright \u00A9 2010-2011 Andrea Bernardini')
         self.set_website('https://launchpad.net/cometsound')
         pix = icon.get_pixbuf().scale_simple(60, 60, gtk.gdk.INTERP_BILINEAR)
         self.set_logo(pix)
