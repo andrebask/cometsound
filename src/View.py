@@ -116,7 +116,6 @@ class View(gtk.Window):
         self.vbox.pack_start(self.menubar, False)
         self.vbox.pack_start(self.imageToolbar, False)
         self.vbox.pack_start(self.hbox, False)
-        #self.vbox.pack_start(self.slider, False)
         self.vbox.pack_start(self.framebox, True)
         self.vbox.pack_start(sbar, False)
         self.show_all()
@@ -413,6 +412,7 @@ class View(gtk.Window):
         statusPlay.show()
         statusMenu.append(statusPlay)
         statusPlay.connect('toggled', self.control.playStopSelected)
+        self.statusPlay = statusPlay 
         
         next = gtk.MenuItem(_('Next'))
         next.show()
@@ -434,6 +434,9 @@ class View(gtk.Window):
         if self.label.get_text() != '\n\n' and self.control.settings['statusicon'] == 0:
             self.statusMenu.remove(self.menulabel)
             self.menulabel = gtk.MenuItem(self.label.get_text())
+            self.statusPlay.disconnect_by_func(self.control.playStopSelected)
+            self.statusPlay.set_active(self.control.playerThread.playing)
+            self.statusPlay.connect('toggled', self.control.playStopSelected)
             self.menulabel.show()
             self.statusMenu.prepend(self.menulabel)
         self.statusMenu.popup(None, None, gtk.status_icon_position_menu,
