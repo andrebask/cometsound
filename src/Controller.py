@@ -62,6 +62,7 @@ class Controller:
         self.view = view
     
     def writeSettings(self, settings):
+        """Stores the settings to a file serializing the settings dict"""
         dir = self.cacheDir
         if not os.path.exists(dir):
             os.makedirs(dir)
@@ -72,6 +73,7 @@ class Controller:
         self.settings = settings
         
     def readSettings(self):
+        """Loads the settings from the settings file"""
         try: 
             FILE = open(os.path.join(self.cacheDir, 'settings'),'rb')
             self.settings = cerealizer.load(FILE)
@@ -81,13 +83,16 @@ class Controller:
             self.settings = defaultSettings
     
     def refreshColumnsVisibility(self):
+        """Sets the visibility property of the file browser 
+            columns according to the settings"""
         self.view.filesTree.setColumnsVisibility()
     
     def refreshStatusIcon(self):
+        """Refresh the status icon according to the settings"""
         self.view.setStatusIcon()
 
     def openFolder(self, o):
-        """Creates the dialog window that permits to choose the folder to scan"""
+        """Creates the dialog window that permits to choose the folder(s) to scan"""
         old = self.folders
         folderChooser = gtk.FileChooserDialog('Select Folder...', None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
                                                (gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
@@ -141,16 +146,19 @@ class Controller:
         self.savePlaylist('lastplaylist', '')
     
     def saveWinSize(self, width, height, pos, volume):
+        """Stores in the settings dictionary the dimensions of the main window"""
         self.settings['width'] = width
         self.settings['height'] = height
         self.settings['pos'] = pos
         self.settings['volume'] = volume
     
     def readWinSize(self):
+        """Returns the dimensions of the main window"""
         s = self.settings
         return s['width'], s['height'], s['pos'], s['volume']
     
     def lastPlaylist(self):
+        """Loads the playlist saved at last shutdown"""
         if self.model.playlist != None:
             return self.model.playlist
         try:
@@ -169,12 +177,14 @@ class Controller:
             return []
     
     def __expFunc(self, tree, path):
+        """Stores the currently expanded rows"""
         model = tree.get_model()
         iter = model.get_iter(path)
         folderName = model.get_value(iter, 0)
         self.expandedList.append(folderName)
     
     def __restoreExpanded(self, model, path, iter):
+        """Re-expands the previously expanded rows (to use after a treeView refresh)"""
         iter = model.get_iter(path)
         folderName = model.get_value(iter, 0)
         if folderName in self.expandedList:
@@ -189,6 +199,7 @@ class Controller:
         self.view.filesTree.treeStore.foreach(self.__restoreExpanded)
     
     def refreshTree(self, widget = None, data = None):
+        """Refreshes the Model and the file browser treeView"""
         self.model.updateModel()
         if self.model.changed:
             self.__refreshViewTree()
@@ -203,6 +214,7 @@ class Controller:
         self.updatePlaylist()
         
     def __recursiveToggle(self, path, rowModel):
+        """Recursively adds the selected files to the playlist and updates the treeview"""
         i=0
         rowexists = True
         while True:
@@ -253,6 +265,7 @@ class Controller:
             self.__extendShuffleList(len(self.playlist)-1)
     
     def __extendShuffleList(self, num):
+        """Extends the shuffleList to handle the insertion in the playlist of a new track"""
         r = range(self.playerThread.trackNum+1,num)
         if len(r) > 0:
             i = random.choice(r)
@@ -308,6 +321,7 @@ class Controller:
             return
         
     def dbusPlay(self):
+        """Play command to be called from the dbus service"""
         pt = self.playerThread
         notStarted = pt.trackNum == -1
         if pt.shuffle:
@@ -323,6 +337,7 @@ class Controller:
             self.view.slider.set_sensitive(True)
     
     def dbusAddTrack(self, cfname):
+        """AddTrack command to be called from the dbus service"""
         self.addTrack(cfname)
              
     def doubleClickPlay(self, tree, event):
@@ -346,6 +361,7 @@ class Controller:
             return
     
     def rightClick(self, tree, event, openMenu):
+        """Opens the rx click menu"""
         if event.type == gtk.gdk.BUTTON_PRESS and event.button == 3:
             path, x, y = self.__detectPath(tree, event) 
             openMenu(event.time, path)
@@ -365,6 +381,7 @@ class Controller:
         return path, x, y 
     
     def dragBegin(self, widget, context, selection):
+        """Starts the D&D process"""
         items = selection.get_selected_rows()
         if len(items[1]) > 1:
             icon = gtk.STOCK_DND_MULTIPLE
@@ -421,6 +438,7 @@ class Controller:
             return 
 
     def dragEnd(self, widget, context):
+        """Ends the D&D process"""
         self.createPlaylist()
             
     def toggleFilter(self, data):
@@ -498,6 +516,7 @@ class Controller:
             self.view.set_title(winTitle)    
     
     def readPlaylists(self):
+        """Reads and returns the list of the playlists stored in the playlists folder"""
         try:
             dir = os.path.join(self.cacheDir, 'playlists')
             fileList = os.listdir(dir)
@@ -506,6 +525,7 @@ class Controller:
             return []
     
     def loadPlaylist(self, widget, data=None):
+        """Loads the selected playlists"""
         file = widget.get_label()
         dir = os.path.join(self.cacheDir, 'playlists')
         playlistFile = os.path.join(dir, file)
@@ -518,6 +538,7 @@ class Controller:
         self.createPlaylist()
     
     def savePlaylist(self, playlist, dir = 'playlists'):
+        """Saves the current playlists"""
         dir = os.path.join(self.cacheDir, dir)
         if not os.path.exists(dir):
             os.makedirs(dir)
@@ -616,6 +637,7 @@ class Controller:
             #print sys.exc_info()
     
     def __updateShuffleList(self, pt, num):
+        """Updates the shuffleList after a removal in the playlist"""
         pt.shuffleList.remove(num)
         for n in pt.shuffleList:
             if n > num:
@@ -632,6 +654,7 @@ class Controller:
             pt.shuffle = False
             
     def setRepeat(self, widget, data=None): 
+        """Sets the repeat state"""
         pt = self.playerThread
         if widget.get_active():
             pt.repeat = True
@@ -653,23 +676,31 @@ class Controller:
         year = af.getTagValue('year')
         num = af.getTagValue('num')
         
-        return {'filename':filename, 'title':title, 'album':album, 'artist':artist, 'genre':genre, 'year':year, 'num':num }
+        tags = {'filename':filename, 'title':title, 'album':album, 'artist':artist, 'genre':genre, 'year':year, 'num':num }
+        for key in tags.keys():
+            tags[key] = tags[key].replace('<', '')
+            tags[key] = tags[key].replace('>', '')
+        
+        return tags
 
     def sliderClickPress(self, slider, event):
-        self.sliderClickValue = self.getSliderValue(slider, event)
+        """Handles the click on the playback slider (stage 1)"""
+        self.sliderClickValue = self.__getSliderValue(slider, event)
         if self.sliderClickValue < self.duration:
             gobject.source_remove(self.playerThread.timeoutID)    
             slider.handler_block_by_func(self.playerThread.onSliderChange)
             slider.set_value(self.sliderClickValue)
         
     def sliderClickRelease(self, slider, event):
-        value = self.getSliderValue(slider, event)
+        """Handles the click on the playback slider (stage 2)"""
+        value = self.__getSliderValue(slider, event)
         if self.sliderClickValue < self.duration and value < self.duration:
             self.playerThread.setTimeout()
             slider.handler_unblock_by_func(self.playerThread.onSliderChange)
             slider.set_value(value)
         
-    def getSliderValue(self, slider, event):   
+    def __getSliderValue(self, slider, event):   
+        """Gets the click position from the event"""
         rectangle = tuple(slider.get_allocation())
         width = rectangle[2] - 82
         pos = event.get_coords()[0]

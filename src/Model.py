@@ -135,6 +135,7 @@ class Model:
             gtkTrick()
     
     def updateModel(self):
+        """Searches in the file system recently changed or added files to update the model"""
         self.changed = False
         self.__updateModel(self.getAudioFileList(), self.directory)
         self.lastUpdate = time.time()

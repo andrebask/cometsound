@@ -24,6 +24,9 @@ from AF import AudioFile
 from threading import Thread
 from Queue import Queue
 
+# This api key is assigned to CometSound
+# if you reuse this code in a different application, please
+# register your own key with last.fm
 API_KEY = "" 
 API_SECRET = ""
 
@@ -44,6 +47,7 @@ except:
     pylastInstalled = False
     
 class Scrobbler():
+    """Scrobbler class: Every action is executed in a separated thread"""
     
     def __init__(self, username, password_hash):
         self.connected = False
@@ -51,6 +55,7 @@ class Scrobbler():
         self.thread.start()
         
     def __connect(self, username, password_hash):
+        """Tries to connect to the server"""
         try:
             import pylast
             self.network = pylast.LastFMNetwork(api_key = API_KEY, 

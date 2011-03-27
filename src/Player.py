@@ -93,6 +93,7 @@ class PlayerThread(threading.Thread):
         gtk.main_quit()
     
     def go(self):
+        """Start"""
         self.started = True
         self.setTimeout()
         self.next()
@@ -126,6 +127,7 @@ class PlayerThread(threading.Thread):
             print "Error: %s" % err, debug
                 
     def updateGUI(self):
+        """Updates the GUI when the playing track changes"""
         self.control.updateLabel(self.playlist[self.getNum()], self.playing)
         if self.control.settings['scrobbler']:
             self.scrobbler.nowPlaying(self.playlist[self.getNum()])
@@ -197,6 +199,7 @@ class PlayerThread(threading.Thread):
             self.trackNum += 1   
     
     def getNum(self):
+        """Returns the correct track number according to the self.shuffle state"""
         if self.shuffle:
             num = self.trackNum
             if self.trackNum == len(self.playlist)-1:
@@ -205,6 +208,7 @@ class PlayerThread(threading.Thread):
         else:
             return self.trackNum
     
+    #Scrobbling methods
     def love(self, o):
         self.scrobbler.love(self.playlist[self.getNum()])
         
@@ -212,8 +216,10 @@ class PlayerThread(threading.Thread):
         if not self.scrobbled:
             self.scrobbler.scrobble(self.playlist[self.getNum()], self.timestamp)
             self.scrobbled = True
-        
+    ######
+       
     def setRand(self):
+        """Creates a random playback order"""
         self.trackNum = -1
         options = range(len(self.playlist))
         random.shuffle(options)

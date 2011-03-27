@@ -28,6 +28,7 @@ from AF import AudioFile
 
 cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")
 
+# The Manager is used to exchange information between threads
 manager = Manager()
 Global = manager.Namespace()
 Global.cover = None
@@ -39,13 +40,14 @@ Global.filename = ''
 Global.albumArtist = '', ''
 
 class AlbumImage(gtk.Image):
-    
+    """Gtk Image modified to represent an album cover"""
     def __init__(self):
         gtk.Image.__init__(self)
         self.setDefaultCover()
         self.connect('event', self.updateImage)
         
     def updateImage(self, widget = None, event = None):
+        """Updates the album cover if changed"""
         if Global.coverChanged:
             coverFile = Global.cover
             tmpImage = gtk.Image()
@@ -64,6 +66,7 @@ class AlbumImage(gtk.Image):
 
         
 class CoverParser(HTMLParser):
+    """HTML Parser used to detect the image link from the site"""
     image = None
     def handle_starttag(self, tag, attrs):
         if tag == 'meta':
@@ -73,6 +76,7 @@ class CoverParser(HTMLParser):
                         self.image = val
         
 class NotifyUpdater(Thread):
+    """Thread that shows a notification when the track changes"""
     def __init__(self):
         Thread.__init__(self)
         self.notify = pynotify.Notification(' ',' ')
@@ -102,6 +106,7 @@ class NotifyUpdater(Thread):
         self.notify.show()
 
 class CoverUpdater(Process):
+    """Thread that updates the album cover when the track changes"""
     def __init__(self):
         Process.__init__(self)
         self.stop = False
@@ -128,7 +133,9 @@ class CoverUpdater(Process):
             Global.notificationChanged = True
             Global.albumArtist = self.album, self.artist
         
-    def getLocalCover(self):            
+    def getLocalCover(self):     
+        """Search an image in the track folder.
+            Returns True if the image is found"""       
         images = [file for file in os.listdir(self.directory) if file.split('.')[-1].lower() in ['jpg', 'jpeg', 'png']]
         if len(images) > 0:
             Global.cover = os.path.join(self.directory, images[0])
@@ -138,6 +145,7 @@ class CoverUpdater(Process):
             return False
                             
     def downloadCover(self, artist, album):
+        """Downloads the album cover from the web"""
         artist = artist.replace(' ', '+')
         album = album.replace(' ', '+')
         link = 'http://www.last.fm/music/%s/%s' % (artist, album)
@@ -165,9 +173,9 @@ class CoverUpdater(Process):
 def isConnected():
     try:
         con = urllib.urlopen("http://www.google.com/")
-        data = con.read()
+        data = con.read(1)
         #print 'connected'
-        return True
     except:
         #print 'not connected'
         return False
+    return True    

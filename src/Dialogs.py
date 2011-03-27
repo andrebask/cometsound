@@ -27,6 +27,7 @@ from Scrobbler import Scrobbler, md5, pylastInstalled
 _ = t.getTranslationFunc()
 
 class AboutDialog(gtk.AboutDialog):
+    """Shows general informations of CometSound"""
     
     def __init__(self, icon, version):  
         gtk.AboutDialog.__init__(self)
@@ -42,6 +43,7 @@ class AboutDialog(gtk.AboutDialog):
             self.destroy()
             
 class SavePlaylistDialog(gtk.Dialog):
+    """Allows to give a name to a playlist and save it"""
     
     def __init__(self, control):
         gtk.Dialog.__init__(self)
@@ -64,6 +66,7 @@ class SavePlaylistDialog(gtk.Dialog):
             self.destroy()
                 
 class PreferencesDialog(gtk.Dialog):
+    """Allows to set the program options"""
     
     def __init__(self, columns, control, settings):
         gtk.Dialog.__init__(self)
@@ -256,24 +259,26 @@ class PreferencesDialog(gtk.Dialog):
             self.destroy()        
     
     def storeLoginData(self, settings, newsettings, uentry, pentry):
-            if self.pwdChanged and self.userChanged:
-                newsettings['user'] = uentry.get_text()
-                newsettings['pwdHash'] = pylast.md5(pentry.get_text())
-                newsettings['fakepwd'] = '*' * len(pentry.get_text())
-            elif self.userChanged:
-                newsettings['user'] = uentry.get_text()
-                newsettings['pwdHash'] = settings['pwdHash']
-                newsettings['fakepwd'] = settings['fakepwd']
-            elif self.pwdChanged:
-                newsettings['user'] = settings['user']
-                newsettings['pwdHash'] = pylast.md5(pentry.get_text())
-                newsettings['fakepwd'] = '*' * len(pentry.get_text())
-            else:
-                newsettings['user'] = settings['user']
-                newsettings['pwdHash'] = settings['pwdHash']
-                newsettings['fakepwd'] = settings['fakepwd']
+        """Stores the login data in the newsettings dictionary"""
+        if self.pwdChanged and self.userChanged:
+            newsettings['user'] = uentry.get_text()
+            newsettings['pwdHash'] = pylast.md5(pentry.get_text())
+            newsettings['fakepwd'] = '*' * len(pentry.get_text())
+        elif self.userChanged:
+            newsettings['user'] = uentry.get_text()
+            newsettings['pwdHash'] = settings['pwdHash']
+            newsettings['fakepwd'] = settings['fakepwd']
+        elif self.pwdChanged:
+            newsettings['user'] = settings['user']
+            newsettings['pwdHash'] = pylast.md5(pentry.get_text())
+            newsettings['fakepwd'] = '*' * len(pentry.get_text())
+        else:
+            newsettings['user'] = settings['user']
+            newsettings['pwdHash'] = settings['pwdHash']
+            newsettings['fakepwd'] = settings['fakepwd']
                 
     def login(self, button, userentry, pwdentry):
+        """Connects to the last.fm server"""
         if self.pwdChanged or self.userChanged:
             u = userentry.get_text()
             ph = pylast.md5(pwdentry.get_text())

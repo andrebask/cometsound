@@ -28,9 +28,11 @@ from View import View
 from Controller import Controller
 
 def registerClasses():
+    """Registers the classes to serialize"""
     cerealizer.register(AF.AudioFileInfos)            
 
 def getArg():
+    """Gets the arguments passed to the program"""
     list = []
     if len(sys.argv) > 1 and sys.argv[1] != '':
         for dir in sys.argv[1:]:
@@ -41,6 +43,8 @@ def getArg():
         list.append('')
     return list
 
+#Controls if the program is already running
+#Is allowed a single instance
 dir = os.path.join(os.environ.get('HOME', None), '.CometSound')
 pidFile = os.path.join(dir, 'program.pid') 
 if not os.path.exists(dir):
@@ -60,6 +64,7 @@ except IOError:
     sys.exit(0)
 
 class DbusService(dbus.service.Object):
+    """Dbus service class to send commands to CometSound from other programs"""
     def __init__(self, control):
         self.control = control
         busName = dbus.service.BusName('com.thelinuxroad.CometSound', bus = dbus.SessionBus())
@@ -73,13 +78,14 @@ class DbusService(dbus.service.Object):
     def addTrack(self, cfname):
         self.control.dbusAddTrack(cfname)
 
-
+#Gives a Name to the main process
 import setproctitle as spt
 spt.setproctitle('CometSound')
         
 def main():
     gtk.main()
     return 0
+
 if __name__ == "__main__":
     registerClasses()
     m = Model(getArg())

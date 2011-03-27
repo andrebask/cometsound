@@ -25,6 +25,8 @@ from Translator import t
 _ = t.getTranslationFunc()
 
 class SearchBox(gtk.Entry):
+    """Search bar to search tracks
+        (Implemented with gtk.EntryCompletion)"""
     
     def __init__(self, listStore, fileBrowser):
         

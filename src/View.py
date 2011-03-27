@@ -53,7 +53,7 @@ defaultSettings = {'audiosink': 'autoaudiosink',
                          }
 
 class View(gtk.Window):
-    
+    """Main GTK+ window"""
     
     formatDict = {'mp3': True, 'wma': True, 'ogg': True, 'flac': True, 
                   'm4a': True, 'mp4': True, 'aac': True, 'wav': True,
@@ -140,6 +140,8 @@ class View(gtk.Window):
             pass
         
     def createPrimaryToolbar(self):
+        """Builds the toolbar of menus and the section 
+            that shows the track informations"""
         self.vbox = gtk.VBox()
         self.add(self.vbox)       
         
@@ -361,7 +363,8 @@ class View(gtk.Window):
         self.control.settings['view'] = value
             
     def createSlider(self):
-        # Create a slider to show player progress
+        """Creates the slider to show the player progress"""
+        
         self.adjustment = gtk.Adjustment(0.0, 0.00, 100.0, 0.1, 1.0, 1.0)
         hscale = gtk.HScale(self.adjustment)
         hscale.set_digits(2)
@@ -384,6 +387,7 @@ class View(gtk.Window):
         return B
     
     def setStatusIcon(self):
+        """Builds the status icon"""
         pix = self.pix
         try:
             mode = self.control.settings['statusicon']
@@ -430,7 +434,8 @@ class View(gtk.Window):
         quit.connect('activate', self.quit)    
         self.statusMenu = statusMenu    
     
-    def openMenu(self, icon, event_button, event_time):    
+    def openMenu(self, icon, event_button, event_time):  
+        """Shows the status icon"""  
         if self.label.get_text() != '\n\n' and self.control.settings['statusicon'] == 0:
             self.statusMenu.remove(self.menulabel)
             self.menulabel = gtk.MenuItem(self.label.get_text())
@@ -456,6 +461,7 @@ class View(gtk.Window):
             p = PreferencesDialog(self.columns, self.control, defaultSettings)
             
     def openPlaylistFolder(self, widget, data=None):
+        """Opens the folder of the saved playlists"""
         cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")
         dir = os.path.join(cacheDir, 'playlists')
         if not os.path.exists(dir):
@@ -490,6 +496,7 @@ class View(gtk.Window):
         self.destroy()
         
     def destroy(self):
+        """Handles the program shutdown"""
         self.hide()
         gtkTrick()
         self.control.playerThread.stop()

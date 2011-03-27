@@ -167,7 +167,7 @@ class FilesFrame(gtk.Frame):
         return True
     
     def createTagTree(self, widget = None, column = 3):
-        """Adds the files informations to the treeview"""
+        """Adds the files informations to the tagStore"""
         self.setColumnsVisibility()
         self.treeview.get_column(0).set_title(self.columns[column])
         self.treeview.get_column(column).set_visible(False)
@@ -181,6 +181,7 @@ class FilesFrame(gtk.Frame):
         self.setStore(self.tagStore)
     
     def createTagView(self):
+        """Builds the tag-based view"""
         
         tagButtons = gtk.HBox()
                         
@@ -270,6 +271,8 @@ class FilesFrame(gtk.Frame):
         self.setColumnsVisibility()
         
     def setColumnsVisibility(self):
+        """Sets the visibility property of the file browser 
+            columns according to the settings"""
         columns = self.treeview.get_columns()
         for c in columns:
             try:
@@ -298,6 +301,7 @@ class FilesFrame(gtk.Frame):
             self.treeview.set_model(store)
     
     def openMenu(self, time, path):
+        """Opens the rx-click menu"""
         cfname = self.treeview.get_model()[path][8]
         trackMenu = gtk.Menu()
         add = gtk.MenuItem(_('Add to playlist'))

@@ -92,7 +92,8 @@ class AudioFile:
 					self.tagsDict[couple[0]] = ''
 				self.keyDict[couple[0]] = couple[1]
 	
-	def read(self, fileName):		
+	def read(self, fileName):	
+		"""Reads tags from the file using the mutagen module"""	
 		fileext = fileName.split('.')[-1:][0]
 		fileext = fileext.lower()
 		if fileext == 'mp3':
@@ -144,6 +145,7 @@ class AudioFile:
 		return self.tagsDict[key]
 	
 	def writeTagValue(self, key, value):
+		"""Writes tags to the file using the mutagen module"""
 		tags, fileext = self.read(self.cfname)
 		key = self.keyDict[key]
 		tags[key] = unicode(value)
