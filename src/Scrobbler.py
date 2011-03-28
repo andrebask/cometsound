@@ -67,34 +67,31 @@ class Scrobbler():
         except:
             self.connected = False
     
-    def nowPlaying(self, filename):
+    def nowPlaying(self, (cfname, title, album, artist)):
         if self.connected:
-            t = Thread(target=self.__nowPlaying, args=(filename,))
+            t = Thread(target=self.__nowPlaying, args=(artist, title,))
             t.start()
         
-    def __nowPlaying(self, filename):
+    def __nowPlaying(self, a, t):
         self.thread.join()
-        a, t = getArtistTitle(filename)
         self.network.update_now_playing(a, t)
     
-    def scrobble(self, filename, timestamp):
+    def scrobble(self, (cfname, title, album, artist), timestamp):
         if self.connected:
-            t = Thread(target=self.__scrobble, args=(filename, timestamp,))
+            t = Thread(target=self.__scrobble, args=(artist, title, timestamp,))
             t.start()
         
-    def __scrobble(self, filename, timestamp):
+    def __scrobble(self, a, t, timestamp):
         self.thread.join()
-        a, t = getArtistTitle(filename)
         self.network.scrobble(a, t, timestamp)
     
-    def love(self, filename):
+    def love(self, (cfname, title, album, artist)):
         if self.connected:
-            t = Thread(target=self.__love, args=(filename,))
+            t = Thread(target=self.__love, args=(artist, title,))
             t.start()
         
-    def __love(self, filename):
+    def __love(self, a, t):
         self.thread.join()
-        a, t = getArtistTitle(filename)
         track = self.network.get_track(a, t)
         track.love()
         

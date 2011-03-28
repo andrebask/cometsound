@@ -84,7 +84,9 @@ class Model:
             self.playlist = []
             for file in directoryList:
                 if isAudio(file):
-                    self.playlist.append(file)
+                    tv = AudioFile(file).getTagValues()
+                    cfname, title, album, arist = tv[0], tv[2], tv[4], tv[3]
+                    self.playlist.append((cfname, title, album, arist))
             if isAudio(directoryList[0]):
                 index = self.directory.rfind("/")    
                 if self.numOfFiles < 200:

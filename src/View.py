@@ -99,7 +99,7 @@ class View(gtk.Window):
         
         self.columns = columns
         self.filesTree = FilesFrame(self.model, self.control, self.formatDict, self.columns)
-        self.playlistFrame = PlaylistFrame(self.control, [])
+        self.playlistFrame = PlaylistFrame(self.control)
         
         self.framebox.pack1(self.filesTree)
         self.framebox.pack2(self.playlistFrame, False, False)

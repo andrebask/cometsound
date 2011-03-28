@@ -27,7 +27,7 @@ _ = t.getTranslationFunc()
 
 class PlaylistFrame(gtk.Frame):
     """Gtk Frame modified to store a treeview that shows the playlist"""
-    def __init__(self, control, playlist):
+    def __init__(self, control):
         
         gtk.Frame.__init__(self)
         self.control = control

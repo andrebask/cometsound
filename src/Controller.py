@@ -143,7 +143,7 @@ class Controller:
         else:
             cerealizer.dump([], FILE)
         FILE.close()
-        self.savePlaylist('lastplaylist', '')
+        self.saveLastPlaylist()
     
     def saveWinSize(self, width, height, pos, volume):
         """Stores in the settings dictionary the dimensions of the main window"""
@@ -157,6 +157,16 @@ class Controller:
         s = self.settings
         return s['width'], s['height'], s['pos'], s['volume']
     
+    def saveLastPlaylist(self):
+        """Saves the current playlists"""
+        dir = self.cacheDir
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        playlistFile = os.path.join(dir, 'lastplaylist')
+        FILE = open(playlistFile,'w')
+        cerealizer.dump(self.playlist, FILE)
+        FILE.close()
+    
     def lastPlaylist(self):
         """Loads the playlist saved at last shutdown"""
         if self.model.playlist != None:
@@ -166,9 +176,7 @@ class Controller:
                 dir = self.cacheDir
                 playlistFile = os.path.join(dir, 'lastplaylist')
                 FILE = open(playlistFile,'r')
-                files = []
-                for line in FILE:
-                    files.append(line[:-1]) 
+                files = cerealizer.load(FILE)
                 FILE.close()
                 return files
             else:
@@ -250,11 +258,15 @@ class Controller:
         album = row[4]
         artist = row[3]
         if cfname != '':
-            self.playlist.append(cfname)
+            self.playlist.append((cfname, title, album, artist))
             icon = None        
-            info = (title, 
+            info = [title, 
                     album,
-                    artist)
+                    artist]
+            for tag in info:
+                new = tag.replace('<', '')
+                new = new.replace('>', '')
+                info[info.index(tag)] = new
             text = '<b>%s</b>\n%s <i>%s</i> %s <i>%s</i>' % (info[0], _('from'), info[1], _('by'), info[2])
             text = text.replace('&', '&amp;')
             if info[0] != '' and info[0] != ' ':
@@ -274,12 +286,16 @@ class Controller:
         lstore = self.view.playlistFrame.listStore
         append = lstore.append
         if cfname != '':
-            self.playlist.append(cfname)
             tags = self.extractTags(cfname)
+            self.playlist.append((cfname, tags['title'], tags['album'], tags['artist']))
             icon = None        
-            info = (tags['title'], 
+            info = [tags['title'], 
                     tags['album'],
-                    tags['artist'])
+                    tags['artist']]
+            for tag in info:
+                new = tag.replace('<', '')
+                new = new.replace('>', '')
+                info[info.index(tag)] = new
             text = '<b>%s</b>\n%s <i>%s</i> %s <i>%s</i>' % (info[0], _('from'), info[1], _('by'), info[2])
             text = text.replace('&', '&amp;')
             if info[0] != '' and info[0] != ' ':
@@ -504,10 +520,30 @@ class Controller:
         """Handles the click on the Previous button"""
         self.playerThread.previous()
         
-    def updateLabel(self, completefilename, notify = True):
+    def updateLabel(self, (cfname, title, album, artist), notify = True):
         """Updates the track label with the tags values"""
         try:
-            t = self.extractTags(completefilename)
+            if title != '' and title != ' ':
+                info = (title, album, artist)
+                label = "<span font_desc='18'><b>%s</b></span>\n<span font_desc='14'>%s\n%s</span>" % info
+                
+                winTitle = "%s - %s - %s" % (title, album, artist)
+                label = label.replace('&', '&amp;')
+                self.view.label.set_markup(label)
+                self.view.set_title(winTitle)
+                tooltip = "%s:   %s\n%s:   %s\n%s:   %s" % (
+                                _('Title'), info[0],
+                                _('Album'), info[1],
+                                _('Artist'), info[2])
+                
+                self.view.label.set_tooltip_text(tooltip)
+                self.view.tray.set_tooltip_text("%s\n%s\n%s" % info)
+                self.view.label.queue_draw()
+            else:
+                winTitle = t['filename']
+                label = "File:\t<b>" + winTitle + "</b>\n\n"
+                self.view.label.set_markup(label)
+                self.view.set_title(winTitle)   
         except:
             label = '\n\n'
             self.view.label.set_text(label)
@@ -515,34 +551,7 @@ class Controller:
             self.view.tray.set_tooltip_text(label)
             self.view.set_title('CometSound')    
             self.view.image.setDefaultCover()
-            return
-        if t['title'] != '' and t['title'] != ' ':
-            info = (t['title'], t['album'], t['artist'])
-            label = "<span font_desc='18'><b>%s</b></span>\n<span font_desc='14'>%s\n%s</span>" % info
-            
-            winTitle = "%s - %s - %s" % (t['title'], t['album'], t['artist'])
-            label = label.replace('&', '&amp;')
-            self.view.label.set_markup(label)
-            self.view.set_title(winTitle)
-            tooltip = "%s:   %s\n%s:   %s\n%s:   %s\n%s:   %s\n%s:   %s\n%s:      \t%s" % (
-                            _('Title'), info[0],
-                            _('Album'), info[1],
-                            _('Artist'), info[2],
-                            _('Year'), t['year'],
-                            _('Genre'), t['genre'],
-                            '#', t['num'])
-            
-            self.view.label.set_tooltip_text(tooltip)
-            self.view.tray.set_tooltip_text("%s\n%s\n%s" % info)
-            self.view.label.queue_draw()
-#            if notify:
-#                self.notification.update(t['title'], "%s\n%s" % (t['album'], t['artist']))
-#                self.notification.show()
-        else:
-            winTitle = t['filename']
-            label = "File:\t<b>" + winTitle + "</b>\n\n"
-            self.view.label.set_markup(label)
-            self.view.set_title(winTitle)    
+            return 
     
     def readPlaylists(self):
         """Reads and returns the list of the playlists stored in the playlists folder"""
@@ -561,7 +570,9 @@ class Controller:
         FILE = open(playlistFile,'r')
         files = []
         for line in FILE:
-            files.append(line[:-1]) 
+            cfname = line[:-1]
+            t = self.extractTags(cfname)
+            files.append((cfname, t['title'], t['album'], t['artist'])) 
         self.playerThread.setPlaylist(files)
         FILE.close()
         self.createPlaylist()
@@ -574,7 +585,7 @@ class Controller:
         playlistFile = os.path.join(dir, playlist)
         FILE = open(playlistFile,'w')
         for track in self.playlist:
-            FILE.write(track + '\n')
+            FILE.write(track[0] + '\n')
         FILE.close()
         if dir.split('/')[-1] == 'playlists':
             self.view.updatePlaylistsMenu(playlist)
@@ -602,21 +613,26 @@ class Controller:
         append = self.view.playlistFrame.listStore.append              
         playing = str(self.playerThread.playing)
         i = 0
-        for track in self.playlist:
-            tags = self.extractTags(track)
+        for (cfname, title, album, artist) in self.playlist:
             if i == self.playerThread.trackNum:
                 icon = icons[playing]
             else:
                 icon = None        
-            info = (tags['title'], 
-                    tags['album'],
-                    tags['artist'])
+            info = [title, 
+                    album,
+                    artist]
+            for tag in info:
+                new = tag.replace('<', '')
+                new = new.replace('>', '')
+                info[info.index(tag)] = new
             text = '<b>%s</b>\n%s <i>%s</i> %s <i>%s</i>' % (info[0], _('from'), info[1], _('by'), info[2])
             text = text.replace('&', '&amp;')
             if info[0] != '' and info[0] != ' ':
                 append([icon, text])             
             else:
-                f = '<b>%s</b>\n' % tags['filename']
+                index = cfname.rfind("/")    
+                filename = cfname[index+1:]
+                f = '<b>%s</b>\n' % filename
                 append([icon, f]) 
             i+=1
 
@@ -706,9 +722,6 @@ class Controller:
         num = af.getTagValue('num')
         
         tags = {'filename':filename, 'title':title, 'album':album, 'artist':artist, 'genre':genre, 'year':year, 'num':num }
-        for key in tags.keys():
-            tags[key] = tags[key].replace('<', '')
-            tags[key] = tags[key].replace('>', '')
         
         return tags
 

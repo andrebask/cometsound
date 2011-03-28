@@ -120,7 +120,7 @@ class PlayerThread(threading.Thread):
             self.stop()
             self.control.updatePlaylist()
             self.labelUpdated = False
-            self.player.set_property("uri", "file://" + self.playlist[0])
+            self.player.set_property("uri", "file://" + self.playlist[0][0])
         elif t == gst.MESSAGE_ERROR:
             self.stop()
             err, debug = message.parse_error()
@@ -141,11 +141,11 @@ class PlayerThread(threading.Thread):
         if self.trackNum < len(self.playlist)-1 or self.shuffle:
             self.trackNum += 1
             num = self.getNum()
-            player.set_property("uri", "file://" + self.playlist[num])   
+            player.set_property("uri", "file://" + self.playlist[num][0])   
         elif self.repeat:
             self.trackNum = 0
             num = self.getNum()
-            player.set_property("uri", "file://" + self.playlist[num])  
+            player.set_property("uri", "file://" + self.playlist[num][0])  
             
     def pause(self, button = True):
         """Pauses playing"""
@@ -168,7 +168,7 @@ class PlayerThread(threading.Thread):
         self.player.set_state(gst.STATE_NULL)   
         self.control.resetSlider()
         self.control.view.setButtonPlay()
-        self.control.updateLabel(None)
+        self.control.updateLabel((None, None, None, None))
         
     def next(self, notify = True):
         """Starts playing of the next track in the playlist"""
@@ -176,8 +176,8 @@ class PlayerThread(threading.Thread):
             self.trackNum += 1
             num = self.getNum()
             self.stop()
-            if os.path.isfile(self.playlist[num]):
-                self.player.set_property("uri", "file://" + self.playlist[num])
+            if os.path.isfile(self.playlist[num][0]):
+                self.player.set_property("uri", "file://" + self.playlist[num][0])
                 self.play()
         elif self.repeat:
             self.trackNum = -1
@@ -192,8 +192,8 @@ class PlayerThread(threading.Thread):
             num = -1
         if num > -1:
             self.stop()  
-            if os.path.isfile(self.playlist[num]):
-                self.player.set_property("uri", "file://" + self.playlist[num])
+            if os.path.isfile(self.playlist[num][0]):
+                self.player.set_property("uri", "file://" + self.playlist[num][0])
                 self.play()
         else:
             self.trackNum += 1   
