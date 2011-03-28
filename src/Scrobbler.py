@@ -24,9 +24,9 @@ from AF import AudioFile
 from threading import Thread
 from Queue import Queue
 
-# This api key is assigned to CometSound
+# This api key is assigned to Andrea Bernardini <andrebask@gmail.com>
 # if you reuse this code in a different application, please
-# register your own key with last.fm
+# register your own api and secret key with last.fm
 API_KEY = "" 
 API_SECRET = ""
 

@@ -227,6 +227,7 @@ class PreferencesDialog(gtk.Dialog):
         svbox.pack_start(phbox, False)
         svbox.pack_start(loginbox, False)
         svbox.pack_start(cbhbox, False)
+        svbox.pack_start(gtk.LinkButton('http://www.last.fm/home', 'last.fm website'), False)
         
         if not pylastInstalled:
             svbox.set_sensitive(False)
@@ -262,7 +263,7 @@ class PreferencesDialog(gtk.Dialog):
         """Stores the login data in the newsettings dictionary"""
         if self.pwdChanged and self.userChanged:
             newsettings['user'] = uentry.get_text()
-            newsettings['pwdHash'] = pylast.md5(pentry.get_text())
+            newsettings['pwdHash'] = md5(pentry.get_text())
             newsettings['fakepwd'] = '*' * len(pentry.get_text())
         elif self.userChanged:
             newsettings['user'] = uentry.get_text()
@@ -270,7 +271,7 @@ class PreferencesDialog(gtk.Dialog):
             newsettings['fakepwd'] = settings['fakepwd']
         elif self.pwdChanged:
             newsettings['user'] = settings['user']
-            newsettings['pwdHash'] = pylast.md5(pentry.get_text())
+            newsettings['pwdHash'] = md5(pentry.get_text())
             newsettings['fakepwd'] = '*' * len(pentry.get_text())
         else:
             newsettings['user'] = settings['user']
@@ -281,7 +282,7 @@ class PreferencesDialog(gtk.Dialog):
         """Connects to the last.fm server"""
         if self.pwdChanged or self.userChanged:
             u = userentry.get_text()
-            ph = pylast.md5(pwdentry.get_text())
+            ph = md5(pwdentry.get_text())
         else:
             s = self.control.settings
             u = s['user']

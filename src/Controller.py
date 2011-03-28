@@ -207,8 +207,8 @@ class Controller:
     def toggle(self, cell, path, rowModel):
         """Adds the selected files to the playlist and updates the treeview"""
         print 
-        completeFilename = rowModel[path][8]
-        self.addTrack(completeFilename)
+        row = rowModel[path]
+        self.__addTrack(row)
         if type(rowModel).__name__ == 'TreeStore':
             self.__recursiveToggle(path, rowModel)
         self.updatePlaylist()
@@ -219,8 +219,8 @@ class Controller:
         rowexists = True
         while True:
             try:
-                completeFilename = rowModel[path + (":%d" % (i))][8]
-                self.addTrack(completeFilename)
+                row = rowModel[path + (":%d" % (i))]
+                self.__addTrack(row)
                 self.__recursiveToggle((path + (":%d" % (i))), rowModel)
                 i+=1
             except:
@@ -236,8 +236,37 @@ class Controller:
         self.updatePlaylist()
         
     def __add(self, model, path, iter, add = None):
-        completeFilename = model[path][8]
-        self.addTrack(completeFilename)
+        row = model[path]
+        self.__addTrack(row)
+
+    def __addTrack(self, row):
+        """Handles the addition of the files in the playlist"""
+        pt = self.playerThread
+        lstore = self.view.playlistFrame.listStore
+        append = lstore.append
+        cfname = row[8]
+        fname = row[0]
+        title = row[2]
+        album = row[4]
+        artist = row[3]
+        if cfname != '':
+            self.playlist.append(cfname)
+            icon = None        
+            info = (title, 
+                    album,
+                    artist)
+            text = '<b>%s</b>\n%s <i>%s</i> %s <i>%s</i>' % (info[0], _('from'), info[1], _('by'), info[2])
+            text = text.replace('&', '&amp;')
+            if info[0] != '' and info[0] != ' ':
+                append([icon, text])             
+            else:
+                f = '<b>%s</b>\n' % fname
+                append([icon, f])
+            if len(self.playlist) == 1 and pt.trackNum != -1:
+                pt.trackNum = -1
+                pt.next()
+                pt.pause()
+            self.__extendShuffleList(len(self.playlist)-1)
             
     def addTrack(self, cfname):
         """Handles the addition of the files in the playlist"""
