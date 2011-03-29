@@ -36,7 +36,7 @@ Global.stop = False
 Global.trackChanged = False
 Global.coverChanged = False
 Global.notificationChanged = False
-Global.filename = ''
+Global.filename = ()
 Global.albumArtist = '', ''
 
 class AlbumImage(gtk.Image):
@@ -93,15 +93,10 @@ class NotifyUpdater(Thread):
             return
            
     def update(self):
-        filename = Global.filename
-        index = filename.rfind("/")    
-        directory = filename[:index]
-        filename = filename[index+1:]
-        af = AudioFile(directory, filename)
+        cfname, title, album, artist = Global.filename
+        index = cfname.rfind("/")    
+        directory = cfname[:index]
         self.directory = directory
-        title = af.getTagValue('title')
-        album = af.getTagValue('album')
-        artist = af.getTagValue('artist')
         self.notify.update(title, "%s\n%s" % (album, artist), Global.cover)
         self.notify.show()
 
@@ -118,14 +113,10 @@ class CoverUpdater(Process):
                 time.sleep(0.1)
             Global.trackChanged = False
             spt.setproctitle('CS Cover Finder')
-            filename = Global.filename
-            index = filename.rfind("/")    
-            directory = filename[:index]
-            filename = filename[index+1:]
-            af = AudioFile(directory, filename)
+            cfname, title, self.album, self.artist = Global.filename
+            index = cfname.rfind("/")    
+            directory = cfname[:index]
             self.directory = directory
-            self.album = af.getTagValue('album')
-            self.artist = af.getTagValue('artist')
             if Global.albumArtist != (self.album, self.artist):
                 if not self.getLocalCover():
                     self.downloadCover(self.artist, self.album)  

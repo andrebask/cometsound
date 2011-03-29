@@ -276,7 +276,7 @@ class Controller:
                 append([icon, f])
             if len(self.playlist) == 1 and pt.trackNum != -1:
                 pt.trackNum = -1
-                pt.next()
+                self.nextTrack()
                 pt.pause()
             self.__extendShuffleList(len(self.playlist)-1)
             
@@ -305,7 +305,7 @@ class Controller:
                 append([icon, f])
             if len(self.playlist) == 1 and pt.trackNum != -1:
                 pt.trackNum = -1
-                pt.next()
+                self.nextTrack()
                 pt.pause()
             self.__extendShuffleList(len(self.playlist)-1)
     
@@ -332,16 +332,12 @@ class Controller:
                 iter = model.get_iter(path)
                 if model.get_value(iter, 8) != '':
                     self.toggle(None, path, model)
-                    notStarted = pt.trackNum == -1
                     if pt.shuffle:
                         i = pt.shuffleList.index(len(self.playlist)-1)
                         pt.trackNum = i - 1
                     else:
                         pt.trackNum = len(self.playlist) - 2
-                    if notStarted:
-                        pt.go()    
-                    else:
-                        pt.next()  
+                    self.nextTrack() 
                 else:
                     if tree.row_expanded(path):
                         tree.collapse_row(path)
@@ -368,16 +364,12 @@ class Controller:
     def dbusPlay(self):
         """Play command to be called from the dbus service"""
         pt = self.playerThread
-        notStarted = pt.trackNum == -1
         if pt.shuffle:
             i = pt.shuffleList.index(len(self.playlist)-1)
             pt.trackNum = i - 1
         else:
             pt.trackNum = len(self.playlist) - 2
-        if notStarted:
-            pt.go()
-        else:
-            pt.next()     
+        self.nextTrack()   
         if not self.view.slider.get_sensitive():
             self.view.slider.set_sensitive(True)
     
@@ -396,12 +388,8 @@ class Controller:
                 if self.playerThread.shuffle:
                     num = int(path)
                     i = self.playerThread.shuffleList.index(int(path))
-                notStarted = self.playerThread.trackNum == -1
                 self.playerThread.trackNum = i - 1
-                if notStarted:
-                    self.playerThread.go()
-                else:
-                    self.playerThread.next()    
+                self.nextTrack()   
         except:
             return
     
@@ -514,7 +502,10 @@ class Controller:
         
     def nextTrack(self, obj = None):
         """Handles the click on the Next button"""
-        self.playerThread.next()
+        if self.playerThread.started:
+            self.playerThread.next()
+        else:
+            self.playerThread.go()
      
     def previousTrack(self, obj = None):
         """Handles the click on the Previous button"""
@@ -523,7 +514,7 @@ class Controller:
     def updateLabel(self, (cfname, title, album, artist), notify = True):
         """Updates the track label with the tags values"""
         try:
-            if title != '' and title != ' ':
+            if title != '' and title != ' ' and title != None:
                 info = (title, album, artist)
                 label = "<span font_desc='18'><b>%s</b></span>\n<span font_desc='14'>%s\n%s</span>" % info
                 
