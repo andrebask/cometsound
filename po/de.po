@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: cometsound\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-03-05 00:10+0100\n"
-"PO-Revision-Date: 2011-03-05 09:49+0000\n"
-"Last-Translator: Jens Maucher <Unknown>\n"
+"PO-Revision-Date: 2011-04-12 01:08+0000\n"
+"Last-Translator: Peter Kappel <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-30 05:54+0000\n"
-"X-Generator: Launchpad (build 12559)\n"
+"X-Launchpad-Export-Date: 2011-04-12 06:04+0000\n"
+"X-Generator: Launchpad (build 12735)\n"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:234
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:556
@@ -113,7 +113,7 @@ msgstr "Hinzufügen"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:119
 msgid "<b>Status Icon</b>"
-msgstr ""
+msgstr "<b>Status-Icon</b>"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:121
 msgid "Enable status icon with track's informations"
@@ -121,15 +121,15 @@ msgstr ""
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:122
 msgid "Enable status icon"
-msgstr ""
+msgstr "Aktiviere Status-Icon"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:123
 msgid "Disable status icon"
-msgstr ""
+msgstr "Deaktiviere Status-Icon"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:133
 msgid "<b>Startup settings</b>"
-msgstr ""
+msgstr "<b>Start Einstellungen</b>"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:136
 msgid "Reload last play queue"
@@ -293,7 +293,7 @@ msgstr ""
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:192
 msgid "List View"
-msgstr ""
+msgstr "Listenansicht"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:192
 msgid "List visualization"
