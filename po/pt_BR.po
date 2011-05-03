@@ -9,14 +9,14 @@ msgstr ""
 "Project-Id-Version: cometsound\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-03-05 00:10+0100\n"
-"PO-Revision-Date: 2010-11-06 14:21+0000\n"
-"Last-Translator: Sergio Gabriel <Unknown>\n"
+"PO-Revision-Date: 2011-05-02 23:15+0000\n"
+"Last-Translator: Celio Alves <Unknown>\n"
 "Language-Team: Brazilian Portuguese <unk.dcc@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-30 05:54+0000\n"
-"X-Generator: Launchpad (build 12559)\n"
+"X-Launchpad-Export-Date: 2011-05-03 06:13+0000\n"
+"X-Generator: Launchpad (build 12758)\n"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:234
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:556
@@ -26,7 +26,7 @@ msgstr ""
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:234
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:556
 msgid "by"
-msgstr ""
+msgstr "por"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:473
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:30
@@ -75,24 +75,24 @@ msgstr "Ano"
 #: Programmazione/Python/workspace/CometSound/src/View.py:36
 #: Programmazione/Python/workspace/CometSound/src/View.py:44
 msgid "Genre"
-msgstr "Género"
+msgstr "Gênero"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:48
 #: Programmazione/Python/workspace/CometSound/src/Playlist.py:85
 msgid "Save Playlist"
-msgstr "Salvar Playlist"
+msgstr "Salvar Lista de Reprodução"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:50
 msgid "Insert playlist name:"
-msgstr "Inserir nome da playlist:"
+msgstr "Inserir nome da lista de reprodução"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:73
 msgid "CometSound preferences"
-msgstr "CometSound preferências"
+msgstr "Preferências do CometSound"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:81
 msgid "<b>Audio output (Restart required)</b>"
-msgstr "<b>Saída de áudio (Reiniciar Aplicação)</b>"
+msgstr "<b>Saída de áudio (Reinicialização necessária)</b>"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:94
 msgid "<b>Visible columns</b>"
@@ -130,7 +130,7 @@ msgstr "Desativar ícone de status"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:133
 msgid "<b>Startup settings</b>"
-msgstr ""
+msgstr "<b>Configurações de inicialização</b>"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:136
 msgid "Reload last play queue"
@@ -138,44 +138,44 @@ msgstr ""
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:138
 msgid "Reload last folder"
-msgstr ""
+msgstr "Atualizar última pasta"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:158
 msgid "<b>Last.fm login</b>"
-msgstr ""
+msgstr "<b>Login Last.fm</b>"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:160
 msgid "Username:"
-msgstr ""
+msgstr "Nome do usuario:"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:168
 msgid "Password:"
-msgstr ""
+msgstr "Senha:"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:179
 msgid "Enable scrobbling"
-msgstr ""
+msgstr "Ativar scrobbling"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:185
 msgid "Login"
-msgstr ""
+msgstr "Fazer login"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:190
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:273
 msgid "Logged in"
-msgstr ""
+msgstr "Autenticado"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:193
 msgid "Logged off"
-msgstr ""
+msgstr "Desconectado"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:276
 msgid "Invalid user or password!"
-msgstr ""
+msgstr "Usuário ou senha inválidos"
 
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:109
 msgid "Add all"
-msgstr ""
+msgstr "Adicionar tudo"
 
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:110
 msgid "Refresh"
@@ -183,7 +183,7 @@ msgstr "Atualizar"
 
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:266
 msgid "Add to playlist"
-msgstr "Adicionar a playlist"
+msgstr "Adicionar à lista de reprodução"
 
 #: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:271
 msgid "Edit tags"
@@ -192,11 +192,11 @@ msgstr "Editar etiquetas"
 #: Programmazione/Python/workspace/CometSound/src/Playlist.py:62
 #: Programmazione/Python/workspace/CometSound/src/Playlist.py:106
 msgid "Playlist"
-msgstr "Playlist"
+msgstr "Lista de reprodução"
 
 #: Programmazione/Python/workspace/CometSound/src/Playlist.py:83
 msgid "Clear Playlist"
-msgstr "Limpar Playlist"
+msgstr "Limpar lista de reprodução"
 
 #: Programmazione/Python/workspace/CometSound/src/Playlist.py:84
 msgid "Remove Selection"
@@ -208,11 +208,11 @@ msgstr "Aleatório"
 
 #: Programmazione/Python/workspace/CometSound/src/Playlist.py:102
 msgid "Repeat"
-msgstr ""
+msgstr "Repetir"
 
 #: Programmazione/Python/workspace/CometSound/src/SearchBox.py:70
 msgid "Search"
-msgstr ""
+msgstr "Pesquisar"
 
 #: Programmazione/Python/workspace/CometSound/src/TagsEditorDialog.py:34
 msgid "Edit Tags"
@@ -232,7 +232,7 @@ msgstr "_Abrir Pasta..."
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:155
 msgid "Open media folder"
-msgstr "Abrir pasta multimédia"
+msgstr "Abrir pasta de mídia"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:156
 msgid "Preferences"
@@ -252,7 +252,7 @@ msgstr "Fil_tros"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:159
 msgid "Play selection"
-msgstr "Play seleção"
+msgstr "Tocar seleção"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:160
 #: Programmazione/Python/workspace/CometSound/src/View.py:418
@@ -266,7 +266,7 @@ msgstr "Próxima"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:162
 msgid "Playlists"
-msgstr "Playlists"
+msgstr "Listas de reprodução"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:163
 msgid "Open folder..."
@@ -286,7 +286,7 @@ msgstr "Sobre CometSound"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:191
 msgid "File View"
-msgstr ""
+msgstr "Visualizar Arquivo"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:191
 msgid "File System visualization"
@@ -294,15 +294,15 @@ msgstr ""
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:192
 msgid "List View"
-msgstr ""
+msgstr "Visualizar Lista"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:192
 msgid "List visualization"
-msgstr ""
+msgstr "Visualização da lista"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:193
 msgid "Tag View"
-msgstr ""
+msgstr "Ver Etiquetas"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:193
 msgid "Tag based visualization"
@@ -323,7 +323,7 @@ msgstr ""
 #: Programmazione/Python/workspace/CometSound/src/View.py:407
 #: Programmazione/Python/workspace/CometSound/src/View.py:467
 msgid "Play"
-msgstr "Play"
+msgstr "Reproduzir"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:423
 msgid "Quit"
