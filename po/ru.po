@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: cometsound\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-03-05 00:10+0100\n"
-"PO-Revision-Date: 2011-08-12 02:37+0000\n"
-"Last-Translator: Павел Ехлаков <mapcuahuh@list.ru>\n"
+"PO-Revision-Date: 2011-08-23 12:17+0000\n"
+"Last-Translator: Alexey Ivanov <alexey.ivanes@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-08-13 05:32+0000\n"
-"X-Generator: Launchpad (build 13674)\n"
+"X-Launchpad-Export-Date: 2011-08-24 05:09+0000\n"
+"X-Generator: Launchpad (build 13697)\n"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:234
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:556
@@ -153,7 +153,7 @@ msgstr "Пароль:"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:179
 msgid "Enable scrobbling"
-msgstr ""
+msgstr "Включить скробблинг"
 
 #: Programmazione/Python/workspace/CometSound/src/Dialogs.py:185
 msgid "Login"
