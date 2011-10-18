@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: cometsound\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-03-05 00:10+0100\n"
-"PO-Revision-Date: 2011-09-21 05:59+0000\n"
-"Last-Translator: Fitoschido <fitoschido@gmail.com>\n"
+"PO-Revision-Date: 2011-10-17 18:29+0000\n"
+"Last-Translator: Aiguanachein <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-09-22 04:56+0000\n"
-"X-Generator: Launchpad (build 13996)\n"
+"X-Launchpad-Export-Date: 2011-10-18 05:02+0000\n"
+"X-Generator: Launchpad (build 14157)\n"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:234
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:556
@@ -305,7 +305,7 @@ msgstr ""
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:193
 msgid "Tag based visualization"
-msgstr ""
+msgstr "Visualización basada en etiquetas"
 
 #: Programmazione/Python/workspace/CometSound/src/View.py:194
 msgid "Small View"
