@@ -27,8 +27,8 @@ from Queue import Queue
 # This api key is assigned to Andrea Bernardini <andrebask@gmail.com>
 # if you reuse this code in a different application, please
 # register your own api and secret key with last.fm
-API_KEY = "" 
-API_SECRET = ""
+API_KEY = "ae63b9f4c40a190ca059d5b5170acc69" 
+API_SECRET = "3092aec9dfa6e643b1ea910cc12e2e12"
 
 def getArtistTitle(filename):
     index = filename.rfind("/")    

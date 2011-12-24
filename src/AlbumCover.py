@@ -22,7 +22,7 @@
 
 import gtk, urllib , os, time, pynotify, setproctitle as spt
 from threading import Thread
-from multiprocessing import Process, Manager
+from multiprocessing import Process, Manager, Lock
 from HTMLParser import HTMLParser
 from AF import AudioFile
 
@@ -38,6 +38,7 @@ Global.coverChanged = False
 Global.notificationChanged = False
 Global.filename = ()
 Global.albumArtist = '', ''
+globalLock = Lock()
 
 class AlbumImage(gtk.Image):
     """Gtk Image modified to represent an album cover"""
@@ -49,6 +50,8 @@ class AlbumImage(gtk.Image):
     def updateImage(self, widget = None, event = None):
         """Updates the album cover if changed"""
         if Global.coverChanged:
+            if not globalLock.acquire(False):
+                return
             coverFile = Global.cover
             tmpImage = gtk.Image()
             tmpImage.set_from_file(coverFile)
@@ -58,6 +61,7 @@ class AlbumImage(gtk.Image):
             except:
                 return
             Global.coverChanged = False
+            globalLock.release()
         
     def setDefaultCover(self):
         self.set_from_file('images/note.svg')
@@ -159,7 +163,9 @@ class CoverUpdater(Process):
         if not os.path.exists(tmpPath):
             os.makedirs(tmpPath)
         Global.cover = os.path.join(tmpPath,'cover.jpg')
+        globalLock.acquire()
         urllib.urlretrieve(parser.image, Global.cover)
+        globalLock.release()
         
 def isConnected():
     try:
