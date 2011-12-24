@@ -20,10 +20,11 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, string, gobject, SortFunctions as SF
+import gtk, string, gobject, SortFunctions as SF, random
 from Translator import t
 from TagsEditorDialog import TagsEditor
 from SearchBox import SearchBox
+from Model import gtkTrick
 
 _ = t.getTranslationFunc()
 
@@ -36,7 +37,7 @@ class FilesFrame(gtk.Frame):
     def __init__(self, model, control, formatDict, columns):
                 
         gtk.Frame.__init__(self)
-        self.listOfFiles = model.getAudioFileList()
+        #self.listOfFiles = model.getAudioFileList()
         self.formatDict = formatDict
         self.control = control
         self.columns = columns
@@ -65,7 +66,7 @@ class FilesFrame(gtk.Frame):
         self.currentStore = 0
 
 
-        self.createTree(None, self.listOfFiles)
+        #self.createTree(None, self.listOfFiles)
         # create and sort the TreeView using treeStore
         self.setSortFunctions()
         self.treeview = gtk.TreeView(self.treeStore)
@@ -142,7 +143,9 @@ class FilesFrame(gtk.Frame):
         
     def createTree(self, parent, filelist):
         """Adds the files informations to the treeview"""
+        bar = self.control.view.progressBar
         for f in filelist:
+            self.__updatePulseBar(bar)
             if type(f).__name__ == 'instance':
                 ext = f.getTagValues()[0].split('.')[-1]
                 if self.formatDict[string.lower(ext)] == True:
@@ -165,6 +168,13 @@ class FilesFrame(gtk.Frame):
                 if not self.__isEmpty(f):
                     return False           
         return True
+    
+    def __updatePulseBar(self, bar):
+            options = range(80)
+            random.shuffle(options)
+            if options[0] == 1:
+                bar.pulse()
+                gtkTrick()
     
     def createTagTree(self, widget = None, column = 3):
         """Adds the files informations to the tagStore"""

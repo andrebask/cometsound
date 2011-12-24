@@ -99,7 +99,7 @@ class View(gtk.Window):
         self.setStatusIcon()
         
         self.columns = columns
-        self.filesTree = FilesFrame(self.model, self.control, self.formatDict, self.columns)
+        self.filesTree = FilesFrame(None, self.control, self.formatDict, self.columns)
         self.playlistFrame = PlaylistFrame(self.control)
         
         self.framebox.pack1(self.filesTree)
@@ -110,7 +110,7 @@ class View(gtk.Window):
         self.progressBar = gtk.ProgressBar()
         self.progressBar.set_properties('min-horizontal-bar-height', 10)
         sbar = gtk.Statusbar()
-        sbar.set_size_request(0,14)
+        sbar.set_size_request(0,20)
         self.statusbar = sbar
         
         self.vbox.set_spacing(0)                             
@@ -119,6 +119,7 @@ class View(gtk.Window):
         self.vbox.pack_start(self.hbox, False)
         self.vbox.pack_start(self.framebox, True)
         self.vbox.pack_start(sbar, False)
+        self.vbox.pack_start(self.progressBar, False)
         self.show_all()
         
         if self.control.settings['scrobbler']:
@@ -126,8 +127,14 @@ class View(gtk.Window):
         else:
             self.scrobblerButton.hide()        
         
+        self.progressBar.pulse()
+        self.statusbar.push(0, 'loading library...')
+        gtkTrick()
         self.filesTree.setModel(self.model)
         self.filesTree.treeview.grab_focus()
+        self.vbox.remove(self.progressBar)
+        self.statusbar.pop(0)
+        self.statusbar.set_size_request(0,14)
         
         try:
             if self.model.getAudioFileList()[1] != 'Group':
