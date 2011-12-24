@@ -21,7 +21,7 @@
 ##
 
 import threading, os, gst, gtk, gobject, random, pynotify, time
-from AlbumCover import CoverUpdater, NotifyUpdater, Global
+from AlbumCover import CoverUpdater, NotifyUpdater, Global, globalLock
 from Scrobbler import Scrobbler
 from Queue import Queue
 
@@ -106,6 +106,7 @@ class PlayerThread(threading.Thread):
            updating the label or calling the stop() method
             to shut down the player at the end of playback"""
         t = message.type
+        globalLock.acquire()
         if t == gst.MESSAGE_ELEMENT and self.playing:
             if self.trackNum > -1 and self.started:
                 self.queue.put(self.playlist[self.getNum()])
@@ -125,6 +126,7 @@ class PlayerThread(threading.Thread):
             self.stop()
             err, debug = message.parse_error()
             print "Error: %s" % err, debug
+        globalLock.release()
                 
     def updateGUI(self):
         """Updates the GUI when the playing track changes"""

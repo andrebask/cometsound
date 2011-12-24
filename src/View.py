@@ -49,7 +49,8 @@ defaultSettings = {'audiosink': 'autoaudiosink',
                         'user': '',
                         'pwdHash': '',
                         'fakepwd': '',
-                        'view': 0
+                        'view': 0,
+                        'libraryMode': True
                          }
 
 class View(gtk.Window):
@@ -128,8 +129,11 @@ class View(gtk.Window):
         self.filesTree.setModel(self.model)
         self.filesTree.treeview.grab_focus()
         
-        if self.model.getAudioFileList()[1] != 'Group':
-            self.control.refreshTree()
+        try:
+            if self.model.getAudioFileList()[1] != 'Group':
+                self.control.refreshTree()
+        except:
+            print "filelist Group error"
         
         if self.model.playlist != None:
             self.control.playStopSelected()

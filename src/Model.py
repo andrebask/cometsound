@@ -39,7 +39,11 @@ class Model:
     def __init__(self, directoryList, progressBar = None, group = False):
         self.progressBar = progressBar
         self.numOfFiles = 0
-        self.cachefname = os.path.join(os.environ.get('HOME', None) , '.CometSound' , 'cache')
+        self.libraryMode = True
+        if self.libraryMode:
+            self.cachefname = os.path.join(os.environ.get('HOME', None) , '.CometSound' , 'library')
+        else:
+            self.cachefname = os.path.join(os.environ.get('HOME', None) , '.CometSound' , 'cache')
         try:
             self.lastUpdate = os.path.getmtime(self.cachefname)
         except:

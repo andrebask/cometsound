@@ -50,7 +50,8 @@ class Controller:
         self.folder = self.model.directory
         if self.folder == '':
             self.folder = os.environ.get('HOME', None)
-        
+        if not os.path.exists(self.cacheDir):
+            os.makedirs(self.cacheDir)
         try:
             from MediaKeysHandler import MediaKeys
             MediaKeys(self)
@@ -78,6 +79,10 @@ class Controller:
             FILE = open(os.path.join(self.cacheDir, 'settings'),'rb')
             self.settings = cerealizer.load(FILE)
             FILE.close()
+            for key in defaultSettings:
+                if key not in self.settings:
+                    self.settings = defaultSettings
+                    return
         except:
             #print sys.exc_info()
             self.settings = defaultSettings
@@ -131,12 +136,14 @@ class Controller:
         self.view.vbox.remove(self.view.progressBar)
         self.model.lastUpdate = time.time()
     
-    def saveCache(self):
+    def saveCache(self, libraryMode = None):
         """Saves the model in a cache file, using serialization"""
+        if self.settings['libraryMode']:
+            fname = 'library'
+        else:
+            fname = 'cache'
         dir = self.cacheDir
-        if not os.path.exists(dir):
-            os.makedirs(dir)
-        cachefile = os.path.join(dir, "cache")
+        cachefile = os.path.join(dir, fname)
         FILE = open(cachefile,'w')
         if self.settings['foldercache']:
             cerealizer.dump(self.model.getAudioFileList(), FILE)
