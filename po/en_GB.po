@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-12-25 05:02+0000\n"
+"X-Launchpad-Export-Date: 2011-12-26 04:59+0000\n"
 "X-Generator: Launchpad (build 14560)\n"
 
 #: Programmazione/Python/workspace/CometSound/src/Controller.py:234
@@ -331,9 +331,3 @@ msgstr "Quit"
 #: Programmazione/Python/workspace/CometSound/src/View.py:472
 msgid "Pause"
 msgstr "Pause"
-
-#~ msgid "Deselect All"
-#~ msgstr "Deselect All"
-
-#~ msgid "Select All"
-#~ msgstr "Select All"
