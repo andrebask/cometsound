@@ -605,6 +605,21 @@ class Controller:
                 lstore.set_value(iter, 0, None)
             i+=1
             
+    def updatePlaylistSafe(self, playing, num):
+        """Refreshes playlist view"""
+        lstore = self.view.playlistFrame.listStore     
+        i = 0
+        for track in self.playlist:
+            if i == num:
+                iter = lstore.get_iter(str(i))
+                lstore.set_value(iter, 0, icons[str(playing)])
+            iter = lstore.get_iter(str(i))
+            val = lstore.get_value(iter, 0)
+            if (i != num 
+                and (val in [icons[icons.keys()[0]], icons[icons.keys()[1]]])):
+                lstore.set_value(iter, 0, None)
+            i+=1       
+             
     def createPlaylist(self):
         """Refreshes playlist view"""
         self.view.playlistFrame.listStore.clear()  

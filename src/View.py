@@ -28,7 +28,6 @@ from Playlist import PlaylistFrame
 from FileBrowser import FilesFrame
 from Model import audioTypes, gtkTrick
 from AlbumCover import AlbumImage, Global
-
 version = '0.3.3'
 _ = t.getTranslationFunc()
 

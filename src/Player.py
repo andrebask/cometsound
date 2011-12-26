@@ -21,7 +21,7 @@
 ##
 
 import threading, os, gst, gtk, gobject, random, pynotify, time
-from AlbumCover import CoverUpdater, NotifyUpdater, Global, globalLock
+from AlbumCover import CoverUpdater, NotifyUpdater, Global
 from Scrobbler import Scrobbler
 from Queue import Queue
 
@@ -106,12 +106,11 @@ class PlayerThread(threading.Thread):
            updating the label or calling the stop() method
             to shut down the player at the end of playback"""
         t = message.type
-        globalLock.acquire()
         if t == gst.MESSAGE_ELEMENT and self.playing:
             if self.trackNum > -1 and self.started:
                 self.queue.put(self.playlist[self.getNum()])
                 self.labelUpdated = True
-            self.control.updatePlaylist()
+            self.control.updatePlaylistSafe(self.playing, self.getNum())
         elif t == gst.MESSAGE_NEW_CLOCK:
             if not self.labelUpdated:
                 self.queue.put(self.playlist[self.getNum()])
@@ -119,14 +118,13 @@ class PlayerThread(threading.Thread):
         elif t == gst.MESSAGE_EOS:
             self.trackNum = 0 
             self.stop()
-            self.control.updatePlaylist()
+            self.control.updatePlaylistSafe(self.playing, self.getNum())
             self.labelUpdated = False
             self.player.set_property("uri", "file://" + self.playlist[0][0])
         elif t == gst.MESSAGE_ERROR:
             self.stop()
             err, debug = message.parse_error()
             print "Error: %s" % err, debug
-        globalLock.release()
                 
     def updateGUI(self):
         """Updates the GUI when the playing track changes"""
@@ -155,13 +153,13 @@ class PlayerThread(threading.Thread):
         self.player.set_state(gst.STATE_PAUSED)
         if button:
             self.control.view.setButtonPlay()
-            self.control.updatePlaylist()
+            self.control.updatePlaylistSafe(self.playing, self.getNum())
             
     def play(self):
         """Starts playing"""
         self.playing = True
         self.control.view.setButtonPause()
-        self.control.updatePlaylist()
+        self.control.updatePlaylistSafe(self.playing, self.getNum())
         self.player.set_state(gst.STATE_PLAYING)
         
     def stop(self):
