@@ -20,9 +20,10 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
+from Common import Thread
+from Common import Queue
+
 from AF import AudioFile
-from threading import Thread
-from Queue import Queue
 
 # This api key is assigned to Andrea Bernardini <andrebask@gmail.com>
 # if you reuse this code in a different application, please

@@ -20,11 +20,11 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, os
-from Translator import t
-from AF import AudioFile
+from Common import gtk
+from Common import os
+from Common import _
 
-_ = t.getTranslationFunc()
+from AF import AudioFile
 
 class TagsEditor(gtk.Dialog):
     

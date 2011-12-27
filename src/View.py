@@ -20,37 +20,25 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, pygtk, os, pango
-pygtk.require('2.0')
-from Translator import t
-from Dialogs import AboutDialog, PreferencesDialog, SavePlaylistDialog
+from Common import gtk
+from Common import os
+from Common import pango
+from Common import _
+from Common import gtkTrick
+from Common import Global
+from Common import APP_VERSION
+from Common import audioTypes
+from Common import defaultSettings
+
+from Dialogs import AboutDialog
+from Dialogs import PreferencesDialog
+from Dialogs import SavePlaylistDialog
 from Playlist import PlaylistFrame
 from FileBrowser import FilesFrame
-from Model import audioTypes, gtkTrick
-from AlbumCover import AlbumImage, Global
-version = '0.3.3'
-_ = t.getTranslationFunc()
+from AlbumCover import AlbumImage
 
 columns = [_('Name'), '#', _('Title'), _('Artist'),
             _('Album'), _('Genre'), _('Year'), _('Add')]
-
-defaultSettings = {'audiosink': 'autoaudiosink',
-                    'statusicon': 0,    
-                    '#': True,
-                     _('Title'): True,
-                     _('Artist'): True,
-                      _('Album'): True,
-                       _('Genre'): True,
-                        _('Year'): True,
-                        'lastplaylist': True,
-                        'foldercache': True, 
-                        'scrobbler': False,
-                        'user': '',
-                        'pwdHash': '',
-                        'fakepwd': '',
-                        'view': 0,
-                        'libraryMode': True
-                         }
 
 class View(gtk.Window):
     """Main GTK+ window"""
@@ -499,7 +487,7 @@ class View(gtk.Window):
         self.width, self.height = all.width, all.height
     
     def showAboutDialog(self, o):
-        ad = AboutDialog(self.icon, version)
+        ad = AboutDialog(self.icon, APP_VERSION)
         
             
     def quit(self, obj = None):

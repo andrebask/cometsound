@@ -20,16 +20,16 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, stat, os, string, commands, cerealizer, time, sys
+from Common import stat
+from Common import os
+from Common import string
+from Common import commands
+from Common import cerealizer
+from Common import time
+from Common import gtkTrick
+from Common import isAudio
+
 from AF import AudioFile
-
-def gtkTrick():
-    while gtk.events_pending():
-        gtk.main_iteration()
-
-audioTypes = ['.mp3', '.wma', '.ogg', '.flac', 
-            '.m4a', '.mp4', '.aac', '.wav',
-             '.ape', '.mpc', '.wv']
 
 class Model:
     """Data structure that represents the file system tree"""
@@ -187,7 +187,3 @@ class Model:
                 fileTree.append(AudioFile(dir, element).getAudioFileInfos())
                 self.changed = True
      
-def isAudio(fileName):
-    i = fileName.rfind('.')
-    ext = string.lower(fileName[i:])
-    return ext in audioTypes                 

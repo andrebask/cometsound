@@ -20,13 +20,17 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, string, gobject, SortFunctions as SF, random
-from Translator import t
+from Common import gtk
+from Common import gobject
+from Common import string
+from Common import SortFunctions as SF
+from Common import random
+from Common import _
+from Common import gtkTrick
+
 from TagsEditorDialog import TagsEditor
 from SearchBox import SearchBox
-from Model import gtkTrick
 
-_ = t.getTranslationFunc()
 
 colToKey  = {'#': 'num', _('Title'): 'title', _('Artist'): 'artist',
                 _('Album'): 'album', _('Genre'): 'genre', _('Year'): 'year'}

@@ -20,28 +20,19 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-from Common import gtk
-from Common import registerClasses
-from Common import getArg
-from Common import singleInstaceCheck
-from Common import setproctitle as spt
-from Model import Model
-from View import View
-from Controller import Controller
-from DbusService import DbusService
+import dbus, dbus.service
 
-#Gives a Name to the main process
-spt.setproctitle('CometSound')
-        
-def main():
-    gtk.main()
-    return 0
+class DbusService(dbus.service.Object):
+    """Dbus service class to send commands to CometSound from other programs"""
+    def __init__(self, control):
+        self.control = control
+        busName = dbus.service.BusName('com.thelinuxroad.CometSound', bus = dbus.SessionBus())
+        dbus.service.Object.__init__(self, busName, '/com/thelinuxroad/CometSound')
 
-if __name__ == "__main__":
-    singleInstaceCheck()
-    registerClasses()
-    m = Model(getArg())
-    c = Controller(m)
-    View(m, c)
-    DbusService(c)
-    main() 
+    @dbus.service.method(dbus_interface='com.thelinuxroad.CometSound')
+    def play(self):
+        self.control.dbusPlay()
+     
+    @dbus.service.method(dbus_interface='com.thelinuxroad.CometSound')    
+    def addTrack(self, cfname):
+        self.control.dbusAddTrack(cfname)

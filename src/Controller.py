@@ -20,15 +20,23 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, os, Model, gst, pynotify, cerealizer, random, time, gobject
-from Translator import t
-from AF import AudioFile
-from Player import PlayerThread
-from View import defaultSettings
-from Model import audioTypes, gtkTrick
-cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")
+from Common import gtk
+from Common import gobject
+from Common import gst
+from Common import os
+from Common import pynotify
+from Common import cerealizer
+from Common import random
+from Common import time
+from Common import t, _
+from Common import defaultSettings
+from Common import gtkTrick
+from Common import cacheDir
+from Common import audioTypes
 
-_ = t.getTranslationFunc()
+from Player import PlayerThread
+from AF import AudioFile
+from Model import Model
 
 icons = {'True': gtk.STOCK_MEDIA_PLAY, 'False': gtk.STOCK_MEDIA_PAUSE}
 
@@ -128,9 +136,9 @@ class Controller:
     def __reBuildViewTree(self):
         """Creates a new Model using the current folder"""
         if len(self.folders) == 1:
-            self.model = Model.Model([self.folders[0]], self.view.progressBar)
+            self.model = Model([self.folders[0]], self.view.progressBar)
         else:
-            self.model = Model.Model(self.folders, self.view.progressBar, True)
+            self.model = Model(self.folders, self.view.progressBar, True)
         self.saveCache()
         self.__refreshViewTree()
         self.view.vbox.remove(self.view.progressBar)

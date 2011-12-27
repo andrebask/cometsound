@@ -20,9 +20,10 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, gobject, SortFunctions as SF
-from Translator import t
-_ = t.getTranslationFunc()
+from Common import gtk
+from Common import gobject
+from Common import SortFunctions as SF
+from Common import _
 
 class SearchBox(gtk.Entry):
     """Search bar to search tracks

@@ -20,11 +20,12 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk
-from Translator import t
-from Scrobbler import Scrobbler, md5, pylastInstalled
+from Common import gtk
+from Common import _
 
-_ = t.getTranslationFunc()
+from Scrobbler import Scrobbler
+from Scrobbler import md5
+from Scrobbler import pylastInstalled
 
 class AboutDialog(gtk.AboutDialog):
     """Shows general informations of CometSound"""

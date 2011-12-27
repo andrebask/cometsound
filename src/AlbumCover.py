@@ -20,25 +20,18 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-import gtk, urllib , os, time, pynotify, setproctitle as spt
-from threading import Thread
-from multiprocessing import Process, Manager, Lock
-from HTMLParser import HTMLParser
-from AF import AudioFile
-
-cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")
-
-# The Manager is used to exchange information between threads
-manager = Manager()
-Global = manager.Namespace()
-Global.cover = None
-Global.stop = False
-Global.trackChanged = False
-Global.coverChanged = False
-Global.notificationChanged = False
-Global.filename = ()
-Global.albumArtist = '', ''
-globalLock = Lock()
+from Common import gtk
+from Common import urllib
+from Common import os
+from Common import time
+from Common import pynotify
+from Common import setproctitle as spt
+from Common import Thread
+from Common import Event
+from Common import HTMLParser
+from Common import cacheDir
+from Common import Global
+from Common import globalLock
 
 class AlbumImage(gtk.Image):
     """Gtk Image modified to represent an album cover"""
@@ -104,17 +97,23 @@ class NotifyUpdater(Thread):
         self.notify.update(title, "%s\n%s" % (album, artist), Global.cover)
         self.notify.show()
 
-class CoverUpdater(Process):
+class CoverUpdater(Thread):
     """Thread that updates the album cover when the track changes"""
     def __init__(self):
-        Process.__init__(self)
-        self.stop = False
+        Thread.__init__(self)
+        self.stopevent = Event()
         self.start()
         
     def run(self):
-        while not Global.stop:
+        
+        while (not Global.stop
+                and not self.stopevent.isSet()):
+            
             while not Global.trackChanged:
                 time.sleep(0.1)
+                if self.stopevent.isSet():
+                    return
+                
             Global.trackChanged = False
             spt.setproctitle('CS Cover Finder')
             cfname, title, self.album, self.artist = Global.filename
@@ -166,6 +165,11 @@ class CoverUpdater(Process):
         globalLock.acquire()
         urllib.urlretrieve(parser.image, Global.cover)
         globalLock.release()
+    
+    def terminate(self, timeout=None):
+        """Terminates the thread"""
+        self.stopevent.set()
+        Thread.join(self)
         
 def isConnected():
     try:
