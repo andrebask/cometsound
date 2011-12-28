@@ -24,7 +24,7 @@ import gtk
 #gtk.gdk.threads_init()
 
 import gobject
-#gobject.threads_init()
+gobject.threads_init()
 
 import pango
 import gst

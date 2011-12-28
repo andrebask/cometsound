@@ -93,9 +93,11 @@ class PlayerThread(threading.Thread):
     def run(self):
         """Starts the thread"""
         while not self.stopevent.isSet():  
+            time.sleep(0.1)
             try:  
                 Global.filename = self.queue.get_nowait()
                 self.updateGUI()
+                self.updatePlaylist()
                 Global.trackChanged = True
             except:
                 pass
@@ -119,7 +121,7 @@ class PlayerThread(threading.Thread):
             if self.trackNum > -1 and self.started:
                 self.queue.put(self.playlist[self.getNum()])
                 self.labelUpdated = True
-            self.updatePlaylist()
+            #self.updatePlaylist()
         elif t == gst.MESSAGE_NEW_CLOCK:
             if not self.labelUpdated:
                 self.queue.put(self.playlist[self.getNum()])

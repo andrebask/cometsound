@@ -25,6 +25,7 @@ from Common import registerClasses
 from Common import getArg
 from Common import singleInstaceCheck
 from Common import setproctitle as spt
+
 from Model import Model
 from View import View
 from Controller import Controller

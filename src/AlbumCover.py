@@ -21,11 +21,12 @@
 ##
 
 from Common import gtk
+from Common import gtkTrick
 from Common import urllib
 from Common import os
 from Common import time
 from Common import pynotify
-from Common import setproctitle as spt
+#from Common import setproctitle as spt
 from Common import Thread
 from Common import Event
 from Common import HTMLParser
@@ -53,6 +54,7 @@ class AlbumImage(gtk.Image):
                 self.set_from_pixbuf(pix)
             except:
                 return
+            gtkTrick()
             Global.coverChanged = False
             globalLock.release()
         
@@ -115,7 +117,7 @@ class CoverUpdater(Thread):
                     return
                 
             Global.trackChanged = False
-            spt.setproctitle('CS Cover Finder')
+            #spt.setproctitle('CS Cover Finder')
             cfname, title, self.album, self.artist = Global.filename
             index = cfname.rfind("/")    
             directory = cfname[:index]
