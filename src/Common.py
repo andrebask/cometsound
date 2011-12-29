@@ -23,6 +23,9 @@
 import gtk
 #gtk.gdk.threads_init()
 
+import pygtk
+pygtk.require('2.0')
+
 import gobject
 gobject.threads_init()
 

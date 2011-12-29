@@ -142,7 +142,8 @@ class PlayerThread(threading.Thread):
                 
     def updateGUI(self):
         """Updates the GUI when the playing track changes"""
-        self.control.updateLabel(self.playlist[self.getNum()], self.playing)
+        gobject.idle_add(self.control.updateLabel, self.playlist[self.getNum()], self.playing)
+        #self.control.updateLabel(self.playlist[self.getNum()], self.playing)
         if self.control.settings['scrobbler']:
             self.scrobbler.nowPlaying(self.playlist[self.getNum()])
             self.timestamp = str(int(time.time()))
