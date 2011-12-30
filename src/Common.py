@@ -108,18 +108,6 @@ defaultSettings = {'audiosink': 'autoaudiosink',
                         'libraryMode': True
                          }
 
-# The Manager is used to exchange information between threads
-manager = Manager()
-Global = manager.Namespace()
-Global.cover = None
-Global.stop = False
-Global.trackChanged = False
-Global.coverChanged = False
-Global.notificationChanged = False
-Global.filename = ()
-Global.albumArtist = '', ''
-globalLock = Lock()
-
 def gtkTrick():
     while gtk.events_pending():
         gtk.main_iteration()
@@ -140,27 +128,6 @@ def getArg():
         list.append('')
     return list
 
-def singleInstaceCheck():
-    #Controls if the program is already running
-    #Is allowed a single instance
-    dir = os.path.join(os.environ.get('HOME', None), '.CometSound')
-    pidFile = os.path.join(dir, 'program.pid') 
-    if not os.path.exists(dir):
-        os.makedirs(dir)
-    fp = open(pidFile, 'w')
-    try:
-        fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except IOError:
-        print 'CometSound is already running'
-        time.sleep(1)
-        for arg in getArg():
-            if isAudio(arg):
-                addTrack = dbus.SessionBus().get_object('com.thelinuxroad.CometSound', '/com/thelinuxroad/CometSound').get_dbus_method("addTrack")
-                addTrack(arg)        
-        play = dbus.SessionBus().get_object('com.thelinuxroad.CometSound', '/com/thelinuxroad/CometSound').get_dbus_method("play")
-        play()
-        sys.exit(0)
-
 audioTypes = ['.mp3', '.wma', '.ogg', '.flac', 
             '.m4a', '.mp4', '.aac', '.wav',
              '.ape', '.mpc', '.wv']
@@ -169,3 +136,35 @@ def isAudio(fileName):
     i = fileName.rfind('.')
     ext = string.lower(fileName[i:])
     return ext in audioTypes 
+
+# The Manager is used to exchange information between threads
+manager = Manager()
+Global = manager.Namespace()
+Global.cover = None
+Global.stop = False
+Global.trackChanged = False
+Global.coverChanged = False
+Global.notificationChanged = False
+Global.filename = ()
+Global.albumArtist = '', ''
+globalLock = Lock()
+
+#Controls if the program is already running
+#Is allowed a single instance
+dir = os.path.join(os.environ.get('HOME', None), '.CometSound')
+pidFile = os.path.join(dir, 'program.pid') 
+if not os.path.exists(dir):
+    os.makedirs(dir)
+fp = open(pidFile, 'w')
+try:
+    fcntl.lockf(fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
+except IOError:
+    print 'CometSound is already running'
+    time.sleep(1)
+    for arg in getArg():
+        if isAudio(arg):
+            addTrack = dbus.SessionBus().get_object('com.thelinuxroad.CometSound', '/com/thelinuxroad/CometSound').get_dbus_method("addTrack")
+            addTrack(arg)        
+    play = dbus.SessionBus().get_object('com.thelinuxroad.CometSound', '/com/thelinuxroad/CometSound').get_dbus_method("play")
+    play()
+    sys.exit(0)

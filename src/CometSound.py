@@ -23,7 +23,6 @@
 from Common import gtk
 from Common import registerClasses
 from Common import getArg
-from Common import singleInstaceCheck
 from Common import setproctitle as spt
 
 from Model import Model
@@ -39,7 +38,6 @@ def main():
     return 0
 
 if __name__ == "__main__":
-    singleInstaceCheck()
     registerClasses()
     m = Model(getArg())
     c = Controller(m)

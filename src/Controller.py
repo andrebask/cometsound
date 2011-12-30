@@ -24,6 +24,7 @@ from Common import gtk
 from Common import gobject
 from Common import gst
 from Common import os
+from Common import sys
 from Common import pynotify
 from Common import cerealizer
 from Common import random
@@ -550,6 +551,7 @@ class Controller:
                 label = "File:\t<b>" + winTitle + "</b>\n\n"
                 self.view.label.set_markup(label)
                 self.view.set_title(winTitle)   
+                print sys.exc_info()
         except:
             label = '\n\n'
             self.view.label.set_text(label)

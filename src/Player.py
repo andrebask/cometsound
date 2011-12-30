@@ -96,8 +96,6 @@ class PlayerThread(threading.Thread):
             time.sleep(0.1)
             try:  
                 Global.filename = self.queue.get_nowait()
-                self.updateGUI()
-                self.updatePlaylist()
                 Global.trackChanged = True
             except:
                 pass
@@ -121,7 +119,7 @@ class PlayerThread(threading.Thread):
             if self.trackNum > -1 and self.started:
                 self.queue.put(self.playlist[self.getNum()])
                 self.labelUpdated = True
-            #self.updatePlaylist()
+            self.updateGUI()
         elif t == gst.MESSAGE_NEW_CLOCK:
             if not self.labelUpdated:
                 self.queue.put(self.playlist[self.getNum()])
@@ -142,8 +140,10 @@ class PlayerThread(threading.Thread):
                 
     def updateGUI(self):
         """Updates the GUI when the playing track changes"""
-        gobject.idle_add(self.control.updateLabel, self.playlist[self.getNum()], self.playing)
-        #self.control.updateLabel(self.playlist[self.getNum()], self.playing)
+        p = self.playing
+        num = self.getNum()
+        gobject.idle_add(self.control.updatePlaylistSafe, p, num)
+        gobject.idle_add(self.control.updateLabel, self.playlist[num], p)
         if self.control.settings['scrobbler']:
             self.scrobbler.nowPlaying(self.playlist[self.getNum()])
             self.timestamp = str(int(time.time()))
