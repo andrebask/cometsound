@@ -164,7 +164,10 @@ except IOError:
     for arg in getArg():
         if isAudio(arg):
             addTrack = dbus.SessionBus().get_object('com.thelinuxroad.CometSound', '/com/thelinuxroad/CometSound').get_dbus_method("addTrack")
-            addTrack(arg)        
+            addTrack(arg)     
+    if len(getArg()) == 1:
+        if getArg()[0]=='':
+            sys.exit(0)   
     play = dbus.SessionBus().get_object('com.thelinuxroad.CometSound', '/com/thelinuxroad/CometSound').get_dbus_method("play")
     play()
     sys.exit(0)
