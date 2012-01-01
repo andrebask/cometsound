@@ -115,19 +115,23 @@ class View(gtk.Window):
             self.scrobblerButton.hide()        
         
         self.progressBar.pulse()
-        self.statusbar.push(0, 'loading library...')
+        self.statusbar.push(0, 'Loading library...')
         gtkTrick()
         self.filesTree.setModel(self.model)
         self.filesTree.treeview.grab_focus()
-        self.vbox.remove(self.progressBar)
         self.statusbar.pop(0)
-        self.statusbar.set_size_request(0,14)
+        
         
         try:
             if self.model.getAudioFileList()[1] != 'Group':
+                self.statusbar.push(0, 'Updating library...')
                 self.control.refreshTree()
+                self.statusbar.pop(0)
         except:
             print "filelist Group error"
+        
+        self.vbox.remove(self.progressBar)
+        self.statusbar.set_size_request(0,14)
         
         if self.model.playlist != None:
             self.control.playStopSelected()

@@ -108,7 +108,7 @@ class Controller:
     def openFolder(self, o):
         """Creates the dialog window that permits to choose the folder(s) to scan"""
         old = self.folders
-        folderChooser = gtk.FileChooserDialog('Select Folder...', None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
+        folderChooser = gtk.FileChooserDialog(_('Select Folder...'), None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
                                                (gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
         folderChooser.set_current_folder(self.folder)
         folderChooser.set_default_response(gtk.RESPONSE_OK)

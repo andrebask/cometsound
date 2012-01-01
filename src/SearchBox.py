@@ -49,6 +49,7 @@ class SearchBox(gtk.Entry):
         self.completion.set_match_func(self.matchFunc)
         self.set_completion(self.completion)
         self.previousDict = {}
+        self.defaultLabel = True
         self.stop = False
     
     def matchClear(self, editable):
@@ -58,22 +59,34 @@ class SearchBox(gtk.Entry):
             self.matchStore.clear()
             self.fileBrowser.setStore(self.matchStore)
         self.previousDict = {}
+        self.defaultLabel = False
         self.stop = False
     
     def simpleClear(self, entry, icon, event):
         if icon == gtk.ENTRY_ICON_SECONDARY:
             self.set_text('')
+            self.modify_text(gtk.STATE_NORMAL,  gtk.gdk.Color(0,0,0))
             
     def clear(self, editable, data = None):
-        self.set_text('')
-        self.modify_text(gtk.STATE_NORMAL,  gtk.gdk.Color(0,0,0))
-        self.disconnect_by_func(self.clear)
+        if self.defaultLabel:
+            self.set_text('')
+            self.modify_text(gtk.STATE_NORMAL,  gtk.gdk.Color(0,0,0))
+    
+    def resetLabel(self, editable, data = None):
+        if self.get_text() == '':
+            self.disconnect_by_func(self.matchClear)
+            self.set_text(_('Search'))
+            self.modify_text(gtk.STATE_NORMAL,  gtk.gdk.Color('#AAAAAA'))
+            self.defaultLabel = True
+            self.connect('changed', self.matchClear)
             
     def setListStore(self, listStore):
         self.listStore = listStore
         self.set_text(_('Search'))
         self.modify_text(gtk.STATE_NORMAL,  gtk.gdk.Color('#AAAAAA'))
+        self.defaultLabel = True
         self.connect("focus-in-event", self.clear)
+        self.connect("focus-out-event", self.resetLabel)
         self.fileBrowser.setStore()
             
     def changeSearchColumn(self, widget, data=None): 

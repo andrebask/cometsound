@@ -158,6 +158,36 @@ class PreferencesDialog(gtk.Dialog):
         vbox.pack_start(startupLabel)
         vbox.pack_start(startbox)
         
+        ########################
+        ###   Library Page   ###
+        ########################
+        
+        lvbox = gtk.VBox()
+        lLabel = gtk.Label()
+        lLabel.set_alignment(0,0)
+        lLabel.set_padding(5,6)
+        lLabel.set_markup(_('<b>Library location</b>'))
+        
+        folderChooser = gtk.FileChooserDialog(_('Select Folder...'), None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
+                                               (gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+        entrybox = gtk.HBox()
+        #pathEntry = gtk.Entry()
+        browseButton = gtk.FileChooserButton(folderChooser)
+        browseButton.set_border_width(5)
+        #entrybox.pack_start(pathEntry)
+        entrybox.pack_start(browseButton)
+        entrybox.set_border_width(5)
+        
+        libbox = gtk.VButtonBox() 
+        libbox.set_layout(gtk.BUTTONBOX_START)
+        cb = gtk.CheckButton(_('Load library at startup'))
+        cb.set_active(settings['libraryMode'])
+        libbox.pack_start(cb)
+                
+        lvbox.pack_start(lLabel)
+        lvbox.pack_start(entrybox) 
+        lvbox.pack_start(libbox)
+        
         ##########################
         ###   Scrobbler Page   ###
         ##########################
@@ -237,6 +267,7 @@ class PreferencesDialog(gtk.Dialog):
         notebook = gtk.Notebook()
         notebook.set_tab_pos(gtk.POS_TOP)
         notebook.append_page(vbox, gtk.Label('General'))
+        notebook.append_page(lvbox, gtk.Label('Library'))
         notebook.append_page(svbox, gtk.Label('Scrobbler'))
         
         dialogBox.pack_start(notebook)

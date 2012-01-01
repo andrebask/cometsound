@@ -174,6 +174,7 @@ class FilesFrame(gtk.Frame):
         return True
     
     def __updatePulseBar(self, bar):
+        if bar != None:
             options = range(80)
             random.shuffle(options)
             if options[0] == 1:
