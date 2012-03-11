@@ -30,7 +30,7 @@ from Common import cerealizer
 from Common import random
 from Common import time
 from Common import t, _
-from Common import defaultSettings
+from Common import settings, defaultSettings
 from Common import gtkTrick
 from Common import cacheDir
 from Common import audioTypes
@@ -49,7 +49,7 @@ class Controller:
     
     def __init__(self, model):
         self.model = model
-        self.readSettings()
+        self.settings = settings
         self.playlist = self.lastPlaylist()
         self.playerThread = PlayerThread(self.playlist, self)
         self.position = 0
@@ -71,31 +71,17 @@ class Controller:
         """Connects the View to the Controller"""
         self.view = view
     
-    def writeSettings(self, settings):
+    def writeSettings(self, newsettings):
         """Stores the settings to a file serializing the settings dict"""
         dir = self.cacheDir
         if not os.path.exists(dir):
             os.makedirs(dir)
         cachefile = os.path.join(dir, 'settings')
         FILE = open(cachefile,'w')
-        cerealizer.dump(settings, FILE)
+        cerealizer.dump(newsettings, FILE)
         FILE.close()
-        self.settings = settings
+        settings = newsettings
         
-    def readSettings(self):
-        """Loads the settings from the settings file"""
-        try: 
-            FILE = open(os.path.join(self.cacheDir, 'settings'),'rb')
-            self.settings = cerealizer.load(FILE)
-            FILE.close()
-            for key in defaultSettings:
-                if key not in self.settings:
-                    self.settings = defaultSettings
-                    return
-        except:
-            #print sys.exc_info()
-            self.settings = defaultSettings
-    
     def refreshColumnsVisibility(self):
         """Sets the visibility property of the file browser 
             columns according to the settings"""
@@ -131,8 +117,7 @@ class Controller:
             folderChooser.hide()
         else:
             folderChooser.destroy()    
-        while gtk.events_pending():
-            gtk.main_iteration()   
+        gtkTrick()   
     
     def __reBuildViewTree(self):
         """Creates a new Model using the current folder"""
@@ -144,8 +129,14 @@ class Controller:
         self.__refreshViewTree()
         self.view.vbox.remove(self.view.progressBar)
         self.model.lastUpdate = time.time()
-    
-    def saveCache(self, libraryMode = None):
+
+    def loadLibrary(self):
+        self.folders = [self.settings['libraryFolder']]
+        self.view.vbox.pack_start(self.view.progressBar, False)
+        self.view.progressBar.show()
+        self.__reBuildViewTree()
+        
+    def saveCache(self):
         """Saves the model in a cache file, using serialization"""
         if self.settings['libraryMode']:
             fname = 'library'
@@ -224,9 +215,15 @@ class Controller:
     
     def refreshTree(self, widget = None, data = None):
         """Refreshes the Model and the file browser treeView"""
+        self.view.vbox.pack_start(self.view.progressBar, False)
+        self.view.progressBar.pulse()
+        self.view.statusbar.push(0, 'Loading library...')
         self.model.updateModel()
         if self.model.changed:
             self.__refreshViewTree()
+            self.saveCache()
+        self.view.statusbar.pop(0)
+        self.view.vbox.remove(self.view.progressBar)
             
     def toggle(self, cell, path, rowModel):
         """Adds the selected files to the playlist and updates the treeview"""

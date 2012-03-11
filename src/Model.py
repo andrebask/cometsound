@@ -28,6 +28,7 @@ from Common import cerealizer
 from Common import time
 from Common import gtkTrick
 from Common import isAudio
+from Common import settings
 
 from AF import AudioFile
 
@@ -39,8 +40,7 @@ class Model:
     def __init__(self, directoryList, progressBar = None, group = False):
         self.progressBar = progressBar
         self.numOfFiles = 0
-        self.libraryMode = True
-        if self.libraryMode:
+        if settings['libraryMode']:
             self.cachefname = os.path.join(os.environ.get('HOME', None) , '.CometSound' , 'library')
         else:
             self.cachefname = os.path.join(os.environ.get('HOME', None) , '.CometSound' , 'cache')
@@ -76,11 +76,11 @@ class Model:
             return
         else:
             try:
-                self.numOfFiles = int(commands.getstatusoutput("find \"%s\" | wc -l" % (self.directory))[1])
+                self.numOfFiles = sum((len(f) for _, _, f in os.walk(self.directory)))
                 self.fraction = float(1) / self.numOfFiles
                 if group:
                     for dir in directoryList:
-                        self.numOfFiles += int(commands.getstatusoutput("find \"%s\" | wc -l" % (dir))[1])
+                        self.numOfFiles += sum((len(f) for _, _, f in os.walk(self.directory)))
                     self.fraction = float(1) / self.numOfFiles
             except:
                 self.directory = ''

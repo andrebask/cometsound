@@ -20,7 +20,7 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-from Common import gtk
+from Common import gtk, gtkTrick
 from Common import _
 
 from Scrobbler import Scrobbler
@@ -73,7 +73,6 @@ class PreferencesDialog(gtk.Dialog):
         gtk.Dialog.__init__(self)
         self.set_size_request(300,400)
         self.control = control
-        self.control.readSettings()
         
         ########################
         ###   General Page   ###
@@ -166,7 +165,7 @@ class PreferencesDialog(gtk.Dialog):
         lLabel = gtk.Label()
         lLabel.set_alignment(0,0)
         lLabel.set_padding(5,6)
-        lLabel.set_markup(_('<b>Library location</b>'))
+        lLabel.set_markup(_('<b>Music Library location</b>'))
         
         folderChooser = gtk.FileChooserDialog(_('Select Folder...'), None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
                                                (gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
@@ -174,19 +173,21 @@ class PreferencesDialog(gtk.Dialog):
         #pathEntry = gtk.Entry()
         browseButton = gtk.FileChooserButton(folderChooser)
         browseButton.set_border_width(5)
+        browseButton.set_current_folder(settings['libraryFolder'])
         #entrybox.pack_start(pathEntry)
         entrybox.pack_start(browseButton)
         entrybox.set_border_width(5)
         
         libbox = gtk.VButtonBox() 
         libbox.set_layout(gtk.BUTTONBOX_START)
-        cb = gtk.CheckButton(_('Load library at startup'))
-        cb.set_active(settings['libraryMode'])
-        libbox.pack_start(cb)
+        librarycb = gtk.CheckButton(_('Enable library mode'))
+        librarycb.set_active(settings['libraryMode'])
+        libbox.pack_start(librarycb)
                 
-        lvbox.pack_start(lLabel)
-        lvbox.pack_start(entrybox) 
-        lvbox.pack_start(libbox)
+        lvbox.pack_start(lLabel, False, False)
+        lvbox.pack_start(libbox, False, False)
+        lvbox.pack_start(entrybox, False, False) 
+        lvbox.set_spacing(0)
         
         ##########################
         ###   Scrobbler Page   ###
@@ -285,10 +286,17 @@ class PreferencesDialog(gtk.Dialog):
             settings['lastplaylist'] = playcb.get_active()
             settings['foldercache'] = cachecb.get_active()
             settings['scrobbler'] = scrobblercb.get_active()
+            settings['libraryMode'] = librarycb.get_active()
+            settings['libraryFolder'] = browseButton.get_current_folder()
             self.storeLoginData(settings, settings, uentry, pentry)
             self.control.writeSettings(settings)
             self.control.refreshColumnsVisibility()
             self.control.refreshStatusIcon()
+            if settings['libraryMode']:
+                if self.control.folder != settings['libraryFolder']:
+                    self.hide()
+                    gtkTrick
+                    self.control.loadLibrary()
             self.destroy()        
     
     def storeLoginData(self, settings, newsettings, uentry, pentry):

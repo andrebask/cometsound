@@ -85,7 +85,7 @@ class TagsEditor(gtk.Dialog):
                 treeModel.set_value(row, len(columns)-1, newname)
                 treeModel.set_value(row, 0, self.entries['file'].get_text())    
             self.destroy()
-            
+        
     def changed(self, editable, key):
         self.entries[key] = editable
         

@@ -105,8 +105,24 @@ defaultSettings = {'audiosink': 'autoaudiosink',
                         'pwdHash': '',
                         'fakepwd': '',
                         'view': 0,
-                        'libraryMode': True
+                        'libraryMode': True,
+                        'libraryFolder': os.environ.get('HOME', None)
                          }
+
+def readSettings():
+    """Loads the settings from the settings file"""
+    try: 
+        FILE = open(os.path.join(cacheDir, 'settings'),'rb')
+        settings = cerealizer.load(FILE)
+        FILE.close()
+        for key in defaultSettings:
+            if key not in settings:
+                settings = defaultSettings
+                return
+    except:
+        #print sys.exc_info()
+        settings = defaultSettings
+    return settings
 
 def gtkTrick():
     while gtk.events_pending():
@@ -136,6 +152,10 @@ def isAudio(fileName):
     i = fileName.rfind('.')
     ext = string.lower(fileName[i:])
     return ext in audioTypes 
+
+
+#Loading settings
+settings = readSettings()
 
 # The Manager is used to exchange information between threads
 manager = Manager()

@@ -120,17 +120,14 @@ class View(gtk.Window):
         self.filesTree.setModel(self.model)
         self.filesTree.treeview.grab_focus()
         self.statusbar.pop(0)
-        
+        self.vbox.remove(self.progressBar)
         
         try:
             if self.model.getAudioFileList()[1] != 'Group':
-                self.statusbar.push(0, 'Updating library...')
                 self.control.refreshTree()
-                self.statusbar.pop(0)
         except:
             print "filelist Group error"
         
-        self.vbox.remove(self.progressBar)
         self.statusbar.set_size_request(0,14)
         
         if self.model.playlist != None:
@@ -504,7 +501,6 @@ class View(gtk.Window):
         self.control.playerThread.stop()
         self.control.playerThread.updater.terminate()
         Global.stop = True
-        self.control.saveCache()
         pos = self.framebox.get_position()
         volume = self.control.playerThread.getVolume()
         if self.control.settings['view'] != 3:
