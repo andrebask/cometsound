@@ -1,7 +1,7 @@
 ##
 #    Project: CometSound - A music player written in Python 
 #    Author: Andrea Bernardini <andrebask@gmail.com>
-#    Copyright: 2010-2011 Andrea Bernardini
+#    Copyright: 2010-2012 Andrea Bernardini
 #    License: GPL-2+
 #
 #    This file is part of CometSound.
@@ -21,7 +21,7 @@
 ##
 
 import gtk
-#gtk.gdk.threads_init()
+#gtk.threads_init()
 
 import pygtk
 pygtk.require('2.0')
@@ -167,6 +167,7 @@ Global.coverChanged = False
 Global.notificationChanged = False
 Global.filename = ()
 Global.albumArtist = '', ''
+Global.PBcount = 0
 globalLock = Lock()
 
 #Controls if the program is already running

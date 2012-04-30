@@ -1,7 +1,7 @@
 ##
 #    Project: CometSound - A music player written in Python 
 #    Author: Andrea Bernardini <andrebask@gmail.com>
-#    Copyright: 2010-2011 Andrea Bernardini
+#    Copyright: 2010-2012 Andrea Bernardini
 #    License: GPL-2+
 #
 #    This file is part of CometSound.
@@ -36,6 +36,7 @@ from Dialogs import SavePlaylistDialog
 from Playlist import PlaylistFrame
 from FileBrowser import FilesFrame
 from AlbumCover import AlbumImage
+from ProgressBar import Progress
 
 columns = [_('Name'), '#', _('Title'), _('Artist'),
             _('Album'), _('Genre'), _('Year'), _('Add')]
@@ -335,6 +336,7 @@ class View(gtk.Window):
     def changeView(self, radioaction, current, value = None):
         self.filesTree.removeTagToolbar()
         self.filesTree.treeview.get_column(0).set_title(_('Name'))
+        self.filesTree.setColumnsVisibility()
         if not value:
             value = current.get_current_value()
         if value == 3:

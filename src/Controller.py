@@ -1,7 +1,7 @@
 ##
 #    Project: CometSound - A music player written in Python 
 #    Author: Andrea Bernardini <andrebask@gmail.com>
-#    Copyright: 2010-2011 Andrea Bernardini
+#    Copyright: 2010-2012 Andrea Bernardini
 #    License: GPL-2+
 #
 #    This file is part of CometSound.
@@ -34,10 +34,12 @@ from Common import settings, defaultSettings
 from Common import gtkTrick
 from Common import cacheDir
 from Common import audioTypes
+from Common import Global
 
 from Player import PlayerThread
 from AF import AudioFile
 from Model import Model
+from ProgressBar import Progress
 
 icons = {'True': gtk.STOCK_MEDIA_PLAY, 'False': gtk.STOCK_MEDIA_PAUSE}
 
@@ -103,9 +105,12 @@ class Controller:
         if response == gtk.RESPONSE_OK:
             folderChooser.hide()
             gtkTrick()
+            Global.PBcount = 0
             self.view.vbox.pack_start(self.view.progressBar, False)
+            self.view.progressBar.set_fraction(0.0)
             if self.settings['view'] != 3:
                 self.view.progressBar.show()
+            gtkTrick()
             self.folders = folderChooser.get_filenames()
             self.folder = folderChooser.get_current_folder()
             if old != self.folders:
@@ -113,7 +118,7 @@ class Controller:
                     self.__reBuildViewTree()
             else:
                 self.view.vbox.remove(self.view.progressBar)
-                self.refreshTree()
+                self.refreshTree(update = False)
             folderChooser.hide()
         else:
             folderChooser.destroy()    
@@ -213,12 +218,12 @@ class Controller:
         self.view.filesTree.searchBox.setListStore(self.view.filesTree.listStore)
         self.view.filesTree.treeStore.foreach(self.__restoreExpanded)
     
-    def refreshTree(self, widget = None, data = None):
+    def refreshTree(self, widget = None, data = None, update = True):
         """Refreshes the Model and the file browser treeView"""
         self.view.vbox.pack_start(self.view.progressBar, False)
         self.view.progressBar.pulse()
         self.view.statusbar.push(0, 'Loading library...')
-        self.model.updateModel()
+        if update: self.model.updateModel()
         if self.model.changed:
             self.__refreshViewTree()
             self.saveCache()
