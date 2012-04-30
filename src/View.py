@@ -36,7 +36,6 @@ from Dialogs import SavePlaylistDialog
 from Playlist import PlaylistFrame
 from FileBrowser import FilesFrame
 from AlbumCover import AlbumImage
-from ProgressBar import Progress
 
 columns = [_('Name'), '#', _('Title'), _('Artist'),
             _('Album'), _('Genre'), _('Year'), _('Add')]

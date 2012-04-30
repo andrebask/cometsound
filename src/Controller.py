@@ -39,7 +39,6 @@ from Common import Global
 from Player import PlayerThread
 from AF import AudioFile
 from Model import Model
-from ProgressBar import Progress
 
 icons = {'True': gtk.STOCK_MEDIA_PLAY, 'False': gtk.STOCK_MEDIA_PAUSE}
 

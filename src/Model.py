@@ -151,6 +151,7 @@ class Model:
         while Global.PBcount < self.numOfFiles:
             time.sleep(.01)  
             if old ==  Global.PBcount:
+                Global.PBcount = self.numOfFiles
                 break
             else:
                 old = Global.PBcount
@@ -206,12 +207,11 @@ class Model:
             
     def __updateProgressBarThreaded(self):
         """Updates the progress bar that shows the current status of the scan"""
-        while self.__truncate(Global.PBcount * self.fraction) != 1.0:
-            #time.sleep(0.1)
-            if self.progressBar != None:
-                #print self.__truncate(Global.PBcount * self.fraction)
-                gobject.idle_add(self.__updateProgressBar)
-                time.sleep(.01)
+        old = None
+        while Global.PBcount < self.numOfFiles:
+            #print self.__truncate(Global.PBcount * self.fraction)
+            gobject.idle_add(self.__updateProgressBar)
+            time.sleep(.01)
                 
     def __truncate(self, int):
         if int < 1: return int
