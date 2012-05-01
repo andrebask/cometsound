@@ -170,6 +170,18 @@ Global.albumArtist = '', ''
 Global.PBcount = 0
 globalLock = Lock()
 
+
+def writeSettings(self, newsettings):
+    """Stores the settings to a file serializing the settings dict"""
+    dir = self.cacheDir
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+    cachefile = os.path.join(dir, 'settings')
+    FILE = open(cachefile,'w')
+    cerealizer.dump(newsettings, FILE)
+    FILE.close()
+    settings = newsettings
+
 #Controls if the program is already running
 #Is allowed a single instance
 dir = os.path.join(os.environ.get('HOME', None), '.cometsound')

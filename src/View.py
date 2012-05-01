@@ -29,6 +29,7 @@ from Commons import Global
 from Commons import APP_VERSION
 from Commons import audioTypes
 from Commons import defaultSettings
+from Commons import writeSettings
 
 from Dialogs import AboutDialog
 from Dialogs import PreferencesDialog
@@ -508,7 +509,7 @@ class View(gtk.Window):
             self.control.saveWinSize(self.width, self.height, pos, volume)
         else:
             self.control.saveWinSize(self.previousWidht, self.previousHeight, pos, volume)
-        self.control.writeSettings(self.control.settings)
+        writeSettings(self.control.settings)
         if self.control.playerThread.isAlive():
             self.control.playerThread.terminate()
         gtk.main_quit()

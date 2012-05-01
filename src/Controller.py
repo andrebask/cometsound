@@ -72,17 +72,6 @@ class Controller:
         """Connects the View to the Controller"""
         self.view = view
     
-    def writeSettings(self, newsettings):
-        """Stores the settings to a file serializing the settings dict"""
-        dir = self.cacheDir
-        if not os.path.exists(dir):
-            os.makedirs(dir)
-        cachefile = os.path.join(dir, 'settings')
-        FILE = open(cachefile,'w')
-        cerealizer.dump(newsettings, FILE)
-        FILE.close()
-        settings = newsettings
-        
     def refreshColumnsVisibility(self):
         """Sets the visibility property of the file browser 
             columns according to the settings"""

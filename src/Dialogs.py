@@ -22,6 +22,7 @@
 
 from Commons import gtk, gtkTrick
 from Commons import _
+from Commons import writeSettings
 
 from Scrobbler import Scrobbler
 from Scrobbler import md5
@@ -289,7 +290,7 @@ class PreferencesDialog(gtk.Dialog):
             settings['libraryMode'] = librarycb.get_active()
             settings['libraryFolder'] = browseButton.get_current_folder()
             self.storeLoginData(settings, settings, uentry, pentry)
-            self.control.writeSettings(settings)
+            writeSettings(settings)
             self.control.refreshColumnsVisibility()
             self.control.refreshStatusIcon()
             if settings['libraryMode']:
