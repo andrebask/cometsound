@@ -26,13 +26,13 @@ class DbusService(dbus.service.Object):
     """Dbus service class to send commands to CometSound from other programs"""
     def __init__(self, control):
         self.control = control
-        busName = dbus.service.BusName('com.thelinuxroad.CometSound', bus = dbus.SessionBus())
+        busName = dbus.service.BusName('com.thelinuxroad.cometsound', bus = dbus.SessionBus())
         dbus.service.Object.__init__(self, busName, '/com/thelinuxroad/CometSound')
 
-    @dbus.service.method(dbus_interface='com.thelinuxroad.CometSound')
+    @dbus.service.method(dbus_interface='com.thelinuxroad.cometsound')
     def play(self):
         self.control.dbusPlay()
      
-    @dbus.service.method(dbus_interface='com.thelinuxroad.CometSound')    
+    @dbus.service.method(dbus_interface='com.thelinuxroad.cometsound')    
     def addTrack(self, cfname):
         self.control.dbusAddTrack(cfname)

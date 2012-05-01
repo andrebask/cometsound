@@ -88,7 +88,7 @@ APP_NAME = "cometsound"
 
 _ = t.getTranslationFunc()
 
-cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")
+cacheDir = os.path.join(os.environ.get('HOME', None), ".cometsound")
 
 defaultSettings = {'audiosink': 'autoaudiosink',
                     'statusicon': 0,    
@@ -172,7 +172,7 @@ globalLock = Lock()
 
 #Controls if the program is already running
 #Is allowed a single instance
-dir = os.path.join(os.environ.get('HOME', None), '.CometSound')
+dir = os.path.join(os.environ.get('HOME', None), '.cometsound')
 pidFile = os.path.join(dir, 'program.pid') 
 if not os.path.exists(dir):
     os.makedirs(dir)
@@ -184,11 +184,11 @@ except IOError:
     time.sleep(1)
     for arg in getArg():
         if isAudio(arg):
-            addTrack = dbus.SessionBus().get_object('com.thelinuxroad.CometSound', '/com/thelinuxroad/CometSound').get_dbus_method("addTrack")
+            addTrack = dbus.SessionBus().get_object('com.thelinuxroad.cometsound', '/com/thelinuxroad/CometSound').get_dbus_method("addTrack")
             addTrack(arg)     
     if len(getArg()) == 1:
         if getArg()[0]=='':
             sys.exit(0)   
-    play = dbus.SessionBus().get_object('com.thelinuxroad.CometSound', '/com/thelinuxroad/CometSound').get_dbus_method("play")
+    play = dbus.SessionBus().get_object('com.thelinuxroad.cometsound', '/com/thelinuxroad/CometSound').get_dbus_method("play")
     play()
     sys.exit(0)

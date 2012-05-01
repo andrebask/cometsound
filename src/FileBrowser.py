@@ -20,13 +20,13 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-from Common import gtk
-from Common import gobject
-from Common import string
-from Common import SortFunctions as SF
-from Common import random
-from Common import _
-from Common import gtkTrick
+from Commons import gtk
+from Commons import gobject
+from Commons import string
+from Commons import SortFunctions as SF
+from Commons import random
+from Commons import _
+from Commons import gtkTrick
 
 from TagsEditorDialog import TagsEditor
 from SearchBox import SearchBox

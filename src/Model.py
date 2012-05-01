@@ -20,15 +20,15 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-from Common import stat
-from Common import os
-from Common import cerealizer
-from Common import time
-from Common import gtkTrick
-from Common import isAudio
-from Common import readSettings
-from Common import threading
-from Common import Global
+from Commons import stat
+from Commons import os
+from Commons import cerealizer
+from Commons import time
+from Commons import gtkTrick
+from Commons import isAudio
+from Commons import readSettings
+from Commons import threading
+from Commons import Global
 
 from AF import AudioFile
 import gobject
@@ -44,9 +44,9 @@ class Model:
         self.changed = False
         self.MTlist = []
         settings = readSettings()
-        self.cachefname = os.path.join(os.environ.get('HOME', None) , '.CometSound' , 'cache')
+        self.cachefname = os.path.join(os.environ.get('HOME', None) , '.cometsound' , 'cache')
         if settings != None and settings['libraryMode']:
-                self.cachefname = os.path.join(os.environ.get('HOME', None) , '.CometSound' , 'library')
+                self.cachefname = os.path.join(os.environ.get('HOME', None) , '.cometsound' , 'library')
         try:
             self.lastUpdate = os.path.getmtime(self.cachefname)
         except:
@@ -207,14 +207,13 @@ class Model:
             
     def __updateProgressBarThreaded(self):
         """Updates the progress bar that shows the current status of the scan"""
-        old = None
         while Global.PBcount < self.numOfFiles:
             #print self.__truncate(Global.PBcount * self.fraction)
             gobject.idle_add(self.__updateProgressBar)
             time.sleep(.01)
                 
-    def __truncate(self, int):
-        if int < 1: return int
+    def __truncate(self, i):
+        if i < 1: return i
         else: return 1.0
         
     def updateModel(self):

@@ -20,8 +20,8 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-from Common import gtk, gtkTrick
-from Common import _
+from Commons import gtk, gtkTrick
+from Commons import _
 
 from Scrobbler import Scrobbler
 from Scrobbler import md5
@@ -295,8 +295,9 @@ class PreferencesDialog(gtk.Dialog):
             if settings['libraryMode']:
                 if self.control.folder != settings['libraryFolder']:
                     self.hide()
-                    gtkTrick
+                    gtkTrick()
                     self.control.loadLibrary()
+                    self.control.saveLibrary()
             self.destroy()        
     
     def storeLoginData(self, settings, newsettings, uentry, pentry):

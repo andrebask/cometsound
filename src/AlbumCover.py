@@ -20,19 +20,19 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-from Common import gtk
-from Common import gtkTrick
-from Common import urllib
-from Common import os
-from Common import time
-from Common import pynotify
-#from Common import setproctitle as spt
-from Common import Thread
-from Common import Event
-from Common import HTMLParser
-from Common import cacheDir
-from Common import Global
-from Common import globalLock
+from Commons import gtk
+from Commons import gtkTrick
+from Commons import urllib
+from Commons import os
+from Commons import time
+from Commons import pynotify
+#from Commons import setproctitle as spt
+from Commons import Thread
+from Commons import Event
+from Commons import HTMLParser
+from Commons import cacheDir
+from Commons import Global
+from Commons import globalLock
 
 class AlbumImage(gtk.Image):
     """Gtk Image modified to represent an album cover"""

@@ -20,9 +20,9 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-from Common import gtk
-from Common import gobject
-from Common import _
+from Commons import gtk
+from Commons import gobject
+from Commons import _
 
 class PlaylistFrame(gtk.Frame):
     """Gtk Frame modified to store a treeview that shows the playlist"""

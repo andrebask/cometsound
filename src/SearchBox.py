@@ -20,10 +20,10 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-from Common import gtk
-from Common import gobject
-from Common import SortFunctions as SF
-from Common import _
+from Commons import gtk
+from Commons import gobject
+from Commons import SortFunctions as SF
+from Commons import _
 
 class SearchBox(gtk.Entry):
     """Search bar to search tracks

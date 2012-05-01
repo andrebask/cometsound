@@ -20,8 +20,8 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-from Common import Thread
-from Common import Queue
+from Commons import Thread
+from Commons import Queue
 
 from AF import AudioFile
 

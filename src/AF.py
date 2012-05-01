@@ -32,9 +32,9 @@ from mutagen.monkeysaudio import MonkeysAudio
 from mutagen.musepack import Musepack
 from mutagen.ogg import error as OggError
 
-from Common import string
-from Common import os
-from Common import sys
+from Commons import string
+from Commons import os
+from Commons import sys
 
 fname = "fileName"	
 keyList = ["title", "artist", "album", "genre", "year", "num"]

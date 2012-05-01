@@ -20,15 +20,15 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-from Common import gtk
-from Common import os
-from Common import pango
-from Common import _
-from Common import gtkTrick
-from Common import Global
-from Common import APP_VERSION
-from Common import audioTypes
-from Common import defaultSettings
+from Commons import gtk
+from Commons import os
+from Commons import pango
+from Commons import _
+from Commons import gtkTrick
+from Commons import Global
+from Commons import APP_VERSION
+from Commons import audioTypes
+from Commons import defaultSettings
 
 from Dialogs import AboutDialog
 from Dialogs import PreferencesDialog
@@ -462,7 +462,7 @@ class View(gtk.Window):
             
     def openPlaylistFolder(self, widget, data=None):
         """Opens the folder of the saved playlists"""
-        cacheDir = os.path.join(os.environ.get('HOME', None), ".CometSound")
+        cacheDir = os.path.join(os.environ.get('HOME', None), ".cometsound")
         dir = os.path.join(cacheDir, 'playlists')
         if not os.path.exists(dir):
             os.makedirs(dir)

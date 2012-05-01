@@ -20,21 +20,21 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-from Common import gtk
-from Common import gobject
-from Common import gst
-from Common import os
-from Common import sys
-from Common import pynotify
-from Common import cerealizer
-from Common import random
-from Common import time
-from Common import t, _
-from Common import settings, defaultSettings
-from Common import gtkTrick
-from Common import cacheDir
-from Common import audioTypes
-from Common import Global
+from Commons import gtk
+from Commons import gobject
+from Commons import gst
+from Commons import os
+from Commons import sys
+from Commons import pynotify
+from Commons import cerealizer
+from Commons import random
+from Commons import time
+from Commons import t, _
+from Commons import settings, defaultSettings
+from Commons import gtkTrick
+from Commons import cacheDir
+from Commons import audioTypes
+from Commons import Global
 
 from Player import PlayerThread
 from AF import AudioFile
@@ -135,15 +135,28 @@ class Controller:
         self.model.lastUpdate = time.time()
 
     def loadLibrary(self):
+        Global.PBcount = 0
         self.folders = [self.settings['libraryFolder']]
         self.view.vbox.pack_start(self.view.progressBar, False)
+        self.view.progressBar.set_fraction(0.0)
         self.view.progressBar.show()
+        gtkTrick()
         self.__reBuildViewTree()
+
+    def saveLibrary(self):
+        """Saves the library in a cache file, using serialization"""
+        fname = 'library'
+        dir = self.cacheDir
+        cachefile = os.path.join(dir, fname)
+        FILE = open(cachefile,'w')
+        cerealizer.dump(self.model.getAudioFileList(), FILE)
+        FILE.close()
         
     def saveCache(self):
         """Saves the model in a cache file, using serialization"""
         if self.settings['libraryMode']:
-            fname = 'library'
+            self.saveLastPlaylist()
+            return
         else:
             fname = 'cache'
         dir = self.cacheDir

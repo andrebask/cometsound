@@ -20,9 +20,9 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-from Common import gtk
-from Common import os
-from Common import _
+from Commons import gtk
+from Commons import os
+from Commons import _
 
 from AF import AudioFile
 

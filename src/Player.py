@@ -20,15 +20,15 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-from Common import gtk
-from Common import gobject
-from Common import gst
-from Common import threading
-from Common import os
-from Common import random
-from Common import time
-from Common import Global
-from Common import Queue
+from Commons import gtk
+from Commons import gobject
+from Commons import gst
+from Commons import threading
+from Commons import os
+from Commons import random
+from Commons import time
+from Commons import Global
+from Commons import Queue
 
 from AlbumCover import CoverUpdater
 from AlbumCover import NotifyUpdater

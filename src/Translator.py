@@ -20,10 +20,10 @@
 #    along with CometSound.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-from Common import os
-from Common import locale
-from Common import gettext
-from Common import sys
+from Commons import os
+from Commons import locale
+from Commons import gettext
+from Commons import sys
 
 APP_NAME = "cometsound"
 
