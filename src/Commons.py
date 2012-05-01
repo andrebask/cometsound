@@ -171,9 +171,9 @@ Global.PBcount = 0
 globalLock = Lock()
 
 
-def writeSettings(self, newsettings):
+def writeSettings(newsettings):
     """Stores the settings to a file serializing the settings dict"""
-    dir = self.cacheDir
+    dir = cacheDir
     if not os.path.exists(dir):
         os.makedirs(dir)
     cachefile = os.path.join(dir, 'settings')
