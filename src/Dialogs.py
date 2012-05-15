@@ -190,6 +190,27 @@ class PreferencesDialog(gtk.Dialog):
         lvbox.pack_start(entrybox, False, False) 
         lvbox.set_spacing(0)
         
+        
+        ##############################
+        ###   Notifications Page   ###
+        ##############################
+        
+        nvbox = gtk.VBox()
+        nLabel = gtk.Label()
+        nLabel.set_alignment(0,0)
+        nLabel.set_padding(5,6)
+        nLabel.set_markup(_('<b>Enable Notifications</b>'))
+        
+        notfybox = gtk.VButtonBox() 
+        notfybox.set_layout(gtk.BUTTONBOX_START)
+        notfycb = gtk.CheckButton(_('Notify track change'))
+        notfycb.set_active(settings['notify'])
+        notfybox.pack_start(notfycb)
+                
+        nvbox.pack_start(nLabel, False, False)
+        nvbox.pack_start(notfybox, False, False)
+        nvbox.set_spacing(0)        
+        
         ##########################
         ###   Scrobbler Page   ###
         ##########################
@@ -270,6 +291,7 @@ class PreferencesDialog(gtk.Dialog):
         notebook.set_tab_pos(gtk.POS_TOP)
         notebook.append_page(vbox, gtk.Label('General'))
         notebook.append_page(lvbox, gtk.Label('Library'))
+        notebook.append_page(nvbox, gtk.Label('Notifications'))
         notebook.append_page(svbox, gtk.Label('Scrobbler'))
         
         dialogBox.pack_start(notebook)
@@ -288,12 +310,15 @@ class PreferencesDialog(gtk.Dialog):
             settings['foldercache'] = cachecb.get_active()
             settings['scrobbler'] = scrobblercb.get_active()
             settings['libraryMode'] = librarycb.get_active()
+            settings['notify'] = notfycb.get_active()
             settings['libraryFolder'] = browseButton.get_current_folder()
             self.storeLoginData(settings, settings, uentry, pentry)
             writeSettings(settings)
             self.control.refreshColumnsVisibility()
             self.control.refreshStatusIcon()
             if settings['libraryMode']:
+                print self.control.folder
+                print settings['libraryFolder']
                 if self.control.folder != settings['libraryFolder']:
                     self.hide()
                     gtkTrick()

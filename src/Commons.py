@@ -106,7 +106,8 @@ defaultSettings = {'audiosink': 'autoaudiosink',
                         'fakepwd': '',
                         'view': 0,
                         'libraryMode': True,
-                        'libraryFolder': os.environ.get('HOME', None)
+                        'libraryFolder': os.environ.get('HOME', None),
+                        'notify': True
                          }
 
 def readSettings():

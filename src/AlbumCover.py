@@ -33,6 +33,7 @@ from Commons import HTMLParser
 from Commons import cacheDir
 from Commons import Global
 from Commons import globalLock
+from Commons import settings
 
 class AlbumImage(gtk.Image):
     """Gtk Image modified to represent an album cover"""
@@ -85,7 +86,7 @@ class NotifyUpdater(Thread):
         try:
             while not Global.stop:
                 time.sleep(0.1)
-                if Global.notificationChanged:
+                if Global.notificationChanged and settings['notify']:
                     self.update()
                     Global.notificationChanged = False
         except:

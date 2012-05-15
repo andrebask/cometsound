@@ -219,16 +219,20 @@ class Model:
     def updateModel(self):
         """Searches in the file system recently changed or added files to update the model"""
         self.changed = False
-        self.__updateModel(self.getAudioFileList(), self.directory)
+        Global.PBcount = 0
+        threading.Thread(target=self.__updateProgressBarThreaded).start()
+        gobject.idle_add(self.__updateModel, self.getAudioFileList(), self.directory)
+        self.__waitSearch()
         self.lastUpdate = time.time()
         
     def __updateModel(self, fileTree, dir):
-        gtkTrick()
+        
         if not os.path.exists(dir):
             return
         fileList = os.listdir(dir)
         toDelete = []
         for element in fileTree:
+            Global.PBcount += 1
             if type(element).__name__ == 'list':
                 if element[0] in fileList:
                     fileList.remove(element[0])

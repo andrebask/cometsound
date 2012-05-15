@@ -125,6 +125,7 @@ class Controller:
 
     def loadLibrary(self):
         Global.PBcount = 0
+        self.folder = self.settings['libraryFolder']
         self.folders = [self.settings['libraryFolder']]
         self.view.vbox.pack_start(self.view.progressBar, False)
         self.view.progressBar.set_fraction(0.0)
@@ -223,7 +224,8 @@ class Controller:
         """Refreshes the Model and the file browser treeView"""
         self.view.vbox.pack_start(self.view.progressBar, False)
         self.view.progressBar.pulse()
-        self.view.statusbar.push(0, 'Loading library...')
+        self.view.statusbar.push(0, 'Updating library...')
+        gtkTrick()
         if update: self.model.updateModel()
         if self.model.changed:
             self.__refreshViewTree()
