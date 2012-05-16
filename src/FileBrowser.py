@@ -148,8 +148,8 @@ class FilesFrame(gtk.Frame):
     def createTree(self, parent, filelist):
         """Adds the files informations to the treeview"""
         bar = self.control.view.progressBar
+        self.__updatePulseBar(bar)
         for f in filelist:
-            self.__updatePulseBar(bar)
             if type(f).__name__ == 'instance':
                 ext = f.getTagValues()[0].split('.')[-1]
                 if self.formatDict[string.lower(ext)] == True:
@@ -175,11 +175,8 @@ class FilesFrame(gtk.Frame):
     
     def __updatePulseBar(self, bar):
         if bar != None:
-            options = range(80)
-            random.shuffle(options)
-            if options[0] == 1:
-                bar.pulse()
-                gtkTrick()
+            bar.pulse()
+            gtkTrick()
     
     def createTagTree(self, widget = None, column = 3):
         """Adds the files informations to the tagStore"""

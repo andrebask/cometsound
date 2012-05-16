@@ -29,6 +29,7 @@ from Commons import isAudio
 from Commons import readSettings
 from Commons import threading
 from Commons import Global
+from Commons import cpunum
 
 from AF import AudioFile
 import gobject
@@ -63,7 +64,7 @@ class Model:
         """Sets the directory to scan, calculates the number of files,
            and builds the file system tree (using __searchFiles method)"""
         self.directory = directoryList[0]  
-        if self.directory == '':  
+        if self.directory == '' and not group:  
             try: 
                 FILE = open(self.cachefname, 'rb')
                 self.audioFileList = cerealizer.load(FILE)
@@ -81,10 +82,6 @@ class Model:
             try:
                 self.numOfFiles = sum((len(f) for _, _, f in os.walk(self.directory)))
                 self.fraction = float(1) / self.numOfFiles
-                if group:
-                    for dir in directoryList:
-                        self.numOfFiles += sum((len(f) for _, _, f in os.walk(self.directory)))
-                    self.fraction = float(1) / self.numOfFiles
             except:
                 self.directory = ''
         threading.Thread(target=self.__updateProgressBarThreaded).start()
@@ -101,72 +98,35 @@ class Model:
                     self.directory = self.directory[:index]
                 else:
                     self.directory = ''
-            gobject.idle_add(self.__searchFilesMThreaded, self.directory)
-            self.__waitSearch()
+            self.MTlist = [self.directory]
+            self.__searchFilesMThreaded(self.directory, cpunum)
+            self.__waitSearch(cpunum)
             self.audioFileList = self.MTlist
         else:
+            
+            for dir in directoryList:
+                self.numOfFiles += sum((len(f) for _, _, f in os.walk(dir)))
+            self.fraction = float(1) / self.numOfFiles               
+            
             groupdir = directoryList[0][:directoryList[0].rfind("/")]
             self.audioFileList = [groupdir, 'Group']
             for folder in directoryList:
+                self.MTlist = []
                 dirname = folder[folder.rfind("/") + 1:]
-                gobject.idle_add(self.__searchFilesMThreaded, self.directory)   
-                self.__waitSearch()            
-                self.audioFileList.append([dirname] + self.MTlist)
+                self.numOfFiles = sum((len(f) for _, _, f in os.walk(folder)))
+                self.__searchFilesMThreaded(folder)   
+                self.__waitSearch(1)            
+                self.audioFileList.append([dirname] + self.MTlist)            
                 
-    def __searchFiles(self, directory):
+    def __searchFilesMThreaded(self, directory, threadsNum = 1):
         """Recursively scans the file system to find audio files and add them to the tree"""
         #print directory
-        list = [self.directory]
         try:
             fileList = os.listdir(directory)
         except:
-            print "error reading " + directory + '/'
-            return list
-        for fileName in fileList:
-            if os.access((os.path.join(directory, fileName)), os.R_OK) and fileName[0] != '.':
-                try:
-                    filestat = os.stat(os.path.join(directory, fileName))
-                except:
-                    print "error reading " + directory + '/' + fileName
-                    Global.PBcount += 1
-                    continue
-                #print 'processing ' + fileName
-                if isAudio(fileName):
-                    list.append(AudioFile(directory, fileName).getAudioFileInfos())   
-                elif stat.S_ISDIR(filestat.st_mode):
-                    #print filestat.st_mtime
-                    l = self.__searchFiles(os.path.join(directory, fileName))
-                    if len(l) != 0:
-                        l.insert(0, fileName)
-                        list.append(l)
-            Global.PBcount += 1
-            gtkTrick()
-
-        return list  
-
-    def __waitSearch(self):
-        while Global.PBcount == 0:
-            gtkTrick()
-        old = 0
-        while Global.PBcount < self.numOfFiles:
-            time.sleep(.01)  
-            if old ==  Global.PBcount:
-                Global.PBcount = self.numOfFiles
-                break
-            else:
-                old = Global.PBcount
-             
-    
-    def __searchFilesMThreaded(self, directory):
-        """Recursively scans the file system to find audio files and add them to the tree"""
-        #print directory
-        threadsNum = 4
-        self.MTlist = [self.directory]
-        try:
-            fileList = os.listdir(directory)
-        except:
-            return list
-        
+            print '__searchFilesMThreaded : Error listing dir ' + str(directory)
+            return
+        Global.scanCount = 0
         slot = len(fileList)/threadsNum        
         for i in range(1,threadsNum):
             flist = fileList[ (i-1) * slot : i * slot ]
@@ -198,7 +158,47 @@ class Model:
                         self.MTlist.append(l)
             Global.PBcount += 1
             gtkTrick()
-            
+        Global.scanCount += 1
+        print Global.scanCount
+
+    def __searchFiles(self, directory):
+        """Recursively scans the file system to find audio files and add them to the tree"""
+        #print directory
+        list = [self.directory]
+        try:
+            fileList = os.listdir(directory)
+        except:
+            print "error reading " + directory + '/'
+            return list
+        for fileName in fileList:
+            if os.access((os.path.join(directory, fileName)), os.R_OK) and fileName[0] != '.':
+                try:
+                    filestat = os.stat(os.path.join(directory, fileName))
+                except:
+                    print "error reading " + directory + '/' + fileName
+                    Global.PBcount += 1
+                    continue
+                #print 'processing ' + fileName
+                if isAudio(fileName):
+                    list.append(AudioFile(directory, fileName).getAudioFileInfos())   
+                elif stat.S_ISDIR(filestat.st_mode):
+                    #print filestat.st_mtime
+                    l = self.__searchFiles(os.path.join(directory, fileName))
+                    if len(l) != 0:
+                        l.insert(0, fileName)
+                        list.append(l)
+            Global.PBcount += 1
+            gtkTrick()
+
+        return list  
+    
+    def __waitSearch(self, threadsNum):
+        while Global.scanCount == 0:
+            gtkTrick()
+        while Global.scanCount < threadsNum:
+            time.sleep(0.1)
+            gtkTrick()
+              
     def __updateProgressBar(self, par1 = None, par2 = None):
         """Updates the progress bar that shows the current status of the scan"""
         if self.progressBar != None:
@@ -222,11 +222,12 @@ class Model:
         Global.PBcount = 0
         threading.Thread(target=self.__updateProgressBarThreaded).start()
         gobject.idle_add(self.__updateModel, self.getAudioFileList(), self.directory)
-        self.__waitSearch()
+        self.__waitSearch(1)
         self.lastUpdate = time.time()
         
     def __updateModel(self, fileTree, dir):
         
+        Global.scanCount = 0
         if not os.path.exists(dir):
             return
         fileList = os.listdir(dir)
@@ -267,4 +268,5 @@ class Model:
                 print 'adding new file ' + element
                 fileTree.append(AudioFile(dir, element).getAudioFileInfos())
                 self.changed = True
+        Global.scanCount += 1
      

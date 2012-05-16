@@ -102,8 +102,8 @@ class Controller:
             self.folders = folderChooser.get_filenames()
             self.folder = folderChooser.get_current_folder()
             if old != self.folders:
-                if False not in [True for f in self.folders if os.stat(f).st_uid == os.getuid()]:
-                    self.__reBuildViewTree()
+                #if False not in [True for f in self.folders if os.stat(f).st_uid == os.getuid()]:
+                self.__reBuildViewTree()
             else:
                 self.view.vbox.remove(self.view.progressBar)
                 self.refreshTree(update = False)
@@ -114,14 +114,16 @@ class Controller:
     
     def __reBuildViewTree(self):
         """Creates a new Model using the current folder"""
+        self.view.filesTree.buttons.set_sensitive(False)
         if len(self.folders) == 1:
             self.model = Model([self.folders[0]], self.view.progressBar)
         else:
-            self.model = Model(self.folders, self.view.progressBar, True)
+            self.model = Model(self.folders, self.view.progressBar, group=True)
         self.saveCache()
         self.__refreshViewTree()
         self.view.vbox.remove(self.view.progressBar)
         self.model.lastUpdate = time.time()
+        self.view.filesTree.buttons.set_sensitive(True)        
 
     def loadLibrary(self):
         Global.PBcount = 0
@@ -223,7 +225,7 @@ class Controller:
     def refreshTree(self, widget = None, data = None, update = True):
         """Refreshes the Model and the file browser treeView"""
         self.view.vbox.pack_start(self.view.progressBar, False)
-        self.view.progressBar.pulse()
+        #self.view.progressBar.pulse()
         self.view.statusbar.push(0, 'Updating library...')
         gtkTrick()
         if update: self.model.updateModel()

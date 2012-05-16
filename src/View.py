@@ -127,7 +127,7 @@ class View(gtk.Window):
             if self.model.getAudioFileList()[1] != 'Group':
                 self.control.refreshTree()
         except:
-            print "filelist Group error"
+            print "filelist is a multiple selection"
         
         self.statusbar.set_size_request(0,14)
         

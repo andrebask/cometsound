@@ -59,29 +59,11 @@ import SortFunctions
 import AF
 
 from threading import Thread, Lock, Event
-from multiprocessing import Manager
+from multiprocessing import Manager, cpu_count
 from HTMLParser import HTMLParser
 from Queue import Queue
 
-#from AlbumCover import CoverUpdater, NotifyUpdater, Global
-#from AF import AudioFile
 from Translator import t
-#from Scrobbler import Scrobbler, md5, pylastInstalled
-#from TagsEditorDialog import TagsEditor
-#from SearchBox import SearchBox
-#from Player import PlayerThread
-#from View import defaultSettings
-#from Model import Model, audioTypes
-#from Dialogs import AboutDialog, PreferencesDialog, SavePlaylistDialog
-#from Playlist import PlaylistFrame
-#from FileBrowser import FilesFrame
-#from Model import audioTypes
-#from AlbumCover import AlbumImage, Global
-#from Model import Model, 
-#from Model import isAudio
-#from View import View
-#from Controller import Controller
-#from DbusService import DbusService
 
 APP_VERSION = '0.4'
 APP_NAME = "cometsound"
@@ -169,8 +151,10 @@ Global.notificationChanged = False
 Global.filename = ()
 Global.albumArtist = '', ''
 Global.PBcount = 0
+Global.scanCount = 0
 globalLock = Lock()
 
+cpunum = cpu_count()
 
 def writeSettings(newsettings):
     """Stores the settings to a file serializing the settings dict"""
