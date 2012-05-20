@@ -100,7 +100,7 @@ class Model:
                     self.directory = ''
             self.MTlist = [self.directory]
             self.__searchFilesMThreaded(self.directory, cpunum)
-            self.__waitSearch(cpunum)
+            self.__waitSearch(self.threadsUsed)
             self.audioFileList = self.MTlist
         else:
             
@@ -127,14 +127,17 @@ class Model:
             print '__searchFilesMThreaded : Error listing dir ' + str(directory)
             return
         Global.scanCount = 0
+        self.threadsUsed = 0
         slot = len(fileList)/threadsNum        
         for i in range(1,threadsNum):
             flist = fileList[ (i-1) * slot : i * slot ]
             if len(flist) > 0:
                 gobject.idle_add(self.__searchFilesList, directory, flist)
+                self.threadsUsed += 1 
         flist = fileList[ slot * (threadsNum-1) : ]
         if len(flist) > 0:
             gobject.idle_add(self.__searchFilesList, directory, flist)
+            self.threadsUsed += 1
         
     def __searchFilesList(self, directory, fileList):
         """Recursively scans the file system to find audio files and add them to the tree"""
@@ -159,7 +162,7 @@ class Model:
             Global.PBcount += 1
             gtkTrick()
         Global.scanCount += 1
-        print Global.scanCount
+        #print Global.scanCount
 
     def __searchFiles(self, directory):
         """Recursively scans the file system to find audio files and add them to the tree"""
@@ -195,7 +198,7 @@ class Model:
     def __waitSearch(self, threadsNum):
         while Global.scanCount == 0:
             gtkTrick()
-        while Global.scanCount < threadsNum:
+        while Global.scanCount < self.threadsUsed:
             time.sleep(0.1)
             gtkTrick()
               
