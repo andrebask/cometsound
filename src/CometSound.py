@@ -1,5 +1,5 @@
 ##
-#    Project: CometSound - A music player written in Python 
+#    Project: CometSound - A music player written in Python
 #    Author: Andrea Bernardini <andrebask@gmail.com>
 #    Copyright: 2010-2012 Andrea Bernardini
 #    License: GPL-2+
@@ -32,7 +32,7 @@ from DbusService import DbusService
 
 #Gives a Name to the main process
 spt.setproctitle('CometSound')
-        
+
 def main():
     gtk.main()
     return 0
@@ -43,4 +43,4 @@ if __name__ == "__main__":
     c = Controller(m)
     View(m, c)
     DbusService(c)
-    main() 
+    main()

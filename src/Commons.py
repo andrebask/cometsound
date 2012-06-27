@@ -1,5 +1,5 @@
 ##
-#    Project: CometSound - A music player written in Python 
+#    Project: CometSound - A music player written in Python
 #    Author: Andrea Bernardini <andrebask@gmail.com>
 #    Copyright: 2010-2012 Andrea Bernardini
 #    License: GPL-2+
@@ -73,7 +73,7 @@ _ = t.getTranslationFunc()
 cacheDir = os.path.join(os.environ.get('HOME', None), ".cometsound")
 
 defaultSettings = {'audiosink': 'autoaudiosink',
-                    'statusicon': 0,    
+                    'statusicon': 0,
                     '#': True,
                      _('Title'): True,
                      _('Artist'): True,
@@ -81,7 +81,7 @@ defaultSettings = {'audiosink': 'autoaudiosink',
                        _('Genre'): True,
                         _('Year'): True,
                         'lastplaylist': True,
-                        'foldercache': True, 
+                        'foldercache': True,
                         'scrobbler': False,
                         'user': '',
                         'pwdHash': '',
@@ -94,7 +94,7 @@ defaultSettings = {'audiosink': 'autoaudiosink',
 
 def readSettings():
     """Loads the settings from the settings file"""
-    try: 
+    try:
         FILE = open(os.path.join(cacheDir, 'settings'),'rb')
         settings = cerealizer.load(FILE)
         FILE.close()
@@ -110,10 +110,10 @@ def readSettings():
 def gtkTrick():
     while gtk.events_pending():
         gtk.main_iteration()
-        
+
 def registerClasses():
     """Registers the classes to serialize"""
-    cerealizer.register(AF.AudioFileInfos)            
+    cerealizer.register(AF.AudioFileInfos)
 
 def getArg():
     """Gets the arguments passed to the program"""
@@ -127,14 +127,14 @@ def getArg():
         list.append('')
     return list
 
-audioTypes = ['.mp3', '.wma', '.ogg', '.flac', 
+audioTypes = ['.mp3', '.wma', '.ogg', '.flac',
             '.m4a', '.mp4', '.aac', '.wav',
              '.ape', '.mpc', '.wv']
-        
+
 def isAudio(fileName):
     i = fileName.rfind('.')
     ext = string.lower(fileName[i:])
-    return ext in audioTypes 
+    return ext in audioTypes
 
 
 #Loading settings
@@ -170,7 +170,7 @@ def writeSettings(newsettings):
 #Controls if the program is already running
 #Is allowed a single instance
 dir = os.path.join(os.environ.get('HOME', None), '.cometsound')
-pidFile = os.path.join(dir, 'program.pid') 
+pidFile = os.path.join(dir, 'program.pid')
 if not os.path.exists(dir):
     os.makedirs(dir)
 fp = open(pidFile, 'w')
@@ -182,10 +182,10 @@ except IOError:
     for arg in getArg():
         if isAudio(arg):
             addTrack = dbus.SessionBus().get_object('com.thelinuxroad.cometsound', '/com/thelinuxroad/CometSound').get_dbus_method("addTrack")
-            addTrack(arg)     
+            addTrack(arg)
     if len(getArg()) == 1:
         if getArg()[0]=='':
-            sys.exit(0)   
+            sys.exit(0)
     play = dbus.SessionBus().get_object('com.thelinuxroad.cometsound', '/com/thelinuxroad/CometSound').get_dbus_method("play")
     play()
     sys.exit(0)

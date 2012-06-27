@@ -1,5 +1,5 @@
 ##
-#    Project: CometSound - A music player written in Python 
+#    Project: CometSound - A music player written in Python
 #    Author: Andrea Bernardini <andrebask@gmail.com>
 #    Copyright: 2010-2012 Andrea Bernardini
 #    License: GPL-2+
@@ -43,20 +43,20 @@ columns = [_('Name'), '#', _('Title'), _('Artist'),
 
 class View(gtk.Window):
     """Main GTK+ window"""
-    
-    formatDict = {'mp3': True, 'wma': True, 'ogg': True, 'flac': True, 
+
+    formatDict = {'mp3': True, 'wma': True, 'ogg': True, 'flac': True,
                   'm4a': True, 'mp4': True, 'aac': True, 'wav': True,
                   'ape': True, 'mpc': True, 'wv': True}
-        
+
     def __init__(self, model, control):
-        
+
         gtk.Window.__init__(self)
         self.model = model
         self.control = control
         self.set_title('CometSound')
         self.control.registerView(self)
-        
-        
+
+
         # Create the toplevel window
         self.connect('destroy', lambda w: self.destroy())
         self.minwidth = 733 #int(self.get_screen().get_width() / 2.5)
@@ -71,7 +71,7 @@ class View(gtk.Window):
             framepos = int(self.minwidth * 0.7)
             self.volume = 10
         self.set_size_request(self.minwidth, self.minheight)
-        self.resize(self.width, self.height) 
+        self.resize(self.width, self.height)
         self.set_position(gtk.WIN_POS_CENTER)
         self.connect('expose-event', self.storeSize)
         self.icon = gtk.Image()
@@ -79,17 +79,17 @@ class View(gtk.Window):
         self.pix = self.icon.get_pixbuf().scale_simple(48, 48, gtk.gdk.INTERP_BILINEAR)
         self.set_icon(self.pix)
         self.tray = None
-        
+
         self.createSlider()
-        
+
         self.createPrimaryToolbar()
-        
+
         self.setStatusIcon()
-        
+
         self.columns = columns
         self.filesTree = FilesFrame(None, self.control, self.formatDict, self.columns)
         self.playlistFrame = PlaylistFrame(self.control)
-        
+
         self.framebox.pack1(self.filesTree)
         self.framebox.pack2(self.playlistFrame, False, False)
         self.framebox.set_position(framepos)
@@ -100,8 +100,8 @@ class View(gtk.Window):
         sbar = gtk.Statusbar()
         sbar.set_size_request(0,20)
         self.statusbar = sbar
-        
-        self.vbox.set_spacing(0)                             
+
+        self.vbox.set_spacing(0)
         self.vbox.pack_start(self.menubar, False)
         self.vbox.pack_start(self.imageToolbar, False)
         self.vbox.pack_start(self.hbox, False)
@@ -109,12 +109,12 @@ class View(gtk.Window):
         self.vbox.pack_start(sbar, False)
         self.vbox.pack_start(self.progressBar, False)
         self.show_all()
-        
+
         if self.control.settings['scrobbler']:
             self.scrobblerButton.show()
         else:
-            self.scrobblerButton.hide()        
-        
+            self.scrobblerButton.hide()
+
         self.progressBar.pulse()
         self.statusbar.push(0, 'Loading library...')
         gtkTrick()
@@ -122,15 +122,15 @@ class View(gtk.Window):
         self.filesTree.treeview.grab_focus()
         self.statusbar.pop(0)
         self.vbox.remove(self.progressBar)
-        
+
         try:
             if self.model.getAudioFileList()[1] != 'Group':
                 self.control.refreshTree()
         except:
             print "filelist is a multiple selection"
-        
+
         self.statusbar.set_size_request(0,14)
-        
+
         if self.model.playlist != None:
             self.control.playStopSelected()
         try:
@@ -138,13 +138,13 @@ class View(gtk.Window):
             self.changeView(None, None, self.control.settings['view'])
         except:
             pass
-        
+
     def createPrimaryToolbar(self):
-        """Builds the toolbar of menus and the section 
+        """Builds the toolbar of menus and the section
             that shows the track informations"""
         self.vbox = gtk.VBox()
-        self.add(self.vbox)       
-        
+        self.add(self.vbox)
+
         self.hbox = gtk.HBox()
         self.framebox = gtk.HPaned()
         # Create a UIManager instance
@@ -158,7 +158,7 @@ class View(gtk.Window):
         actiongroup = gtk.ActionGroup('UIManagerExample')
         self.actiongroup = actiongroup
 
-        
+
         # Create actions
         actiongroup.add_actions([('Quit', gtk.STOCK_QUIT, _('_Quit'), None, _('Quit the program'), self.quit),
                                  ('Open', gtk.STOCK_OPEN, _('_Open folder...'), None, _('Open media folder'), self.control.openFolder),
@@ -174,7 +174,7 @@ class View(gtk.Window):
                                  ('Help', None, _('_Help')),
                                  ('About', gtk.STOCK_ABOUT, _('About CometSound'), None, _('About CometSound'), self.showAboutDialog)
                                  ])
-        
+
         actions = self.control.readPlaylists()
         uilist = ''
         for act in actions:
@@ -190,11 +190,11 @@ class View(gtk.Window):
         list.sort()
         uitogglelist = ''
         for label in list:
-            uitogglelist = uitogglelist + '<menuitem action="%s"/>' % (label)    
-        try: 
-            viewNum = self.control.settings['view'] 
+            uitogglelist = uitogglelist + '<menuitem action="%s"/>' % (label)
+        try:
+            viewNum = self.control.settings['view']
             a = viewNum + 5
-        except: 
+        except:
             self.control.settings['view'] = 0
             viewNum = 0
         actiongroup.add_radio_actions([('Tree View', None, _('File View'), None, _('File System visualization'), 0),
@@ -225,7 +225,7 @@ class View(gtk.Window):
                                           <menu action="Playlists">
                                             <menuitem action="PlaylistsFolder"/>'''
                                             + uilist +
-                                      ''' </menu>                                          
+                                      ''' </menu>
                                           <menu action="Help">
                                             <menuitem action="About"/>
                                           </menu>
@@ -243,13 +243,13 @@ class View(gtk.Window):
                                         </ui>''')
         self.actiongroup = actiongroup
         self.uimanager = uimanager
-        
+
         # Create a MenuBar
         self.menubar = uimanager.get_widget('/MenuBar')
         toolbar = uimanager.get_widget('/ToolBar')
         imageToolbar = uimanager.get_widget('/ImageToolBar')
         #toolbar.set_size_request(170, 50)
-        
+
         # Create an Image to show the album's cover
         self.image = AlbumImage()
         box = gtk.HBox()
@@ -258,7 +258,7 @@ class View(gtk.Window):
         tv = gtk.ToolItem()
         tv.add(box)
         imageToolbar.insert(tv, 0)
-        
+
         # Create a Label to show track info
         self.label = gtk.Label()
         self.label.set_justify(gtk.JUSTIFY_LEFT)
@@ -273,7 +273,7 @@ class View(gtk.Window):
         tl.add(box)
         tl.set_expand(True)
         imageToolbar.insert(tl, 1)
-                
+
         # Create a button to control player volume
         self.volumeButton = gtk.VolumeButton()
         self.volumeButton.set_value(self.volume)
@@ -281,10 +281,10 @@ class View(gtk.Window):
         tv = gtk.ToolItem()
         tv.add(self.volumeButton)
         imageToolbar.insert(tv, 3)
-        
+
         self.scrobblerButton = gtk.Button()
         self.scrobblerButton.set_relief(gtk.RELIEF_NONE)
-        self.scrobblerButton.unset_flags(gtk.CAN_FOCUS) 
+        self.scrobblerButton.unset_flags(gtk.CAN_FOCUS)
         sIcon = gtk.Image()
         sIcon.set_from_file("images/love.png")
         si = sIcon.get_pixbuf().scale_simple(28, 28, gtk.gdk.INTERP_BILINEAR)
@@ -295,44 +295,44 @@ class View(gtk.Window):
         tv = gtk.ToolItem()
         tv.add(self.scrobblerButton)
         imageToolbar.insert(tv, 2)
-        
+
         tl = gtk.ToolItem()
         tl.add(self.slider)
         tl.set_expand(True)
         toolbar.insert(tl, -1)
-        
+
         tl = gtk.ToolItem()
         l = gtk.Label()
         l.set_size_request(19,0)
         tl.add(l)
         toolbar.insert(tl, 3)
-        
+
         tl = gtk.ToolItem()
         l = gtk.Label()
         l.set_size_request(9,0)
         tl.add(l)
         toolbar.insert(tl, 0)
-        
+
         tl = gtk.ToolItem()
         l = gtk.Label()
         l.set_size_request(12,0)
         tl.add(l)
         toolbar.insert(tl, -1)
-        
+
         tl = gtk.ToolItem()
         l = gtk.Label()
         l.set_size_request(7,0)
         tl.add(l)
         imageToolbar.insert(tl, -1)
-        
+
         self.imageToolbar = imageToolbar
         self.hbox.pack_start(toolbar, True)
-    
+
     def updatePlaylistsMenu(self, newPlaylist):
         self.actiongroup.add_actions([(newPlaylist, None, newPlaylist, None, None, self.control.loadPlaylist)])
         merge_id = self.uimanager.new_merge_id()
         self.uimanager.add_ui(merge_id, 'ui/MenuBar/Playlists', newPlaylist, newPlaylist, gtk.UI_MANAGER_MENUITEM, False)
-        
+
     def changeView(self, radioaction, current, value = None):
         self.filesTree.removeTagToolbar()
         self.filesTree.treeview.get_column(0).set_title(_('Name'))
@@ -345,7 +345,7 @@ class View(gtk.Window):
             self.framebox.hide()
             self.statusbar.hide()
             self.set_size_request(self.minwidth - 100, 200)
-            self.resize(self.minwidth - 100, 200) 
+            self.resize(self.minwidth - 100, 200)
             self.set_resizable(False)
         elif value == 0:
             self.filesTree.setStore(self.filesTree.treeStore)
@@ -362,10 +362,10 @@ class View(gtk.Window):
                 self.resize(self.previousWidht, self.previousHeight)
                 self.set_resizable(True)
         self.control.settings['view'] = value
-            
+
     def createSlider(self):
         """Creates the slider to show the player progress"""
-        
+
         self.adjustment = gtk.Adjustment(0.0, 0.00, 100.0, 0.1, 1.0, 1.0)
         hscale = gtk.HScale(self.adjustment)
         hscale.set_digits(2)
@@ -377,66 +377,66 @@ class View(gtk.Window):
         hscale.connect('format-value', self.control.sliderFormat)
         self.slider = hscale
         self.slider.set_sensitive(False)
-    
+
     def createButton(self, imageStock, tooltip, func, data = None):
         Icon = gtk.Image()
-        Icon.set_from_stock(imageStock, gtk.ICON_SIZE_SMALL_TOOLBAR) 
+        Icon.set_from_stock(imageStock, gtk.ICON_SIZE_SMALL_TOOLBAR)
         B = gtk.Button()
         B.add(Icon)
         B.set_tooltip_text(tooltip)
-        B.connect("clicked", func, data)        
+        B.connect("clicked", func, data)
         return B
-    
+
     def setStatusIcon(self):
         """Builds the status icon"""
         pix = self.pix
         try:
             mode = self.control.settings['statusicon']
         except:
-            mode = 0    
+            mode = 0
         if self.tray != None:
             self.tray.set_visible(False)
-        if mode != 2:    
+        if mode != 2:
             self.tray = gtk.StatusIcon()
             pix = pix.scale_simple(20, 20, gtk.gdk.INTERP_BILINEAR)
             self.tray.set_from_pixbuf(pix)
-            self.tray.connect('popup-menu', self.openMenu) 
-            self.tray.connect('activate', self.minimize) 
-            
+            self.tray.connect('popup-menu', self.openMenu)
+            self.tray.connect('activate', self.minimize)
+
         statusMenu = gtk.Menu()
         if self.control.settings['statusicon'] == 0:
             self.menulabel = gtk.MenuItem(self.label.get_text())
             statusMenu.append(self.menulabel)
-            
+
             sep = gtk.SeparatorMenuItem()
             sep.show()
             statusMenu.append(sep)
-        
+
         statusPlay = gtk.CheckMenuItem(_('Play'))
         statusPlay.set_active(self.control.playerThread.playing)
         statusPlay.show()
         statusMenu.append(statusPlay)
         statusPlay.connect('toggled', self.control.playStopSelected)
-        self.statusPlay = statusPlay 
-        
+        self.statusPlay = statusPlay
+
         next = gtk.MenuItem(_('Next'))
         next.show()
         statusMenu.append(next)
         next.connect('activate', self.control.nextTrack)
-        
+
         previous = gtk.MenuItem(_('Previous'))
         previous.show()
         statusMenu.append(previous)
         previous.connect('activate', self.control.previousTrack)
-        
+
         quit = gtk.MenuItem(_('Quit'))
         quit.show()
         statusMenu.append(quit)
-        quit.connect('activate', self.quit)    
-        self.statusMenu = statusMenu    
-    
-    def openMenu(self, icon, event_button, event_time):  
-        """Shows the status icon"""  
+        quit.connect('activate', self.quit)
+        self.statusMenu = statusMenu
+
+    def openMenu(self, icon, event_button, event_time):
+        """Shows the status icon"""
         if self.label.get_text() != '\n\n' and self.control.settings['statusicon'] == 0:
             self.statusMenu.remove(self.menulabel)
             self.menulabel = gtk.MenuItem(self.label.get_text())
@@ -447,20 +447,20 @@ class View(gtk.Window):
             self.statusMenu.prepend(self.menulabel)
         self.statusMenu.popup(None, None, gtk.status_icon_position_menu,
                    event_button, event_time, self.tray)
-            
+
     def minimize(self, obj = None):
         if self.get_visible():
             self.hide()
         else:
             self.show()
-        
+
     def openPreferences(self, obj = None):
         try:
             p = PreferencesDialog(self.columns, self.control, self.control.settings)
         except:
             self.control.settings = defaultSettings
             p = PreferencesDialog(self.columns, self.control, defaultSettings)
-            
+
     def openPlaylistFolder(self, widget, data=None):
         """Opens the folder of the saved playlists"""
         cacheDir = os.path.join(os.environ.get('HOME', None), ".cometsound")
@@ -468,34 +468,34 @@ class View(gtk.Window):
         if not os.path.exists(dir):
             os.makedirs(dir)
         os.system('xdg-open %s' % dir)
-    
+
     def savePlaylistDialog(self, widget, data=None):
         d = SavePlaylistDialog(self.control)
-        
+
     def getFormatDict(self):
-        return self.formatDict     
-    
+        return self.formatDict
+
     def setButtonPlay(self):
         """Sets the button to "play" during playing"""
         self.actiongroup.get_action('Play/Stop').set_stock_id(gtk.STOCK_MEDIA_PLAY)
-        self.actiongroup.get_action('Play/Stop').set_tooltip(_('Play'))    
-        
+        self.actiongroup.get_action('Play/Stop').set_tooltip(_('Play'))
+
     def setButtonPause(self):
         """Sets the button to "pause" """
         self.actiongroup.get_action('Play/Stop').set_stock_id(gtk.STOCK_MEDIA_PAUSE)
         self.actiongroup.get_action('Play/Stop').set_tooltip(_('Pause'))
-    
+
     def storeSize(self, widget, event):
         all = widget.get_allocation()
         self.width, self.height = all.width, all.height
-    
+
     def showAboutDialog(self, o):
         ad = AboutDialog(self.icon, APP_VERSION)
-        
-            
+
+
     def quit(self, obj = None):
         self.destroy()
-        
+
     def destroy(self):
         """Handles the program shutdown"""
         self.hide()
@@ -513,4 +513,4 @@ class View(gtk.Window):
         if self.control.playerThread.isAlive():
             self.control.playerThread.terminate()
         gtk.main_quit()
-        
+

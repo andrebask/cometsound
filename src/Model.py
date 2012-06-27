@@ -1,5 +1,5 @@
 ##
-#    Project: CometSound - A music player written in Python 
+#    Project: CometSound - A music player written in Python
 #    Author: Andrea Bernardini <andrebask@gmail.com>
 #    Copyright: 2010-2012 Andrea Bernardini
 #    License: GPL-2+
@@ -38,10 +38,11 @@ class Model:
     """Data structure that represents the file system tree"""
     audioFileList = list()
     count = 0
-        
+
     def __init__(self, directoryList, progressBar = None, group = False):
         self.progressBar = progressBar
         self.numOfFiles = 0
+        self.threadsUsed = 0
         self.changed = False
         self.MTlist = []
         settings = readSettings()
@@ -51,21 +52,21 @@ class Model:
         try:
             self.lastUpdate = os.path.getmtime(self.cachefname)
         except:
-            self.lastUpdate = 0    
+            self.lastUpdate = 0
         self.setDir(directoryList, group)
-     
+
     def getAudioFileList(self):
-        return self.audioFileList   
-                
+        return self.audioFileList
+
     def getDir(self):
         return self.directory
-    
+
     def setDir(self, directoryList, group = False):
         """Sets the directory to scan, calculates the number of files,
            and builds the file system tree (using __searchFiles method)"""
-        self.directory = directoryList[0]  
-        if self.directory == '' and not group:  
-            try: 
+        self.directory = directoryList[0]
+        if self.directory == '' and not group:
+            try:
                 FILE = open(self.cachefname, 'rb')
                 self.audioFileList = cerealizer.load(FILE)
                 FILE.close()
@@ -75,8 +76,8 @@ class Model:
                     raise Exception
             except:
                 self.directory = ''
-                #print sys.exc_info()  
-            self.playlist = None  
+                #print sys.exc_info()
+            self.playlist = None
             return
         else:
             try:
@@ -93,7 +94,7 @@ class Model:
                     cfname, title, album, arist = tv[0], tv[2], tv[4], tv[3]
                     self.playlist.append((cfname, title, album, arist))
             if isAudio(directoryList[0]):
-                index = self.directory.rfind("/")    
+                index = self.directory.rfind("/")
                 if self.numOfFiles < 200:
                     self.directory = self.directory[:index]
                 else:
@@ -103,21 +104,21 @@ class Model:
             self.__waitSearch(self.threadsUsed)
             self.audioFileList = self.MTlist
         else:
-            
+
             for dir in directoryList:
                 self.numOfFiles += sum((len(f) for _, _, f in os.walk(dir)))
-            self.fraction = float(1) / self.numOfFiles               
-            
+            self.fraction = float(1) / self.numOfFiles
+
             groupdir = directoryList[0][:directoryList[0].rfind("/")]
             self.audioFileList = [groupdir, 'Group']
             for folder in directoryList:
                 self.MTlist = []
                 dirname = folder[folder.rfind("/") + 1:]
                 self.numOfFiles = sum((len(f) for _, _, f in os.walk(folder)))
-                self.__searchFilesMThreaded(folder)   
-                self.__waitSearch(1)            
-                self.audioFileList.append([dirname] + self.MTlist)            
-                
+                self.__searchFilesMThreaded(folder)
+                self.__waitSearch(1)
+                self.audioFileList.append([dirname] + self.MTlist)
+
     def __searchFilesMThreaded(self, directory, threadsNum = 1):
         """Recursively scans the file system to find audio files and add them to the tree"""
         #print directory
@@ -128,17 +129,17 @@ class Model:
             return
         Global.scanCount = 0
         self.threadsUsed = 0
-        slot = len(fileList)/threadsNum        
+        slot = len(fileList)/threadsNum
         for i in range(1,threadsNum):
             flist = fileList[ (i-1) * slot : i * slot ]
             if len(flist) > 0:
                 gobject.idle_add(self.__searchFilesList, directory, flist)
-                self.threadsUsed += 1 
+                self.threadsUsed += 1
         flist = fileList[ slot * (threadsNum-1) : ]
         if len(flist) > 0:
             gobject.idle_add(self.__searchFilesList, directory, flist)
             self.threadsUsed += 1
-        
+
     def __searchFilesList(self, directory, fileList):
         """Recursively scans the file system to find audio files and add them to the tree"""
         #print directory
@@ -152,7 +153,7 @@ class Model:
                     continue
                 #print 'processing ' + fileName
                 if isAudio(fileName):
-                    self.MTlist.append(AudioFile(directory, fileName).getAudioFileInfos())   
+                    self.MTlist.append(AudioFile(directory, fileName).getAudioFileInfos())
                 elif stat.S_ISDIR(filestat.st_mode):
                     #print filestat.st_mtime
                     l = self.__searchFiles(os.path.join(directory, fileName))
@@ -183,7 +184,7 @@ class Model:
                     continue
                 #print 'processing ' + fileName
                 if isAudio(fileName):
-                    list.append(AudioFile(directory, fileName).getAudioFileInfos())   
+                    list.append(AudioFile(directory, fileName).getAudioFileInfos())
                 elif stat.S_ISDIR(filestat.st_mode):
                     #print filestat.st_mtime
                     l = self.__searchFiles(os.path.join(directory, fileName))
@@ -193,32 +194,32 @@ class Model:
             Global.PBcount += 1
             gtkTrick()
 
-        return list  
-    
+        return list
+
     def __waitSearch(self, threadsNum):
         while Global.scanCount == 0:
             gtkTrick()
         while Global.scanCount < self.threadsUsed:
             time.sleep(0.1)
             gtkTrick()
-              
+
     def __updateProgressBar(self, par1 = None, par2 = None):
         """Updates the progress bar that shows the current status of the scan"""
         if self.progressBar != None:
             self.progressBar.set_fraction(self.__truncate(Global.PBcount * self.fraction))
             #self.progressBar.set_text(str(self.count * self.fraction)[2:4] + "%")
-            
+
     def __updateProgressBarThreaded(self):
         """Updates the progress bar that shows the current status of the scan"""
         while Global.PBcount < self.numOfFiles:
             #print self.__truncate(Global.PBcount * self.fraction)
             gobject.idle_add(self.__updateProgressBar)
             time.sleep(.01)
-                
+
     def __truncate(self, i):
         if i < 1: return i
         else: return 1.0
-        
+
     def updateModel(self):
         """Searches in the file system recently changed or added files to update the model"""
         self.changed = False
@@ -227,9 +228,9 @@ class Model:
         gobject.idle_add(self.__updateModel, self.getAudioFileList(), self.directory)
         self.__waitSearch(1)
         self.lastUpdate = time.time()
-        
+
     def __updateModel(self, fileTree, dir):
-        
+
         Global.scanCount = 0
         if not os.path.exists(dir):
             return
@@ -272,4 +273,4 @@ class Model:
                 fileTree.append(AudioFile(dir, element).getAudioFileInfos())
                 self.changed = True
         Global.scanCount += 1
-     
+

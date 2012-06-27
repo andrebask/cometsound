@@ -1,5 +1,5 @@
 ##
-#    Project: CometSound - A music player written in Python 
+#    Project: CometSound - A music player written in Python
 #    Author: Andrea Bernardini <andrebask@gmail.com>
 #    Copyright: 2010-2012 Andrea Bernardini
 #    License: GPL-2+
@@ -36,7 +36,7 @@ from Commons import string
 from Commons import os
 from Commons import sys
 
-fname = "fileName"	
+fname = "fileName"
 keyList = ["title", "artist", "album", "genre", "year", "num"]
 formatDict = dict()
 formatDict['mp3'] = ["title", "artist", "album", "genre", "date", "tracknumber"]
@@ -62,10 +62,10 @@ class AudioFile:
 		self.keyDict = dict()
 		self.directoryName = directory + '/'
 		self.cfname = os.path.join(directory, fileName)
-		self.__readAudioFile(self.cfname)	
-			
+		self.__readAudioFile(self.cfname)
+
 	def __readAudioFile(self, fileName):
-		"""Detects the file extension, reads and stores tags""" 
+		"""Detects the file extension, reads and stores tags"""
 		try:
 			tags, fileext = self.read(fileName)
 			self.supported = True
@@ -73,7 +73,7 @@ class AudioFile:
 			for key in keyList:
 				self.tagsDict[key] = ''
 			self.supported = False
-			#print sys.exc_info()	
+			#print sys.exc_info()
 		else:
 			tagList = formatDict[string.lower(fileext)]
 			list = [(keyList[0], tagList[0]),
@@ -83,7 +83,7 @@ class AudioFile:
 					(keyList[4], tagList[4]),
 					(keyList[5], tagList[5])
 					]
-			
+
 #			list = [(key, keyTag) for key in keyList for keyTag in formatDict[string.lower(fileext)]
 #					 if keyList.index(key) == formatDict[string.lower(fileext)].index(keyTag)]
 			for couple in list:
@@ -92,22 +92,22 @@ class AudioFile:
 				except:
 					self.tagsDict[couple[0]] = ''
 				self.keyDict[couple[0]] = couple[1]
-	
-	def read(self, fileName):	
-		"""Reads tags from the file using the mutagen module"""	
+
+	def read(self, fileName):
+		"""Reads tags from the file using the mutagen module"""
 		fileext = fileName.split('.')[-1:][0]
 		fileext = fileext.lower()
 		if fileext == 'mp3':
-			tags = EasyID3(fileName)			
+			tags = EasyID3(fileName)
 		elif fileext == 'wma':
-			tags = ASF(fileName)			
+			tags = ASF(fileName)
 		elif fileext == 'ogg':
 			try:
 				tags = OggVorbis(fileName)
-			except OggError:	
+			except OggError:
 				tags = OggFLAC(fileName)
 			except:
-				tags = OggSpeex(fileName)					
+				tags = OggSpeex(fileName)
 		elif fileext == 'flac':
 			tags = FLAC(fileName)
 		elif fileext in ['wav', 'wv']:
@@ -123,10 +123,10 @@ class AudioFile:
 			tags = EasyMP4(fileName)
 			#print tags.keys()
 		return tags, fileext
-	
+
 	def getAudioFileInfos(self):
 		return AudioFileInfos(self.tagsDict, self.directoryName)
-				
+
 	def getTagValues(self):
 		"""Returns a list with the tag values:
 		   file name, title, artist, album, genre, year, track number"""
@@ -139,12 +139,12 @@ class AudioFile:
                 self.getTagValue(keyList[3]),
                 self.getTagValue(keyList[4]),
                 ]
-		
-	
+
+
 	def getTagValue(self, key):
-		"""Returns the specific tag associated with the given key""" 
+		"""Returns the specific tag associated with the given key"""
 		return self.tagsDict[key]
-	
+
 	def writeTagValue(self, key, value):
 		"""Writes tags to the file using the mutagen module"""
 		tags, fileext = self.read(self.cfname)
@@ -155,8 +155,8 @@ class AudioFile:
 
 	def getDir(self):
 		"""Returns the name of this file's directory"""
-		return self.directoryName	
-	
+		return self.directoryName
+
 class AudioFileInfos:
 	"""Data structure that stores tags"""
 
@@ -173,7 +173,7 @@ class AudioFileInfos:
                 	    )
 		self.directoryName = directory
 		self.cfname = os.path.join(directory, tagsdict[fname])
-				
+
 	def getTagValues(self):
 		"""Returns a list with the tag values:
 		   file name, title, artist, album, genre, year, track number"""
@@ -181,4 +181,4 @@ class AudioFileInfos:
 
 	def getDir(self):
 		"""Returns the name of this file's directory"""
-		return self.directoryName	
+		return self.directoryName
