@@ -1,0 +1,13 @@
+Source: cometsound
+Section: sound
+Priority: extra
+Maintainer: Andrea Bernardini <andrebask@gmail.com>
+Build-Depends: cdbs (>= 0.4.49), debhelper (>= 7), python2.7, python-support
+Standards-Version: 3.9.1
+Homepage: http://launchpad.net/cometsound
+
+Package: cometsound
+Architecture: all
+Depends: python (>= 2.6), python-gtk2 (>= 2.21), python-mutagen (>= 1.19), python-gst0.10 (>=0.10.19), python-gobject (>= 2.21.5), python-cerealizer (>= 0.7), python-notify (>= 0.1.1), python-setproctitle (>= 1.0.1), python-dbus (>= 0.83.0)
+Suggests: pylast (>= 0.5.9), gstreamer0.10-plugins-bad
+Description: Description: GTK+ music player written in python

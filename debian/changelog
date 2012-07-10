@@ -1,0 +1,107 @@
+cometsound (0.4-9) precise; urgency=low
+
+  * random crash issue fixed
+  * better thread management
+  * library mode
+  * various fixies
+  
+ -- Andrea Bernardini <andrebask@gmail.com>  Sat, 24 Dec 2011 22:18:50 +0100
+
+cometsound (0.3.3-18) maverick; urgency=low
+
+  * New Views system
+  * Efficiency improved
+  * Last.fm Scrobbler
+  * Multiple selection in file browser and in file selection
+
+ -- Andrea Bernardini <andrebask@gmail.com>  Tue, 29 Mar 2011 22:18:50 +0100
+
+cometsound (0.3.2) maverick; urgency=low
+
+  * New search system
+  * Album Art display 
+  * Album Art downloading from last.fm
+  * File playing from nautilus
+  * New icon
+  * Various bug fixies 
+
+ -- Andrea Bernardini <andrebask@gmail.com>  Mon, 20 Dec 2010 16:38:50 +0100
+
+cometsound (0.3.1) maverick; urgency=low
+
+  * Solved crash problem related to old files of cache
+  * Solved some playback slider's bugs
+  * Fixed bug related to double-clicking during shuffle playback 
+
+ -- Andrea Bernardini <andrebask@gmail.com>  Sat, 20 Nov 2010 19:33:36 +0100
+
+cometsound (0.3) maverick; urgency=low
+
+  * Solved lots of GUI bugs
+  * Some code rewritten and optimized
+  * New shuffle system and repeat button
+  * Refresh button now works properly
+  * New formats supported:  .m4a, .mp4,
+    .aac(requires gstreamer0.10-plugins-bad), .wav, .ape, .mpc, .wv  
+  * Window's geometry and playlist restored at startup
+  * Added French translation (Thanks to Maxime Gentils)
+
+ -- Andrea Bernardini <andrebask@gmail.com>  Sat, 19 Nov 2010 19:33:36 +0100
+
+cometsound (0.2.1-0ubuntu1) maverick; urgency=low
+
+  * Media keys support (under Gnome)
+  * Brazilian Portuguese translation added (Thanks to Sergio Gabriel)
+  * Slovak translation added (Thanks to Dag Software)
+  * Player Bug fixies
+
+ -- Andrea Bernardini <andrebask@gmail.com>  Sat, 9 Nov 2010 19:33:36 +0100
+
+cometsound (0.2-0ubuntu1) maverick; urgency=low
+
+  * Gapless playback
+  * Tags Editor
+  * More efficient file browser refreshing
+  * Spanish language added
+  * Bug fixies
+
+ -- Andrea Bernardini <andrebask@gmail.com>  Sat, 5 Nov 2010 19:33:36 +0100
+
+cometsound (0.1.4-0ubuntu1) maverick; urgency=low
+
+  * Startup crash bug fixed
+
+ -- Andrea Bernardini <andrebask@gmail.com>  Sat, 29 Oct 2010 19:33:36 +0100
+
+cometsound (0.1.3-0ubuntu1) maverick; urgency=low
+
+  * New feature: now is possible to save a playlist and open it directly from the main menu
+  * Bug fixies and improvements related to notifications, search box, languages, status icon.
+
+ -- Andrea Bernardini <andrebask@gmail.com>  Sat, 27 Oct 2010 19:33:36 +0100
+
+cometsound (0.1.2-0ubuntu1) maverick; urgency=low
+
+  * new flac support
+  * new tray icon
+  * new search box
+  * bug fixes
+
+ -- Andrea Bernardini <andrebask@gmail.com>  Sat, 21 Oct 2010 19:33:36 +0100
+
+cometsound (0.1.1-0ubuntu1) maverick; urgency=low
+
+  * new preferences dialog, now is possible to change visible columns and the audio output.
+  * new about dialog.
+  * better ogg tags support.
+  * Italian translation
+  * some bug fixes
+
+ -- Andrea Bernardini <andrebask@gmail.com>  Sat, 17 Oct 2010 19:33:36 +0100
+
+cometsound (0.1-0ubuntu1) maverick; urgency=low
+
+  * This version can't read ogg vorbis tags.
+  * The Refresh button deselects all selected files in the file system view.
+
+ -- Andrea Bernardini <andrebask@gmail.com>  Sat, 10 Oct 2010 19:33:36 +0100
