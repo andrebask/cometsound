@@ -1,0 +1,55 @@
+*	To install (as superuser):
+	python setup.py install
+
+	files installed:
+
+	/usr/local/bin/cometsound
+	/usr/local/share/cometsound
+	/usr/local/share/applications/cometsound.desktop
+	/usr/local/share/cometsound/AF.py
+	/usr/local/share/cometsound/CometSound.py
+	/usr/local/share/cometsound/Controller.py
+	/usr/local/share/cometsound/Dialogs.py
+	/usr/local/share/cometsound/FileBrowser.py
+	/usr/local/share/cometsound/__init__.py
+	/usr/local/share/cometsound/MediaKeysHandler.py
+	/usr/local/share/cometsound/Model.py
+	/usr/local/share/cometsound/Player.py
+	/usr/local/share/cometsound/Playlist.py
+	/usr/local/share/cometsound/SearchBox.py
+	/usr/local/share/cometsound/SortFunctions.py
+	/usr/local/share/cometsound/TagsEditorDialog.py
+	/usr/local/share/cometsound/Translator.py
+	/usr/local/share/cometsound/View.py
+	/usr/local/share/cometsound/icon.png
+	/usr/local/share/cometsound/note.svg
+	/usr/local/share/doc/cometsound
+	/usr/local/share/doc/cometsound/COPYING
+	/usr/local/share/doc/cometsound/copyright
+	/usr/local/share/locale-langpack/"YOURSYSTEMLANGUAGE"/LC_MESSAGES/cometsound.mo
+
+*	To install in /usr instead of /usr/local (as superuser):
+	python setup.py install --install-layout=deb
+	
+	then you need to edit the /usr/bin/cometsound script and replace the content with:
+	######################
+	#!/bin/bash
+	echo "Usage: cometsound [Directory|Filelist]"
+	COMETSOUND_DIR=$PWD
+	export COMETSOUND_DIR
+	cd /usr/share/cometsound
+	env python CometSound.py "$@"
+	######################
+
+
+Dependances:
+	python2.6
+	python-gtk2
+	python-gst0.10
+	python-cerealizer
+	python-mutagen
+	python-notify
+	python-gobject
+	python-setproctitle
+	python-dbus
+	(gstreamer-plugins-bad for aac playback)

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=0.3.3
+Name=CometSound
+Comment=Gtk+ Music player
+Type=Application
+Comment[it_IT]=Player musicale scritto in python
+Exec=/usr/bin/cometsound
+Icon=/usr/share/cometsound/images/icon.png
+Terminal=false
+Categories=AudioVideo;GTK;
+MimeType=x-content/audio-player;application/x-ogg;application/ogg;audio/x-vorbis+ogg;audio/x-mp3;application/x-flac;audio/mp4;audio/x-m4a;audio/x-wavpack;audio/x-musepack;audio/x-ms-asf;audio/x-ape;audio/x-speex;audio/x-wavpack;
+
+Name[it_IT]=CometSound

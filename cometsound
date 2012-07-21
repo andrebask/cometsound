@@ -1,0 +1,6 @@
+#!/bin/bash
+echo "Usage: cometsound [Directory|Filelist]"
+COMETSOUND_DIR=$PWD
+export COMETSOUND_DIR
+cd /usr/share/cometsound
+env python CometSound.py "$@"
