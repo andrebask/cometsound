@@ -1,0 +1,333 @@
+# Malay translation for cometsound
+# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
+# This file is distributed under the same license as the cometsound package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: cometsound\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2011-03-05 00:10+0100\n"
+"PO-Revision-Date: 2012-09-04 04:08+0000\n"
+"Last-Translator: abuyop <Unknown>\n"
+"Language-Team: Malay <ms@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2012-09-05 04:59+0000\n"
+"X-Generator: Launchpad (build 15901)\n"
+
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:234
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:556
+msgid "from"
+msgstr "dari"
+
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:234
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:556
+msgid "by"
+msgstr "oleh"
+
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:473
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:30
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:114
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:224
+#: Programmazione/Python/workspace/CometSound/src/View.py:35
+#: Programmazione/Python/workspace/CometSound/src/View.py:41
+msgid "Title"
+msgstr "Tajuk"
+
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:474
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:31
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:91
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:96
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:101
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:120
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:228
+#: Programmazione/Python/workspace/CometSound/src/View.py:36
+#: Programmazione/Python/workspace/CometSound/src/View.py:43
+msgid "Album"
+msgstr "Album"
+
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:475
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:30
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:118
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:226
+#: Programmazione/Python/workspace/CometSound/src/View.py:35
+#: Programmazione/Python/workspace/CometSound/src/View.py:42
+msgid "Artist"
+msgstr "Artis"
+
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:476
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:31
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:92
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:97
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:102
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:222
+#: Programmazione/Python/workspace/CometSound/src/View.py:36
+#: Programmazione/Python/workspace/CometSound/src/View.py:45
+msgid "Year"
+msgstr "Tahun"
+
+#: Programmazione/Python/workspace/CometSound/src/Controller.py:477
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:31
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:230
+#: Programmazione/Python/workspace/CometSound/src/View.py:36
+#: Programmazione/Python/workspace/CometSound/src/View.py:44
+msgid "Genre"
+msgstr "Genre"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:48
+#: Programmazione/Python/workspace/CometSound/src/Playlist.py:85
+msgid "Save Playlist"
+msgstr "Simpan Senarai Main"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:50
+msgid "Insert playlist name:"
+msgstr "Sisip nama senarai main:"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:73
+msgid "CometSound preferences"
+msgstr "Keutamaan CometSound"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:81
+msgid "<b>Audio output (Restart required)</b>"
+msgstr "<b>Output audio (Mula semula diperlukan)</b>"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:94
+msgid "<b>Visible columns</b>"
+msgstr "<b>Lajur tampak</b>"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:106
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:227
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:220
+#: Programmazione/Python/workspace/CometSound/src/View.py:35
+msgid "Name"
+msgstr "Nama"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:106
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:227
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:191
+#: Programmazione/Python/workspace/CometSound/src/View.py:36
+msgid "Add"
+msgstr "Tambah"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:119
+msgid "<b>Status Icon</b>"
+msgstr "<b>Ikon Status</b>"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:121
+msgid "Enable status icon with track's informations"
+msgstr "Benarkan ikon status dengan maklumat trek"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:122
+msgid "Enable status icon"
+msgstr "Benarkan ikon status"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:123
+msgid "Disable status icon"
+msgstr "Lumpuhkan ikon status"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:133
+msgid "<b>Startup settings</b>"
+msgstr "<b>Tetapan permulaan</b>"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:136
+msgid "Reload last play queue"
+msgstr "Muat semula baris gilir main terakhir"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:138
+msgid "Reload last folder"
+msgstr "Muat semula folder terakhir"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:158
+msgid "<b>Last.fm login</b>"
+msgstr "<b>Daftar masuk Last.fm</b>"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:160
+msgid "Username:"
+msgstr "Nama pengguna:"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:168
+msgid "Password:"
+msgstr "Kata laluan:"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:179
+msgid "Enable scrobbling"
+msgstr "Benarkan scrobble"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:185
+msgid "Login"
+msgstr "Daftar Masuk"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:190
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:273
+msgid "Logged in"
+msgstr "Didaftar masuk"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:193
+msgid "Logged off"
+msgstr "Didaftar keluar"
+
+#: Programmazione/Python/workspace/CometSound/src/Dialogs.py:276
+msgid "Invalid user or password!"
+msgstr "Nama pengguna atau kata laluan tidak sah!"
+
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:109
+msgid "Add all"
+msgstr "Tambah semua"
+
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:110
+msgid "Refresh"
+msgstr "Segar semula"
+
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:266
+msgid "Add to playlist"
+msgstr "Tambahkan ke senarai main"
+
+#: Programmazione/Python/workspace/CometSound/src/FileBrowser.py:271
+msgid "Edit tags"
+msgstr "Sunting tag"
+
+#: Programmazione/Python/workspace/CometSound/src/Playlist.py:62
+#: Programmazione/Python/workspace/CometSound/src/Playlist.py:106
+msgid "Playlist"
+msgstr "Senarai main"
+
+#: Programmazione/Python/workspace/CometSound/src/Playlist.py:83
+msgid "Clear Playlist"
+msgstr "Kosongkan Senarai Main"
+
+#: Programmazione/Python/workspace/CometSound/src/Playlist.py:84
+msgid "Remove Selection"
+msgstr "Buang Pemilihan"
+
+#: Programmazione/Python/workspace/CometSound/src/Playlist.py:93
+msgid "Shuffle"
+msgstr "Kocok"
+
+#: Programmazione/Python/workspace/CometSound/src/Playlist.py:102
+msgid "Repeat"
+msgstr "Ulang"
+
+#: Programmazione/Python/workspace/CometSound/src/SearchBox.py:70
+msgid "Search"
+msgstr "Gelintar"
+
+#: Programmazione/Python/workspace/CometSound/src/TagsEditorDialog.py:34
+msgid "Edit Tags"
+msgstr "Sunting Tag"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:154
+msgid "_Quit"
+msgstr "_Keluar"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:154
+msgid "Quit the program"
+msgstr "Keluar program"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:155
+msgid "_Open folder..."
+msgstr "_Buka folder..."
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:155
+msgid "Open media folder"
+msgstr "Buka folder media"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:156
+msgid "Preferences"
+msgstr "Keutamaan"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:156
+msgid "Change settings"
+msgstr "Ubah tetapan"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:157
+msgid "_File"
+msgstr "_Fail"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:158
+msgid "Fil_ters"
+msgstr "Pe_napis"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:159
+msgid "Play selection"
+msgstr "Main pemilihan"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:160
+#: Programmazione/Python/workspace/CometSound/src/View.py:418
+msgid "Previous"
+msgstr "Terdahulu"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:161
+#: Programmazione/Python/workspace/CometSound/src/View.py:413
+msgid "Next"
+msgstr "Berikutnya"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:162
+msgid "Playlists"
+msgstr "Senarai Main"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:163
+msgid "Open folder..."
+msgstr "Buka folder..."
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:164
+msgid "_View"
+msgstr "_Lihat"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:165
+msgid "_Help"
+msgstr "Bant_uan"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:166
+msgid "About CometSound"
+msgstr "Perihal CometSound"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:191
+msgid "File View"
+msgstr "Paparan Fail"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:191
+msgid "File System visualization"
+msgstr "Pengvisualan Sistem Fail"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:192
+msgid "List View"
+msgstr "Paparan Senarai"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:192
+msgid "List visualization"
+msgstr "Pengvisualan senarai"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:193
+msgid "Tag View"
+msgstr "Paparan Tag"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:193
+msgid "Tag based visualization"
+msgstr "Pengvisualan berasaskan tag"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:194
+msgid "Small View"
+msgstr "Paparan Kecil"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:194
+msgid "Small visualization"
+msgstr "Pengvisualan kecil"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:283
+msgid "Love this track (last.fm)"
+msgstr "Suka trek ini (Last.fm)"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:407
+#: Programmazione/Python/workspace/CometSound/src/View.py:467
+msgid "Play"
+msgstr "Main"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:423
+msgid "Quit"
+msgstr "Keluar"
+
+#: Programmazione/Python/workspace/CometSound/src/View.py:472
+msgid "Pause"
+msgstr "Jeda"
