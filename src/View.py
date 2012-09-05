@@ -510,6 +510,7 @@ class View(gtk.Window):
         else:
             self.control.saveWinSize(self.previousWidht, self.previousHeight, pos, volume)
         writeSettings(self.control.settings)
+        self.control.saveLastPlaylist()
         if self.control.playerThread.isAlive():
             self.control.playerThread.terminate()
         gtk.main_quit()

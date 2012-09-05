@@ -147,7 +147,6 @@ class Controller:
     def saveCache(self):
         """Saves the model in a cache file, using serialization"""
         if self.settings['libraryMode']:
-            self.saveLastPlaylist()
             return
         else:
             fname = 'cache'
@@ -159,7 +158,6 @@ class Controller:
         else:
             cerealizer.dump([], FILE)
         FILE.close()
-        self.saveLastPlaylist()
 
     def saveWinSize(self, width, height, pos, volume):
         """Stores in the settings dictionary the dimensions of the main window"""
@@ -231,7 +229,10 @@ class Controller:
         if update: self.model.updateModel()
         if self.model.changed:
             self.__refreshViewTree()
-            self.saveCache()
+            if self.settings['libraryMode']:
+                self.saveLibrary()
+            else:
+                self.saveCache()
         self.view.statusbar.pop(0)
         self.view.vbox.remove(self.view.progressBar)
 
