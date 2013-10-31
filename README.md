@@ -7,7 +7,7 @@ Copyright: 2010-2012 Andrea Bernardini
 
 License: GPL-2+
 
-Dependances:
+####Dependances:####
 	python2.6  
 	python-gtk2  
 	python-gst0.10  
